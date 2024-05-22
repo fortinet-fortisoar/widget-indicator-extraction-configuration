@@ -1,0 +1,23 @@
+<!-- Copyright start
+  Copyright (C) 2008 - 2024 Fortinet Inc.
+  All rights reserved.
+  FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
+  Copyright end -->
+<div class="widget widget-container chart">
+    <div class="display-flex-space-between margin-chart">
+        <div class="padding-right-0 padding-left-0 widget-dashboard-title-width"
+            data-ng-class="(page === 'dashboard' || page === 'reporting') ? 'widget-dashboard-title-width' : 'widget-title-width'">
+            <h5 class="margin-top-0 margin-bottom-0 text-overflow ng-binding">Hello World Title Test</h5>
+        </div>
+        <div class="padding-right-0 padding-left-0"
+            data-ng-class="(page === 'dashboard' || page === 'reporting') ? 'widget-dashboard-actions-width' : 'widget-actions-width'">
+            <span class="fa btn widget-action-icon btn-sm pull-right" data-ng-click="collapsed = !collapsed"
+                data-ng-class="{'fa-caret-up': !collapsed, 'fa-caret-down': collapsed}"></span>
+        </div>
+    </div>
+    <div data-ng-hide="collapsed">
+        <div class="padding-left-lg padding-bottom-lg">
+            <span>Hello World Test</span>
+        </div>
+    </div>
+</div>
