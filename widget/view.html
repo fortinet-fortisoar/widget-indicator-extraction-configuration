@@ -1,23 +1,86 @@
 <!-- Copyright start
-  Copyright (C) 2008 - 2024 Fortinet Inc.
-  All rights reserved.
-  FORTINET CONFIDENTIAL & FORTINET PROPRIETARY SOURCE CODE
+  MIT License
+  Copyright (c) 2024 Fortinet Inc
   Copyright end -->
-<div class="widget widget-container chart">
-    <div class="display-flex-space-between margin-chart">
-        <div class="padding-right-0 padding-left-0 widget-dashboard-title-width"
-            data-ng-class="(page === 'dashboard' || page === 'reporting') ? 'widget-dashboard-title-width' : 'widget-title-width'">
-            <h5 class="margin-top-0 margin-bottom-0 text-overflow ng-binding">Hello World Title Test</h5>
-        </div>
-        <div class="padding-right-0 padding-left-0"
-            data-ng-class="(page === 'dashboard' || page === 'reporting') ? 'widget-dashboard-actions-width' : 'widget-actions-width'">
-            <span class="fa btn widget-action-icon btn-sm pull-right" data-ng-click="collapsed = !collapsed"
-                data-ng-class="{'fa-caret-up': !collapsed, 'fa-caret-down': collapsed}"></span>
-        </div>
-    </div>
-    <div data-ng-hide="collapsed">
-        <div class="padding-left-lg padding-bottom-lg">
-            <span>Hello World Test</span>
-        </div>
-    </div>
+
+
+<div class="modal-header">
+    <h3 class="modal-title col-md-9">SOAR Framework Configuration</h3>
 </div>
+<wizard on-finish="close()" indicators-position="top" class="cs-wizard ingestion-steps"
+    name="soarFrameworkConfigurationWizard">
+    <wz-step wz-title="Start" wz-order="1" class="ingestion-modal-padding wizard-first-step">
+        <div class="full-width wz-step-height padding-bottom-md solutionpack-wizard-modal-body">
+            <div class="full-height overflow-auto">
+                <div class="display-table fixed-table-layout full-height full-width">
+                    <div class="full-height display-table-cell vertical-align-middle">
+                        <div class="col-md-6 display-flex align-items-center margin-top-34 padding-0">
+                            <div class="full-width">
+                                <img class="img-responsive d-info-image" src="{{startPageImage}}">
+                            </div>
+                        </div>
+                        <div class="col-md-6 prerequisites-section padding-bottom-25 padding-left-0">
+                            <div class="font-size-40 line-height-1">SOAR Framework Configuration</div><br />
+                            <div class="margin-top-sm padding-right-30" style="max-width: 650px;">
+                                <p class="font-size-14 margin-bottom-0">SOAR enables security teams to automate response
+                                    to threats. SOAR does this by ingesting, grouping and prioritizing alerts from all
+                                    your detection tools to automatically execute playbooks and coordinate a hands-on
+                                    response.</p>
+                            </div>
+                        </div>
+                        <button type="button"
+                            class="btn btn-primary btn-sm margin-top-xlg text-transform-none font-size-14"
+                            data-ng-click="moveNext()" id="solutionpack-next-btn">Let's get started<i
+                                class="fa fa-chevron-right margin-left-sm"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </wz-step>
+    <wz-step wz-title="Finish" wz-order="2" class="ingestion-modal-padding wizard-first-step">
+        <div class="full-width wz-step-height padding-bottom-md solutionpack-wizard-modal-body">
+            <div class="full-height">
+                <div class="display-table fixed-table-layout full-height full-width">
+                    <div class="full-height display-table-cell vertical-align-middle">
+                        <div class="col-md-6 display-flex align-items-center margin-top-34 padding-0">
+                            <div class="full-width">
+                                <img class="img-responsive d-info-image"
+                                    src="widgets/installed/fortiAIConfiguration-1.0.0/images/finish.png">
+                            </div>
+                        </div>
+                        <div class="col-md-6 prerequisites-section padding-bottom-25 padding-left-0">
+                            <div class="font-size-35">FortiAI Configuration Summary</div>
+                            <p class="font-size-14 margin-bottom-0">All prerequisites have been configured successfully.
+                            </p><br />
+                            <p class="margin-bottom-0">Quick Summary.</p>
+                            <div style="margin-left: -17px;padding-top: 7px;">
+                                <ul>
+                                    <li><span class="grey-text padding-bottom-3">LLM Integration:
+                                        </span><span>{{defaultLLMIntegration.title}}</span></li>
+                                    <li><span class="grey-text padding-bottom-3">Conversation Model:
+                                        </span><span>{{defaultLLMIntegration.conversationModel}}</span></li>
+                                    <li><span class="grey-text padding-bottom-3">Playbook Generation Model:
+                                        </span><span>{{defaultLLMIntegration.pBGenerationModel}}</span></li>
+                                    <li><span class="grey-text padding-bottom-3">Enable Multi User Configuration:
+                                        </span><span
+                                            style="text-transform: capitalize;">{{defaultLLMIntegration.isMultiConfigAvailable}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ingestion-modal-footer">
+            <button type="button" class="btn btn-sm btn-second-primary margin-top-lg margin-left-lg"
+                id="solutionpack-configure-back-env-btn" data-ng-click="moveBack()"><i
+                    class="fa fa-chevron-left margin-right-sm"></i>Back</button>
+            <button type="button" class="btn btn-primary pull-right btn-sm margin-top-lg margin-right-lg"
+                data-ng-click="moveNext()" id="solutionpack-configure-env-next-btn">Finish<i
+                    class="fa fa-chevron-right margin-left-sm"></i>
+            </button>
+        </div>
+    </wz-step>
+</wizard>

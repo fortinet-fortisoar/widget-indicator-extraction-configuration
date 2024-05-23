@@ -1,12 +1,12 @@
 {
     "name": "soarFrameworkConfigurationWizard",
     "title": "SOAR Framework Configuration Wizard",
-    "subTitle": "The configuration wizard for SFSP",
+    "subTitle": "The configuration wizard for SOAR Framework",
     "version": "1.0.0",
     "publishedDate": 1716368544,
     "releaseNotes": "unavailable",
     "metadata": {
-        "description": "The configuration wizard for SFSP Test",
+        "description": "The configuration wizard for SOAR Framework",
         "pages": [],
         "certified": "Yes",
         "publisher": null,
