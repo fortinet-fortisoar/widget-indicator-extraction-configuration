@@ -4,20 +4,22 @@
     "subTitle": "The configuration wizard for SOAR Framework",
     "version": "1.0.0",
     "published_date": 1716368544,
-    "releaseNotes": "unavailable",
     "metadata": {
         "description": "The configuration wizard for SOAR Framework",
         "pages": [],
         "certified": "Yes",
-        "publisher": null,
+        "publisher": "Fortinet",
         "compatibility": [
             "7.5.0"
         ],
+        "snapshots": [
+            "https://repo.fortisoar.fortinet.com/fsr-widgets/soarFrameworkConfigurationWizard-1.0.0/images/landingPage.png"
+        ],
         "standalone": true,
+        "help_online": "https://github.com/fortinet-fortisoar/widget-soar-framework-configuration-wizard/blob/release/1.0.0/README.md",
         "windowClass": "Full Width",
         "category": [
             "FortiSOAR Essentials"
         ]
-    },
-    "development": false
+    }
 }
