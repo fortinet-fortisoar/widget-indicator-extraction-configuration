@@ -43,75 +43,49 @@
             <div class="full-height overflow-auto">
                 <div class="display-table fixed-table-layout full-height full-width">
                     <div class="full-height display-table-cell vertical-align-middle">
-                        <div class="col-md-6 display-flex align-items-center margin-top-34" style="padding-left: 180px;">
+                        <div class="col-md-6 display-flex align-items-center margin-top-34"
+                            style="padding-left: 180px;">
                             <div class="full-width">
                                 <img class="img-responsive d-info-image"
-                                    src="widgets/installed/soarFrameworkConfigurationWizard-1.0.0/images/sfspConfiguration.png">
+                                    src="widgets/installed/soarFrameworkConfigurationWizard-1.0.0/images/sfsp-global-settings.png">
                             </div>
                         </div>
                         <div class="col-md-6 prerequisites-section padding-bottom-25 padding-left-0">
                             <div style="border:2px solid; border-color: #29323e;" class="padding-20">
-                                <div class="font-size-30">Large Language Model (LLM) Configuration</div>
+                                <div class="font-size-30">Global Setting Configuration</div>
                                 <div class="padding-right-30 margin-top-sm max-width-450px">
-                                <p class="font-size-14 margin-bottom-0 grey-text">Select the LLM integration and specify the respective model to be used for different modes.</p>
+                                    <p class="font-size-14 margin-bottom-0 grey-text">Define artefacts to exclude from
+                                        enrichment, ensuring specific IPs, URLs, domains, files, ports, and CIDR ranges
+                                        are ignored in further analysis.</p>
                                 </div><br />
                                 <div>
                                     <div class="padding-bottom-md">
-                                        <label>LLM Integration
-                                            <span data-uib-tooltip="Select LLM Integration to use, e.g., OpenAI" data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i class="icon icon-information" aria-hidden="true"></i></span>
+                                        <label>IP Addresses
+                                            <span data-uib-tooltip="Select LLM Integration to use, e.g., OpenAI"
+                                                data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
+                                                    class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
-                                            <select class="form-control" id="mySelect" data-ng-model="defaultLLMIntegration.title" data-ng-options="llm for llm in defaultLLMIntegration.llmIntegrationsList" data-ng-change="updateLLMIntegrationData('set')" required>
+                                            <select class="form-control" data-ng-model="defaultExcludeList" data-ng-options="model for model in defaultExcludeList">
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="padding-bottom-md">
-                                        <label>Conversation Model
-                                            <span data-uib-tooltip="Select the appropriate LLM model to employ for Conversation or Response Plans / Jinja / Playbook How-To's mode." data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i class="icon icon-information" aria-hidden="true"></i></span>
-                                        </label>
-                                        <div class="cs-select padding-left-3">
-                                            <select class="form-control" data-ng-model="defaultLLMIntegration.conversationModel" data-ng-options="model for model in defaultLLMIntegration.modelList">
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="padding-bottom-md">
-                                        <label>Playbook Generation Model
-                                            <span data-uib-tooltip="Select the LLM model to be used for Playbook Generation. Recommended model is GPT-4 or higher." data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i class="icon icon-information" aria-hidden="true"></i></span>
-                                        </label>
-                                        <div class="cs-select padding-left-3">
-                                            <select class="form-control" data-ng-model="defaultLLMIntegration.pBGenerationModel" data-ng-options="model for model in defaultLLMIntegration.modelList">
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="border-left: 2px solid;border-right: 2px solid;border-bottom: 2px solid; border-color: #29323e;" class="padding-20">
-                                <div class="font-size-30">Multi User Configuration</div>
-                                <div class="padding-right-30 margin-top-sm max-width-450px">
-                                <p class="font-size-14 margin-bottom-0 grey-text">On enabling this setting, the LLM integration will look for a connector configuration that matches the loginid of the logged-in user. If disabled, the connector configuration marked default for the LLM integration will be used.</p>
-                                </div><br />
-                                <div class="padding-bottom-md">
-                                    <label>
-                                        <input id="multiConfig" type="checkbox"
-                                            name="multiConfig" data-ng-model="defaultLLMIntegration.isMultiConfigAvailable">
-                                        <span class="padding-left-10">Enable multi user configuration</span>
-                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="ingestion-modal-footer">
-            <button type="button" class="btn btn-sm btn-second-primary margin-top-lg margin-left-lg"
-              id="solutionpack-configure-back-env-btn" data-ng-click="moveBack()"><i
-                class="fa fa-chevron-left margin-right-sm"></i>Back</button>
-            <button type="button" class="btn btn-primary pull-right btn-sm margin-top-lg margin-right-lg"
-              data-ng-click="loadConnectorPage()" id="solutionpack-configure-env-next-btn">Next<i class="fa fa-chevron-right margin-left-sm"></i>
-            </button>
-          </div>
-      </wz-step>
+            <div class="ingestion-modal-footer">
+                <button type="button" class="btn btn-sm btn-second-primary margin-top-lg margin-left-lg"
+                    id="solutionpack-configure-back-env-btn" data-ng-click="moveBack()"><i
+                        class="fa fa-chevron-left margin-right-sm"></i>Back</button>
+                <button type="button" class="btn btn-primary pull-right btn-sm margin-top-lg margin-right-lg"
+                    data-ng-click="loadConnectorPage()" id="solutionpack-configure-env-next-btn">Next<i
+                        class="fa fa-chevron-right margin-left-sm"></i>
+                </button>
+            </div>
+    </wz-step>
     <wz-step wz-title="Finish" wz-order="3" class="ingestion-modal-padding wizard-first-step">
         <div class="full-width wz-step-height padding-bottom-md solutionpack-wizard-modal-body">
             <div class="full-height">
