@@ -24,39 +24,31 @@
           function constants() {
               return {
                   queryForKeyStore:{
-                      "sort": [
-                        {
-                          "field": "id",
-                          "direction": "ASC",
-                          "_fieldName": "id"
-                        }
-                      ],
-                      "limit": 30,
-                      "logic": "AND",
-                      "filters": [
-                        {
-                          "field": "key",
-                          "operator": "like",
-                          "_operator": "like",
-                          "value": "%Excludelist_IPs%",
-                          "type": "primitive"
-                        },
-                        {
-                          "sort": [],
-                          "limit": 30,
-                          "logic": "AND",
-                          "filters": []
-                        }
-                      ],
-                      "__selectFields": [
-                        "id",
-                        "key",
-                        "value",
-                        "notes",
-                        "@id",
-                        "@type",
-                        "jSONValue"
-                      ]
+                    "sort": [],
+                    "limit": 30,
+                    "logic": "AND",
+                    "filters": [
+                      {
+                        "type": "array",
+                        "field": "recordTags",
+                        "value": [
+                          "/api/3/tags/excludeListIndicators"
+                        ],
+                        "module": "recordTags",
+                        "display": null,
+                        "operator": "in",
+                        "template": "tags",
+                        "enableJinja": true,
+                        "OPERATOR_KEY": "$",
+                        "useInOperator": true,
+                        "previousOperator": "in",
+                        "previousTemplate": "tags"
+                      }
+                    ],
+                    "__selectFields": [
+                      "key",
+                      "jSONValue"
+                    ]
                   }
               }
           }

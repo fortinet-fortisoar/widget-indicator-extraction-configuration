@@ -61,14 +61,14 @@
                                 <div>
                                     <div class="padding-bottom-md">
                                         <label>IP Addresses
-                                            <span data-uib-tooltip="Select LLM Integration to use, e.g., OpenAI"
+                                            <span data-uib-tooltip="Enter the IP addresses that you want to exclude from enrichment."
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
-                                            <ui-select name="excludedIPList" data-ng-model="newKeyStoreValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected)">
+                                            <ui-select name="excludedIPList" data-ng-model="keyStoreValue.Excludelist_IPs" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected)">
                                                 <ui-select-match placeholder="IP Addresses To Exclude">{{$item}}</ui-select-match>
-                                                <ui-select-choices repeat="option in existingKeyStoreValue" refresh-delay="0" show="($select.items.length > 0)">
+                                                <ui-select-choices repeat="option in emptyList" refresh-delay="0" show="(emptyList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
                                             </ui-select>
