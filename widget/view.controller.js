@@ -13,21 +13,15 @@
 
   function soarFrameworkConfigurationWizard100Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, soarConfigService, toaster) {
     $scope.keyStoreValue = {};
-    $scope.defaultExcludedIpList = [];
-    $scope.defaultExcludedDomainList = [];
-    $scope.defaultExcludedUrlList = [];
-    $scope.defaultExcludedPortList = [];
-    $scope.defaultExcludedFileList = [];
-    $scope.defaultExcludedCidrRangeList = [];
-    $scope.emptyList = [];
+    $scope.initList = [];
     $scope.newKeyStoreValue = [];
     $scope.apiQueryPayload = {};
     $scope.moveNext = moveNext;
     $scope.moveBack = moveBack;
+    $scope.getKeyStoreRecordValues = getKeyStoreRecordValues;
     $scope.isLightTheme = $rootScope.theme.id === 'light';
     $scope.startPageImage = $scope.isLightTheme ? widgetBasePath + 'images/sfsp-start-light.png' : widgetBasePath + 'images/sfsp-start-dark.png';
     $scope.test = test;
-    $scope.testVal = testVal;
 
     function _handleTranslations() {
       widgetUtilityService.checkTranslationMode($scope.$parent.model.type).then(function () {
@@ -37,7 +31,26 @@
       });
     }
 
+    function getKeyStoreRecordValues() {
+      $scope.apiQueryPayload = soarConfigService.constants();
+      soarConfigService.getKeyStoreRecord($scope.apiQueryPayload.queryForKeyStore, 'keys').then(function (response) {
+        if (response['hydra:member'].length > 0) {
+          response['hydra:member'].forEach(function (item) {
+            $scope.keyStoreValue[item.key] = {'recordValue': item.jSONValue, 'recordUUID': item.uuid};
+          });
+          console.log('placeholder');
+        }
+        else {
+          toaster.error({ body: "Key Store record not found" });
+        }
+      })
+    }
+
     function moveNext() {
+      var currentStepTitle = WizardHandler.wizard('soarFrameworkConfigurationWizard').currentStep().wzTitle
+      if (currentStepTitle === 'Start') {
+        getKeyStoreRecordValues();
+      }
       WizardHandler.wizard('soarFrameworkConfigurationWizard').next();
     }
 
@@ -45,31 +58,18 @@
       WizardHandler.wizard('soarFrameworkConfigurationWizard').previous();
     }
 
-    function test(response){
-      $scope.newKeyStoreValue = response;
-      console.log($scope.newKeyStoreValue);
+    function test(newKeyStoreValue, keyStoreName) {
+      var recordUUID = $scope.keyStoreValue[keyStoreName].recordUUID;
+      soarConfigService.updateKeyStoreRecord(newKeyStoreValue, recordUUID)
+      console.log($scope.keyStoreValue);
     }
 
-    function testVal(){
-      $scope.result = $scope.newKeyStoreValue;
-      console.log($scope.result)
-    }
+
     function init() {
+      soarConfigService.executePlaybook().then(function () {
+        return getKeyStoreRecordValues();
+      });
       // To handle backward compatibility for widget
-      $scope.apiQueryPayload = soarConfigService.constants();
-      soarConfigService.getKeyStoreRecord($scope.apiQueryPayload.queryForKeyStore, 'keys').then(function (response) {
-        if (response['hydra:member'].length > 0) {
-          response['hydra:member'].forEach(function(item) {
-            $scope.keyStoreValue[item.key] = item.jSONValue;
-        });
-          $scope.newKeyStoreValue = $scope.keyStoreValue;
-          console.log($scope.newKeyStoreValue)
-        }
-        else {
-          toaster.error({ body: "Key Store record not found, refer documentation" });
-        }
-      })
-
       _handleTranslations();
     }
 
