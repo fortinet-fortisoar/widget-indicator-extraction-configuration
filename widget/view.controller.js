@@ -66,8 +66,9 @@
 
 
     function init() {
-      soarConfigService.executePlaybook().then(function () {
-        return getKeyStoreRecordValues();
+      soarConfigService.getGBLVariable('Excludelist_IPs').then(function(response){
+        $scope.resp = response;
+        console.log($scope.resp);
       });
       // To handle backward compatibility for widget
       _handleTranslations();

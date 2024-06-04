@@ -67,7 +67,7 @@
                                         <div class="cs-select padding-left-3">
                                             <ui-select name="excludedIPList" data-ng-model="keyStoreValue.Excludelist_IPs.recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'Excludelist_IPs')">
                                                 <ui-select-match placeholder="IP Addresses To Exclude">{{$item}}</ui-select-match>
-                                                <ui-select-choices repeat="option in initList" refresh-delay="0" show="(emptyList.length > 0)">
+                                                <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
                                             </ui-select>
