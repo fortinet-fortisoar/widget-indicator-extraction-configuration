@@ -95,7 +95,7 @@
       if (action === 'createKeyStore') {
         var apiPayload = soarConfigService.constants().createKeyStorePayload;
         apiPayload['key'] = keyName;
-        apiPayload['jSONValue'] = keyValue;
+        apiPayload['jSONValue'] = keyValue[0].length > 0 ? keyValue : '';
       }
       if (action === 'findKeyStore') {
         var apiPayload = soarConfigService.constants().findKeyStorePayload;
