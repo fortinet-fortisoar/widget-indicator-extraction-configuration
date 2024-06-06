@@ -17,8 +17,10 @@
 
     var service = {
       constants: constants,
-      getKeyStoreRecord: getKeyStoreRecord,
       getGBLVariable: getGBLVariable,
+      removeGBLVariable: removeGBLVariable,
+      createOrUpdateKeyStore: createOrUpdateKeyStore,
+      getKeyStoreRecord: getKeyStoreRecord,
       updateKeyStoreRecord: updateKeyStoreRecord
     }
     return service;
@@ -51,8 +53,49 @@
             "key",
             "jSONValue"
           ]
+        },
+        createKeyStorePayload: {
+          "key": "",
+          "__replace": true,
+          "jSONValue": [],
+          "__fieldsToUpdate": [
+            "jSONValue"
+          ]
         }
       }
+    }
+
+    function getGBLVariable(gblVarName) {
+      var defer = $q.defer();
+      var url = '/api/wf/api/dynamic-variable/?name=' + gblVarName;
+      $resource(url).get(null, function (response) {
+        defer.resolve(response);
+      }, function (err) {
+        defer.reject(err);
+      });
+      return defer.promise;
+    }
+
+    function removeGBLVariable(varName) {
+      var defer = $q.defer();
+      var url = '/api/wf/api/dynamic-variable/?name=' + varName;
+      $resource(url).get(null, function (response) {
+        defer.resolve(response);
+      }, function (err) {
+        defer.reject(err);
+      });
+      return defer.promise;
+    }
+
+    function createOrUpdateKeyStore(queryObject, module) {
+      var defer = $q.defer();
+      var url = API.QUERY + module;
+      $resource(url).save(queryObject, function (response) {
+        defer.resolve(response);
+      }, function (err) {
+        defer.reject(err);
+      })
+      return defer.promise;
     }
 
     function getKeyStoreRecord(queryObject, module) {
@@ -74,18 +117,6 @@
       }).update({ 'jSONValue': keyStoreValue }).$promise.then(function () {
       });
     }
-
-    function getGBLVariable(varName) {
-      var defer = $q.defer();
-      var url = '/api/wf/api/dynamic-variable/?name=' + varName;
-      $resource(url).get(null, function (response) {
-        defer.resolve(response);
-      }, function (err) {
-        defer.reject(err);
-      });
-      return defer.promise;
-    }
-
 
   }
 })();
