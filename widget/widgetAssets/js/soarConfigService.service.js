@@ -15,11 +15,12 @@
 
   function soarConfigService($http, $q, API, $resource, toaster, $rootScope, playbookService, websocketService) {
 
+    var GBL_VAR_ENDPOINT = '/api/wf/api/dynamic-variable/?name=';
     var service = {
       constants: constants,
       getGBLVariable: getGBLVariable,
-      removeGBLVariable: removeGBLVariable,
       createOrUpdateKeyStore: createOrUpdateKeyStore,
+      removeGBLVariable: removeGBLVariable,
       getKeyStoreRecord: getKeyStoreRecord,
       updateKeyStoreRecord: updateKeyStoreRecord
     }
@@ -27,7 +28,7 @@
 
     function constants() {
       return {
-        queryForKeyStore: {
+        getKeyStoreAllPayload: {
           "sort": [],
           "limit": 30,
           "logic": "AND",
@@ -61,18 +62,53 @@
           "__fieldsToUpdate": [
             "jSONValue"
           ]
-        }
+        },
+        findKeyStorePayload:{
+          "sort": [
+            {
+              "field": "id",
+              "direction": "ASC",
+              "_fieldName": "id"
+            }
+          ],
+          "limit": 30,
+          "logic": "AND",
+          "filters": [
+            {
+              "field": "key",
+              "operator": "like",
+              "_operator": "like",
+              "value": "",
+              "type": "primitive"
+            }
+          ],
+          "__selectFields": [
+            "key",
+            "jSONValue"
+          ]
+      }
       }
     }
 
     function getGBLVariable(gblVarName) {
       var defer = $q.defer();
-      var url = '/api/wf/api/dynamic-variable/?name=' + gblVarName;
+      var url = GBL_VAR_ENDPOINT + gblVarName;
       $resource(url).get(null, function (response) {
         defer.resolve(response);
       }, function (err) {
         defer.reject(err);
       });
+      return defer.promise;
+    }
+
+    function createOrUpdateKeyStore(queryObject, module) {
+      var defer = $q.defer();
+      var url = '/api/3/upsert/' + module;
+      $resource(url).save(queryObject, function (response) {
+        defer.resolve(response);
+      }, function (err) {
+        defer.reject(err);
+      })
       return defer.promise;
     }
 
@@ -84,17 +120,6 @@
       }, function (err) {
         defer.reject(err);
       });
-      return defer.promise;
-    }
-
-    function createOrUpdateKeyStore(queryObject, module) {
-      var defer = $q.defer();
-      var url = API.QUERY + module;
-      $resource(url).save(queryObject, function (response) {
-        defer.resolve(response);
-      }, function (err) {
-        defer.reject(err);
-      })
       return defer.promise;
     }
 

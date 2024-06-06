@@ -65,7 +65,7 @@
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
-                                            <ui-select name="excludedIPList" data-ng-model="keyStoreValue.Excludelist_IPs.recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'Excludelist_IPs')">
+                                            <ui-select name="excludedIPList" data-ng-model="defaultGlobalSettings['sfsp-excludelist-ips'].recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'sfsp-excludelist-ips')">
                                                 <ui-select-match placeholder="IP Addresses To Exclude">{{$item}}</ui-select-match>
                                                 <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
@@ -82,9 +82,9 @@
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
-                                            <ui-select name="excludedURLList" data-ng-model="keyStoreValue.Excludelist_URLs.recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'Excludelist_URLs')">
+                                            <ui-select name="excludedURLList" data-ng-model="defaultGlobalSettings['sfsp-excludelist-urls'].recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'sfsp-excludelist-urls')">
                                                 <ui-select-match placeholder="URLs To Exclude">{{$item}}</ui-select-match>
-                                                <ui-select-choices repeat="option in initList" refresh-delay="0" show="(emptyList.length > 0)">
+                                                <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
                                             </ui-select>
@@ -99,9 +99,9 @@
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
-                                            <ui-select name="excludedDomainList" data-ng-model="keyStoreValue.Excludelist_Domains.recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'Excludelist_Domains')">
+                                            <ui-select name="excludedDomainList" data-ng-model="defaultGlobalSettings['sfsp-excludelist-domains'].recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'sfsp-excludelist-domains')">
                                                 <ui-select-match placeholder="Domains To Exclude">{{$item}}</ui-select-match>
-                                                <ui-select-choices repeat="option in initList" refresh-delay="0" show="(emptyList.length > 0)">
+                                                <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
                                             </ui-select>
@@ -116,9 +116,9 @@
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
-                                            <ui-select name="excludedPortList" data-ng-model="keyStoreValue.Excludelist_Ports.recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'Excludelist_Ports')">
+                                            <ui-select name="excludedPortList" data-ng-model="defaultGlobalSettings['sfsp-excludelist-ports'].recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'sfsp-excludelist-ports')">
                                                 <ui-select-match placeholder="Ports To Exclude">{{$item}}</ui-select-match>
-                                                <ui-select-choices repeat="option in initList" refresh-delay="0" show="(emptyList.length > 0)">
+                                                <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
                                             </ui-select>
@@ -133,9 +133,9 @@
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
-                                            <ui-select name="excludedFilesList" data-ng-model="keyStoreValue.Excludelist_Files.recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'Excludelist_Files')">
+                                            <ui-select name="excludedFilesList" data-ng-model="defaultGlobalSettings['sfsp-excludelist-files'].recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'sfsp-excludelist-files')">
                                                 <ui-select-match placeholder="Files To Exclude">{{$item}}</ui-select-match>
-                                                <ui-select-choices repeat="option in initList" refresh-delay="0" show="(emptyList.length > 0)">
+                                                <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
                                             </ui-select>
@@ -150,9 +150,9 @@
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
-                                            <ui-select name="excludedCIDRList" data-ng-model="keyStoreValue.CIDR_Range.recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'CIDR_Range')">
+                                            <ui-select name="excludedCIDRList" data-ng-model="defaultGlobalSettings['sfsp-cidr-range'].recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="test($select.selected, 'sfsp-cidr-range')">
                                                 <ui-select-match placeholder="CIDR Range To Exclude">{{$item}}</ui-select-match>
-                                                <ui-select-choices repeat="option in initList" refresh-delay="0" show="(emptyList.length > 0)">
+                                                <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
                                             </ui-select>
