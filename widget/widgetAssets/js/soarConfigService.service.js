@@ -20,7 +20,7 @@
       constants: constants,
       getGBLVariable: getGBLVariable,
       createOrUpdateKeyStore: createOrUpdateKeyStore,
-      removeGBLVariable: removeGBLVariable,
+      deleteGBLVariable: deleteGBLVariable,
       getKeyStoreRecord: getKeyStoreRecord,
       updateKeyStoreRecord: updateKeyStoreRecord
     }
@@ -112,10 +112,12 @@
       return defer.promise;
     }
 
-    function removeGBLVariable(varName) {
+    function deleteGBLVariable(varName) {
       var defer = $q.defer();
-      var url = '/api/wf/api/dynamic-variable/?name=' + varName;
-      $resource(url).get(null, function (response) {
+      var url = '/api/wf/api/dynamic-variable/'+ varName + '/?format=json';
+      $resource(url, null, {
+        'delete': { method: 'DELETE' }
+      }).delete(null, function (response) {
         defer.resolve(response);
       }, function (err) {
         defer.reject(err);

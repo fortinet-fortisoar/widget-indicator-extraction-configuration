@@ -129,6 +129,7 @@
             // Check if exclude list global variable already present 
             if (response['hydra:member'].length > 0) {
               var gblVarName = response['hydra:member'][0].name;
+              var gblVarID = response['hydra:member'][0].id;
               var keyName = $scope.gblVarToKeyStoreMapping[gblVarName].keystore;
               var keyValue = response['hydra:member'][0].value.split(',');
               var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
@@ -136,7 +137,7 @@
                 $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
                 console.log(res);
               });
-
+              soarConfigService.deleteGBLVariable(gblVarID);
               console.log(payload);
             }
             else {
