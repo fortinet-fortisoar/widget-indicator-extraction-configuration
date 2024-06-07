@@ -59,6 +59,9 @@
           "key": "",
           "__replace": true,
           "jSONValue": [],
+          "recordTags": [
+            "/api/3/tags/excludeListIndicators"
+          ],
           "__fieldsToUpdate": [
             "jSONValue"
           ]
