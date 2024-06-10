@@ -11,11 +11,12 @@
     .module('cybersponse')
     .factory('soarConfigService', soarConfigService);
 
-  soarConfigService.$inject = ['$http', '$q', 'API', '$resource', 'toaster', '$rootScope', 'playbookService', 'websocketService'];
+  soarConfigService.$inject = ['$q', 'API', '$resource'];
 
-  function soarConfigService($http, $q, API, $resource, toaster, $rootScope, playbookService, websocketService) {
+  function soarConfigService($q, API, $resource) {
 
-    var GBL_VAR_ENDPOINT = '/api/wf/api/dynamic-variable/?name=';
+    var GBL_VAR_ENDPOINT = '/api/wf/api/dynamic-variable/';
+    var API_UPSERT = '/api/3/upsert/'
     var service = {
       constants: constants,
       getGBLVariable: getGBLVariable,
@@ -95,7 +96,7 @@
 
     function getGBLVariable(gblVarName) {
       var defer = $q.defer();
-      var url = GBL_VAR_ENDPOINT + gblVarName;
+      var url = GBL_VAR_ENDPOINT + '?name=' + gblVarName;
       $resource(url).get(null, function (response) {
         defer.resolve(response);
       }, function (err) {
@@ -106,7 +107,7 @@
 
     function createOrUpdateKeyStore(queryObject, module) {
       var defer = $q.defer();
-      var url = '/api/3/upsert/' + module;
+      var url = API_UPSERT + module;
       $resource(url).save(queryObject, function (response) {
         defer.resolve(response);
       }, function (err) {
@@ -117,7 +118,7 @@
 
     function deleteGBLVariable(varName) {
       var defer = $q.defer();
-      var url = '/api/wf/api/dynamic-variable/'+ varName + '/?format=json';
+      var url = GBL_VAR_ENDPOINT + varName + '/?format=json';
       $resource(url, null, {
         'delete': { method: 'DELETE' }
       }).delete(null, function (response) {
