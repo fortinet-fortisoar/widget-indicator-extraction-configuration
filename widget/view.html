@@ -5,11 +5,11 @@
 
 
 <div class="modal-header">
-    <h3 class="modal-title col-md-9">SOAR Framework Configuration</h3>
+    <h3 class="modal-title col-md-9">{{viewWidgetVars.LABEL_TITLE}}</h3>
 </div>
 <wizard on-finish="close()" indicators-position="top" class="cs-wizard ingestion-steps"
     name="soarFrameworkConfigurationWizard">
-    <wz-step wz-title="Start" wz-order="1" class="ingestion-modal-padding wizard-first-step">
+    <wz-step wz-title="{{viewWidgetVars.START_PAGE_WZ_TITLE}}" wz-order="1" class="ingestion-modal-padding wizard-first-step">
         <div class="full-width wz-step-height padding-bottom-md solutionpack-wizard-modal-body">
             <div class="full-height overflow-auto">
                 <div class="display-table fixed-table-layout full-height full-width">
@@ -20,17 +20,14 @@
                             </div>
                         </div>
                         <div class="col-md-6 prerequisites-section padding-bottom-25 padding-left-0">
-                            <div class="font-size-40 line-height-1">SOAR Framework Configuration</div><br />
+                            <div class="font-size-40 line-height-1">{{viewWidgetVars.START_PAGE_TITLE}}</div><br />
                             <div class="margin-top-sm padding-right-30" style="max-width: 650px;">
-                                <p class="font-size-14 margin-bottom-0">SOAR enables security teams to automate response
-                                    to threats. SOAR does this by ingesting, grouping and prioritizing alerts from all
-                                    your detection tools to automatically execute playbooks and coordinate a hands-on
-                                    response.</p>
+                                <p class="font-size-14 margin-bottom-0">{{viewWidgetVars.START_PAGE_DESCRIPTION}}</p>
                             </div>
                         </div>
                         <button type="button"
                             class="btn btn-primary btn-sm margin-top-xlg text-transform-none font-size-14"
-                            data-ng-click="moveNext()" id="solutionpack-next-btn">Let's get started<i
+                            data-ng-click="moveNext()" id="solutionpack-next-btn">{{viewWidgetVars.START_PAGE_BUTTON}}<i
                                 class="fa fa-chevron-right margin-left-sm"></i></button>
                     </div>
                 </div>
@@ -38,7 +35,7 @@
         </div>
         </div>
     </wz-step>
-    <wz-step wz-title="Global Settings" wz-order="2" class="ingestion-modal-padding">
+    <wz-step wz-title="{{viewWidgetVars.SECOND_PAGE_WZ_TITLE}}" wz-order="2" class="ingestion-modal-padding">
         <div class="full-width wz-step-height padding-bottom-md solutionpack-wizard-modal-body">
             <div class="full-height overflow-auto">
                 <div class="display-table fixed-table-layout full-height full-width">
@@ -51,22 +48,20 @@
                         </div>
                         <div class="col-md-7 config-section">
                             <div style="border:2px solid; border-color: #29323e;" class="padding-20">
-                                <div class="font-size-25">Global Setting Configuration</div>
+                                <div class="font-size-25">{{viewWidgetVars.SECOND_PAGE_TITLE}}</div>
                                 <div class="padding-right-30 margin-top-sm max-width-450px">
-                                    <p class="font-size-14 grey-text margin-bottom-0 z-index-0">Define artefacts to exclude from
-                                        enrichment, ensuring specific IPs, URLs, Domains, Files, Ports, and CIDR ranges
-                                        are ignored in further analysis.</p>
+                                    <p class="font-size-14 grey-text margin-bottom-0 z-index-0">{{viewWidgetVars.SECOND_PAGE_DESCRIPTION}}</p>
                                 </div><br />
                                 <div>
                                     <div class="padding-bottom-md">
-                                        <label class="control-label text-transform-none">IP Addresses:
-                                            <span data-uib-tooltip="Enter the IP addresses that you want to exclude from enrichment."
+                                        <label class="control-label text-transform-none">{{viewWidgetVars.SECOND_PAGE_IP_ADDRESS_LABEL}}:
+                                            <span data-uib-tooltip="{{viewWidgetVars.SECOND_PAGE_IP_ADDRESS_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
                                             <ui-select name="excludedIPList" data-ng-model="updatedGlobalSettings['sfsp-excludelist-ips'].recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="modifyGlobalSettings($select.selected, 'sfsp-excludelist-ips')">
-                                                <ui-select-match placeholder="IP Addresses To Exclude">{{$item}}</ui-select-match>
+                                                <ui-select-match placeholder="{{viewWidgetVars.SECOND_PAGE_IP_ADDRESS_PLACEHOLDER}}">{{$item}}</ui-select-match>
                                                 <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
@@ -76,14 +71,14 @@
                                 </div>
                                 <div>
                                     <div class="padding-bottom-md">
-                                        <label class="control-label text-transform-none">URLs:
-                                            <span data-uib-tooltip="Enter the URLs that you want to exclude from enrichment."
+                                        <label class="control-label text-transform-none">{{viewWidgetVars.SECOND_PAGE_URL_LABEL}}:
+                                            <span data-uib-tooltip="{{viewWidgetVars.SECOND_PAGE_URL_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
                                             <ui-select name="excludedURLList" data-ng-model="updatedGlobalSettings['sfsp-excludelist-urls'].recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="modifyGlobalSettings($select.selected, 'sfsp-excludelist-urls')">
-                                                <ui-select-match placeholder="URLs To Exclude">{{$item}}</ui-select-match>
+                                                <ui-select-match placeholder="{{viewWidgetVars.SECOND_PAGE_URL_PLACEHOLDER}}">{{$item}}</ui-select-match>
                                                 <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
@@ -93,14 +88,14 @@
                                 </div>
                                 <div>
                                     <div class="padding-bottom-md">
-                                        <label class="control-label text-transform-none">Domains:
-                                            <span data-uib-tooltip="Enter the Domains that you want to exclude from enrichment."
+                                        <label class="control-label text-transform-none">{{viewWidgetVars.SECOND_PAGE_DOMAIN_LABEL}}:
+                                            <span data-uib-tooltip="{{viewWidgetVars.SECOND_PAGE_DOMAIN_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
                                             <ui-select name="excludedDomainList" data-ng-model="updatedGlobalSettings['sfsp-excludelist-domains'].recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="modifyGlobalSettings($select.selected, 'sfsp-excludelist-domains')">
-                                                <ui-select-match placeholder="Domains To Exclude">{{$item}}</ui-select-match>
+                                                <ui-select-match placeholder="{{viewWidgetVars.SECOND_PAGE_DOMAIN_PLACEHOLDER}}">{{$item}}</ui-select-match>
                                                 <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
@@ -110,14 +105,14 @@
                                 </div>
                                 <div>
                                     <div class="padding-bottom-md">
-                                        <label class="control-label text-transform-none">Ports:
-                                            <span data-uib-tooltip="Enter the Ports that you want to exclude from enrichment."
+                                        <label class="control-label text-transform-none">{{viewWidgetVars.SECOND_PAGE_PORTS_LABEL}}:
+                                            <span data-uib-tooltip="{{viewWidgetVars.SECOND_PAGE_PORTS_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
                                             <ui-select name="excludedPortList" data-ng-model="updatedGlobalSettings['sfsp-excludelist-ports'].recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="modifyGlobalSettings($select.selected, 'sfsp-excludelist-ports')">
-                                                <ui-select-match placeholder="Ports To Exclude">{{$item}}</ui-select-match>
+                                                <ui-select-match placeholder="{{viewWidgetVars.SECOND_PAGE_PORTS_PLACEHOLDER}}">{{$item}}</ui-select-match>
                                                 <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
@@ -127,14 +122,14 @@
                                 </div>
                                 <div>
                                     <div class="padding-bottom-md">
-                                        <label class="control-label text-transform-none">Files:
-                                            <span data-uib-tooltip="Enter the Files that you want to exclude from enrichment."
+                                        <label class="control-label text-transform-none">{{viewWidgetVars.SECOND_PAGE_FILES_LABEL}}:
+                                            <span data-uib-tooltip="{{viewWidgetVars.SECOND_PAGE_FILES_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
                                             <ui-select name="excludedFilesList" data-ng-model="updatedGlobalSettings['sfsp-excludelist-files'].recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="modifyGlobalSettings($select.selected, 'sfsp-excludelist-files')">
-                                                <ui-select-match placeholder="Files To Exclude">{{$item}}</ui-select-match>
+                                                <ui-select-match placeholder="{{viewWidgetVars.SECOND_PAGE_FILES_PLACEHOLDER}}">{{$item}}</ui-select-match>
                                                 <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
@@ -144,14 +139,14 @@
                                 </div>
                                 <div>
                                     <div class="padding-bottom-md">
-                                        <label class="control-label text-transform-none">CIDR Ranges:
-                                            <span data-uib-tooltip="Enter the CIDR ranges that you want to exclude from enrichment."
+                                        <label class="control-label text-transform-none">{{viewWidgetVars.SECOND_PAGE_CIDR_LABEL}}:
+                                            <span data-uib-tooltip="{{viewWidgetVars.SECOND_PAGE_CIDR_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
                                             <ui-select name="excludedCIDRList" data-ng-model="updatedGlobalSettings['sfsp-cidr-range'].recordValue" multiple class="custom-multi-select" tagging="undefined" tagging-label="false" data-ng-change="modifyGlobalSettings($select.selected, 'sfsp-cidr-range')">
-                                                <ui-select-match placeholder="CIDR Range To Exclude">{{$item}}</ui-select-match>
+                                                <ui-select-match placeholder="{{viewWidgetVars.SECOND_PAGE_CIDR_PLACEHOLDER}}">{{$item}}</ui-select-match>
                                                 <ui-select-choices repeat="option in initList" refresh-delay="0" show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
@@ -167,9 +162,9 @@
             <div class="ingestion-modal-footer">
                 <button type="button" class="btn btn-sm btn-second-primary margin-top-lg margin-left-lg"
                     id="solutionpack-configure-back-env-btn" data-ng-click="moveBack()"><i
-                        class="fa fa-chevron-left margin-right-sm"></i>Back</button>
+                        class="fa fa-chevron-left margin-right-sm"></i>{{viewWidgetVars.SECOND_PAGE_BACK_BUTTON}}</button>
                 <button type="button" class="btn btn-primary pull-right btn-sm margin-top-lg margin-right-lg"
-                    data-ng-click="moveNext()" id="solutionpack-configure-env-next-btn">Next<i
+                    data-ng-click="moveNext()" id="solutionpack-configure-env-next-btn">{{viewWidgetVars.SECOND_PAGE_NEXT_BUTTON}}<i
                         class="fa fa-chevron-right margin-left-sm"></i>
                 </button>
             </div>
