@@ -12,32 +12,7 @@
   soarFrameworkConfigurationWizard100Ctrl.$inject = ['$scope', 'widgetUtilityService', '$rootScope', 'widgetBasePath', 'WizardHandler', 'soarConfigService', 'toaster'];
 
   function soarFrameworkConfigurationWizard100Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, soarConfigService, toaster) {
-    $scope.gblVarToKeyStoreMapping = {
-      "Excludelist_IPs": {
-        "keystore": "sfsp-excludelist-ips",
-        "defaultValue": "8.8.8.8,10.1.1.2"
-      },
-      "Excludelist_URLs": {
-        "keystore": "sfsp-excludelist-urls",
-        "defaultValue": "https://www.google.com,https://mail.yahoo.com/login.html,https://www.office.com/"
-      },
-      "Excludelist_Domains": {
-        "keystore": "sfsp-excludelist-domains",
-        "defaultValue": "google.com,yahoo.com,fortinet.net,gmail.com,outlook.com,microsoft.com,fortinet.com,twitter.com,facebook.com,linkedin.com,instagram.com,fortiguard.com,forticloud.com,w3.org"
-      },
-      "Excludelist_Files": {
-        "keystore": "sfsp-excludelist-files",
-        "defaultValue": ""
-      },
-      "Excludelist_Ports": {
-        "keystore": "sfsp-excludelist-ports",
-        "defaultValue": ""
-      },
-      "CIDR_Range": {
-        "keystore": "sfsp-cidr-range",
-        "defaultValue": "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
-      }
-    };
+    var gblVarToKeyStoreMapping = soarConfigService.constants().gblVarToKeyStoreMapping;
     $scope.defaultGlobalSettings = {};
     $scope.initList = [];
     $scope.updatedGlobalSettings = {};
@@ -48,7 +23,6 @@
     $scope._buildPayload = _buildPayload;
     $scope.modifyGlobalSettings = modifyGlobalSettings;
     $scope.commitGlobalSettings = commitGlobalSettings;
-    $scope.test = test;
 
 
     function _handleTranslations() {
@@ -75,13 +49,13 @@
 
 
     function _handleGblVarsAndKeyStores() {
-      Object.keys($scope.gblVarToKeyStoreMapping).forEach(function (item) {
+      Object.keys(gblVarToKeyStoreMapping).forEach(function (item) {
         if (item === 'CIDR_Range') {
           var payload = _buildPayload('sfsp-cidr-range', null, 'findKeyStore');
           soarConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
             var resp = response['hydra:member'];
-            if (resp.length === 0) {
-              var keyValue = $scope.gblVarToKeyStoreMapping['CIDR_Range'].defaultValue.split(',');
+            if (resp && resp.length === 0) {
+              var keyValue = gblVarToKeyStoreMapping['CIDR_Range'].defaultValue.split(',');
               var payload = _buildPayload('sfsp-cidr-range', keyValue, 'createKeyStore');
               soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
                 $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
@@ -96,10 +70,10 @@
           soarConfigService.getGBLVariable(item).then(function (response) {
             // Check if exclude list global variable already present 
             var resp = response['hydra:member'];
-            if (resp.length > 0) {
+            if (resp && resp.length > 0) {
               var gblVarName = resp[0].name;
               var gblVarID = resp[0].id;
-              var keyName = $scope.gblVarToKeyStoreMapping[gblVarName].keystore;
+              var keyName = gblVarToKeyStoreMapping[gblVarName].keystore;
               var keyValue = resp[0].value.split(',');
               var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
               soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
@@ -108,16 +82,16 @@
               soarConfigService.deleteGBLVariable(gblVarID);
             }
             else {
-              var keyName = $scope.gblVarToKeyStoreMapping[item].keystore;
+              var keyName = gblVarToKeyStoreMapping[item].keystore;
               var payload = _buildPayload(keyName, null, 'findKeyStore');
               soarConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
                 resp = response['hydra:member'];
-                if (resp.length > 0) {
+                if (resp && resp.length > 0) {
                   $scope.defaultGlobalSettings[resp[0].key] = { 'recordValue': resp[0].jSONValue, 'recordUUID': resp[0].uuid };
                 }
                 else {
-                  var keyName = $scope.gblVarToKeyStoreMapping[item].keystore;
-                  var keyValue = $scope.gblVarToKeyStoreMapping[item].defaultValue.split(',');
+                  var keyName = gblVarToKeyStoreMapping[item].keystore;
+                  var keyValue = gblVarToKeyStoreMapping[item].defaultValue.split(',');
                   var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
                   soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
                     $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
@@ -136,7 +110,6 @@
       if (currentStepTitle === 'Start') {
         if (Object.keys($scope.updatedGlobalSettings).length === 0) {
           $scope.updatedGlobalSettings = angular.copy($scope.defaultGlobalSettings);
-          console.log($scope.updatedGlobalSettings);
         }
       }
       if (currentStepTitle === 'Global Settings') {
@@ -153,7 +126,6 @@
 
     function modifyGlobalSettings(updatedKeyStoreValue, keyStoreName) {
       $scope.updatedGlobalSettings[keyStoreName].recordValue = updatedKeyStoreValue;
-      console.log($scope.updatedGlobalSettings);
     }
 
 
@@ -163,15 +135,6 @@
         var uuid = $scope.updatedGlobalSettings[item].recordUUID;
         soarConfigService.updateKeyStoreRecord(keyValue, uuid);
       });
-    }
-
-
-    function test(updatedKeyStoreValue, keyStoreName) {
-      // var recordUUID = $scope.defaultGlobalSettings[keyStoreName].recordUUID;
-      $scope.updatedGlobalSettings[keyStoreName].recordValue = updatedKeyStoreValue;
-      // soarConfigService.updateKeyStoreRecord(updatedGlobalSettings, recordUUID)
-      // console.log($scope.defaultGlobalSettings);
-      console.log($scope.updatedGlobalSettings);
     }
 
 

@@ -15,8 +15,6 @@
 
   function soarConfigService($q, API, $resource) {
 
-    var GBL_VAR_ENDPOINT = '/api/wf/api/dynamic-variable/';
-    var API_UPSERT = '/api/3/upsert/'
     var service = {
       constants: constants,
       getGBLVariable: getGBLVariable,
@@ -29,39 +27,38 @@
 
     function constants() {
       return {
-        getKeyStoreAllPayload: {
-          "sort": [],
-          "limit": 30,
-          "logic": "AND",
-          "filters": [
-            {
-              "type": "array",
-              "field": "recordTags",
-              "value": [
-                "/api/3/tags/excludeListIndicators"
-              ],
-              "module": "recordTags",
-              "display": null,
-              "operator": "in",
-              "template": "tags",
-              "enableJinja": true,
-              "OPERATOR_KEY": "$",
-              "useInOperator": true,
-              "previousOperator": "in",
-              "previousTemplate": "tags"
-            }
-          ],
-          "__selectFields": [
-            "key",
-            "jSONValue"
-          ]
+        gblVarToKeyStoreMapping : {
+          "Excludelist_IPs": {
+            "keystore": "sfsp-excludelist-ips",
+            "defaultValue": "8.8.8.8,10.1.1.2"
+          },
+          "Excludelist_URLs": {
+            "keystore": "sfsp-excludelist-urls",
+            "defaultValue": "https://www.google.com,https://mail.yahoo.com/login.html,https://www.office.com/"
+          },
+          "Excludelist_Domains": {
+            "keystore": "sfsp-excludelist-domains",
+            "defaultValue": "google.com,yahoo.com,fortinet.net,gmail.com,outlook.com,microsoft.com,fortinet.com,twitter.com,facebook.com,linkedin.com,instagram.com,fortiguard.com,forticloud.com,w3.org"
+          },
+          "Excludelist_Files": {
+            "keystore": "sfsp-excludelist-files",
+            "defaultValue": ""
+          },
+          "Excludelist_Ports": {
+            "keystore": "sfsp-excludelist-ports",
+            "defaultValue": ""
+          },
+          "CIDR_Range": {
+            "keystore": "sfsp-cidr-range",
+            "defaultValue": "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+          }
         },
         createKeyStorePayload: {
           "key": "",
           "__replace": true,
           "jSONValue": [],
           "recordTags": [
-            "/api/3/tags/excludeListIndicators"
+            API.API_3_BASE + 'tags/excludeListIndicators'
           ],
           "__fieldsToUpdate": [
             "jSONValue"
@@ -96,7 +93,7 @@
 
     function getGBLVariable(gblVarName) {
       var defer = $q.defer();
-      var url = GBL_VAR_ENDPOINT + '?name=' + gblVarName;
+      var url = API.WORKFLOW + API.API + '/dynamic-variable/?name=' + gblVarName;
       $resource(url).get(null, function (response) {
         defer.resolve(response);
       }, function (err) {
@@ -107,7 +104,7 @@
 
     function createOrUpdateKeyStore(queryObject, module) {
       var defer = $q.defer();
-      var url = API_UPSERT + module;
+      var url = API.API_3_BASE + 'upsert/' + module;
       $resource(url).save(queryObject, function (response) {
         defer.resolve(response);
       }, function (err) {
@@ -118,7 +115,7 @@
 
     function deleteGBLVariable(varName) {
       var defer = $q.defer();
-      var url = GBL_VAR_ENDPOINT + varName + '/?format=json';
+      var url = API.WORKFLOW + API.API + '/dynamic-variable/' + varName + '/?format=json';
       $resource(url, null, {
         'delete': { method: 'DELETE' }
       }).delete(null, function (response) {
@@ -148,6 +145,5 @@
       }).update({ 'jSONValue': keyStoreValue }).$promise.then(function () {
       });
     }
-
   }
 })();
