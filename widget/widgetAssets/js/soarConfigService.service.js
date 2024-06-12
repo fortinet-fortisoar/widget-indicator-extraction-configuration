@@ -138,7 +138,7 @@
     }
 
     function updateKeyStoreRecord(keyStoreValue, recordUUID) {
-      $resource(API.API_3_BASE + 'keys' + '/' + null, null, {
+      $resource(API.API_3_BASE + 'keys' + '/' + recordUUID, null, {
         'update': {
           method: 'PUT'
         }
