@@ -12,7 +12,6 @@
   soarFrameworkConfigurationWizard100Ctrl.$inject = ['$scope', 'widgetUtilityService', '$rootScope', 'widgetBasePath', 'WizardHandler', 'soarConfigService', 'toaster'];
 
   function soarFrameworkConfigurationWizard100Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, soarConfigService, toaster) {
-    var gblVarToKeyStoreMapping = soarConfigService.constants().gblVarToKeyStoreMapping;
     $scope.defaultGlobalSettings = {};
     $scope.initList = [];
     $scope.updatedGlobalSettings = {};
@@ -90,58 +89,57 @@
 
 
     function _handleGblVarsAndKeyStores() {
-      Object.keys(gblVarToKeyStoreMapping).forEach(function (item) {
-        if (item === 'CIDR_Range') {
-          var payload = _buildPayload('sfsp-cidr-range', null, 'findKeyStore');
-          soarConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
-            var resp = response['hydra:member'];
-            if (resp && resp.length === 0) {
-              var keyValue = gblVarToKeyStoreMapping['CIDR_Range'].defaultValue.split(',');
-              var payload = _buildPayload('sfsp-cidr-range', keyValue, 'createKeyStore');
-              soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-                $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
-              });
-            }
-            else {
-              $scope.defaultGlobalSettings[resp[0].key] = { 'recordValue': resp[0].jSONValue, 'recordUUID': resp[0].uuid };
-            }
-          });
-        }
-        else {
-          soarConfigService.getGBLVariable(item).then(function (response) {
-            // Check if exclude list global variable already present 
-            var resp = response['hydra:member'];
-            if (resp && resp.length > 0) {
-              var gblVarName = resp[0].name;
-              var gblVarID = resp[0].id;
-              var keyName = gblVarToKeyStoreMapping[gblVarName].keystore;
-              var keyValue = resp[0].value.split(',');
-              var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
-              soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-                $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
-              });
-              soarConfigService.deleteGBLVariable(gblVarID);
-            }
-            else {
-              var keyName = gblVarToKeyStoreMapping[item].keystore;
-              var payload = _buildPayload(keyName, null, 'findKeyStore');
-              soarConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
-                resp = response['hydra:member'];
-                if (resp && resp.length > 0) {
-                  $scope.defaultGlobalSettings[resp[0].key] = { 'recordValue': resp[0].jSONValue, 'recordUUID': resp[0].uuid };
-                }
-                else {
-                  var keyName = gblVarToKeyStoreMapping[item].keystore;
-                  var keyValue = gblVarToKeyStoreMapping[item].defaultValue.split(',');
-                  var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
-                  soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-                    $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
-                  });
-                }
-              });
-            }
-          });
-        }
+      soarConfigService.getGblVarToKeyStoreMapping().then(function (gblVarToKeyStoreMapping) {
+        Object.keys(gblVarToKeyStoreMapping).forEach(function (item) {
+          if (item === 'CIDR_Range') {
+            var payload = _buildPayload('sfsp-cidr-range', null, 'findKeyStore');
+            soarConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
+              if (response && response['hydra:member'] && response['hydra:member'].length === 0) {
+                var keyValue = gblVarToKeyStoreMapping['CIDR_Range'].defaultValue.split(',');
+                var payload = _buildPayload('sfsp-cidr-range', keyValue, 'createKeyStore');
+                soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
+                  $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
+                });
+              }
+              else {
+                $scope.defaultGlobalSettings[response['hydra:member'][0].key] = { 'recordValue': response['hydra:member'][0].jSONValue, 'recordUUID': response['hydra:member'][0].uuid };
+              }
+            });
+          }
+          else {
+            soarConfigService.getGBLVariable(item).then(function (response) {
+              // Check if exclude list global variable already present 
+              if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
+                var gblVarName = response['hydra:member'][0].name;
+                var gblVarID = response['hydra:member'][0].id;
+                var keyName = gblVarToKeyStoreMapping[gblVarName].keystore;
+                var keyValue = response['hydra:member'][0].value.split(',');
+                var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
+                soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
+                  $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
+                });
+                soarConfigService.deleteGBLVariable(gblVarID);
+              }
+              else {
+                var keyName = gblVarToKeyStoreMapping[item].keystore;
+                var payload = _buildPayload(keyName, null, 'findKeyStore');
+                soarConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
+                  if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
+                    $scope.defaultGlobalSettings[response['hydra:member'][0].key] = { 'recordValue': response['hydra:member'][0].jSONValue, 'recordUUID': response['hydra:member'][0].uuid };
+                  }
+                  else {
+                    var keyName = gblVarToKeyStoreMapping[item].keystore;
+                    var keyValue = gblVarToKeyStoreMapping[item].defaultValue.split(',');
+                    var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
+                    soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
+                      $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
       });
     }
 
@@ -175,7 +173,7 @@
         var keyValue = $scope.updatedGlobalSettings[item].recordValue;
         var uuid = $scope.updatedGlobalSettings[item].recordUUID;
         soarConfigService.updateKeyStoreRecord(keyValue, uuid);
-        });
+      });
     }
 
 

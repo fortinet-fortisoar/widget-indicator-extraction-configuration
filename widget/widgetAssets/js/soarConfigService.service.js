@@ -11,9 +11,9 @@
     .module('cybersponse')
     .factory('soarConfigService', soarConfigService);
 
-  soarConfigService.$inject = ['$q', 'API', '$resource', 'toaster'];
+  soarConfigService.$inject = ['$q', 'API', '$resource', 'toaster', '$http'];
 
-  function soarConfigService($q, API, $resource, toaster) {
+  function soarConfigService($q, API, $resource, toaster, $http) {
 
     var service = {
       constants: constants,
@@ -21,38 +21,13 @@
       createOrUpdateKeyStore: createOrUpdateKeyStore,
       deleteGBLVariable: deleteGBLVariable,
       getKeyStoreRecord: getKeyStoreRecord,
-      updateKeyStoreRecord: updateKeyStoreRecord
+      updateKeyStoreRecord: updateKeyStoreRecord,
+      getGblVarToKeyStoreMapping: getGblVarToKeyStoreMapping
     }
     return service;
 
     function constants() {
       return {
-        gblVarToKeyStoreMapping: {
-          "Excludelist_IPs": {
-            "keystore": "sfsp-excludelist-ips",
-            "defaultValue": "8.8.8.8,10.1.1.2"
-          },
-          "Excludelist_URLs": {
-            "keystore": "sfsp-excludelist-urls",
-            "defaultValue": "https://www.google.com,https://mail.yahoo.com/login.html,https://www.office.com/"
-          },
-          "Excludelist_Domains": {
-            "keystore": "sfsp-excludelist-domains",
-            "defaultValue": "google.com,yahoo.com,fortinet.net,gmail.com,outlook.com,microsoft.com,fortinet.com,twitter.com,facebook.com,linkedin.com,instagram.com,fortiguard.com,forticloud.com,w3.org"
-          },
-          "Excludelist_Files": {
-            "keystore": "sfsp-excludelist-files",
-            "defaultValue": ""
-          },
-          "Excludelist_Ports": {
-            "keystore": "sfsp-excludelist-ports",
-            "defaultValue": ""
-          },
-          "CIDR_Range": {
-            "keystore": "sfsp-cidr-range",
-            "defaultValue": "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
-          }
-        },
         createKeyStorePayload: {
           "key": "",
           "__replace": true,
@@ -89,6 +64,16 @@
           ]
         }
       }
+    }
+
+    function getGblVarToKeyStoreMapping(){
+      var defer = $q.defer();
+      $http.get('widgets/installed/soarFrameworkConfigurationWizard-1.0.0/widgetAssets/gblVarToKeyStoreMapping.json').then(function(response){
+        defer.resolve(response.data);
+      }).catch(function(err){
+        defer.reject(err);
+      });
+      return defer.promise;
     }
 
     function getGBLVariable(gblVarName) {
