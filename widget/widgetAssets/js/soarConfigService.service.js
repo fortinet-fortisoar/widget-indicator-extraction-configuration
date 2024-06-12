@@ -11,9 +11,9 @@
     .module('cybersponse')
     .factory('soarConfigService', soarConfigService);
 
-  soarConfigService.$inject = ['$q', 'API', '$resource'];
+  soarConfigService.$inject = ['$q', 'API', '$resource', 'toaster'];
 
-  function soarConfigService($q, API, $resource) {
+  function soarConfigService($q, API, $resource, toaster) {
 
     var service = {
       constants: constants,
@@ -27,7 +27,7 @@
 
     function constants() {
       return {
-        gblVarToKeyStoreMapping : {
+        gblVarToKeyStoreMapping: {
           "Excludelist_IPs": {
             "keystore": "sfsp-excludelist-ips",
             "defaultValue": "8.8.8.8,10.1.1.2"
@@ -64,7 +64,7 @@
             "jSONValue"
           ]
         },
-        findKeyStorePayload:{
+        findKeyStorePayload: {
           "sort": [
             {
               "field": "id",
@@ -87,7 +87,7 @@
             "key",
             "jSONValue"
           ]
-      }
+        }
       }
     }
 
@@ -138,11 +138,17 @@
     }
 
     function updateKeyStoreRecord(keyStoreValue, recordUUID) {
-      $resource(API.API_3_BASE + 'keys' + '/' + recordUUID, null, {
+      $resource(API.API_3_BASE + 'keys' + '/' + null, null, {
         'update': {
           method: 'PUT'
         }
-      }).update({ 'jSONValue': keyStoreValue }).$promise.then(function () {
+      }).update({ 'jSONValue': keyStoreValue }).$promise.then(function (response) {
+        return response;
+      }).catch(function(err){
+        toaster.error({
+          body: 'Global Setting Configuration Failed.'
+        });
+        return $q.reject(err);
       });
     }
   }

@@ -26,14 +26,6 @@
 
 
     function _handleTranslations() {
-      widgetUtilityService.checkTranslationMode($scope.$parent.model.type).then(function () {
-        $scope.viewWidgetVars = {
-          // Create your translating static string variables here
-        };
-      });
-    }
-
-    function _handleTranslations() {
       let widgetData = {
         name: $scope.config.name,
         version: $scope.config.version
@@ -183,7 +175,7 @@
         var keyValue = $scope.updatedGlobalSettings[item].recordValue;
         var uuid = $scope.updatedGlobalSettings[item].recordUUID;
         soarConfigService.updateKeyStoreRecord(keyValue, uuid);
-      });
+        });
     }
 
 
