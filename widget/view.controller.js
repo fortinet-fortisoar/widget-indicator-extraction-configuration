@@ -15,6 +15,7 @@
     $scope.defaultGlobalSettings = {};
     $scope.initList = [];
     $scope.updatedGlobalSettings = {};
+    $scope.widgetCSS = widgetBasePath + 'widgetAssets/css/wizard-style.css';
     $scope.moveNext = moveNext;
     $scope.moveBack = moveBack;
     $scope.isLightTheme = $rootScope.theme.id === 'light';
@@ -173,7 +174,7 @@
         var keyValue = $scope.updatedGlobalSettings[item].recordValue;
         var uuid = $scope.updatedGlobalSettings[item].recordUUID;
         soarConfigService.updateKeyStoreRecord(keyValue, uuid);
-      });
+        });
     }
 
 

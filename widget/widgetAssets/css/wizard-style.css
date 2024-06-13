@@ -1,0 +1,46 @@
+/* Copyright start
+  MIT License
+  Copyright (c) 2024 Fortinet Inc
+  Copyright end */
+
+  .sfsp-config-steps {
+	.steps-indicator {
+		li {
+			&:first-child {
+				a::before {
+					content: "\e97c";
+				}
+			}
+			&:nth-child(2) {
+				a::before {
+					content: "\e977";
+				}
+			}
+			&:nth-child(3) {
+				a::before {
+					content: "\eef28";
+				}
+			}
+			&:nth-child(4) {
+				a::before {
+					content: "\e985";
+				}
+			}
+			&:nth-child(5) {
+				a::before {
+					content: "\e998";
+				}
+			}
+			&:last-child {
+				a::before {
+					content: "\e97e";
+				}
+			}
+		}
+	}
+}
+
+.info-graphic-margin {
+	margin-top: 20%;
+	margin-left: 20%;
+}
