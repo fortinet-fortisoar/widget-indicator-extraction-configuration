@@ -30,10 +30,11 @@
       return {
         createKeyStorePayload: {
           "key": "",
+          "notes": "",
           "__replace": true,
           "jSONValue": [],
           "recordTags": [
-            API.API_3_BASE + 'tags/excludeListIndicators'
+            API.API_3_BASE + 'tags/ExcludeListIOCs'
           ],
           "__fieldsToUpdate": [
             "jSONValue"

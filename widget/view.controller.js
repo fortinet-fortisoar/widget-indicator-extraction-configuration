@@ -79,6 +79,7 @@
       if (action === 'createKeyStore') {
         var apiPayload = soarConfigService.constants().createKeyStorePayload;
         apiPayload['key'] = keyName;
+        apiPayload['notes'] = 'Enter the ' + (keyName.split('-')[2] === 'range' ? 'CIDR ranges' : keyName.split('-')[2]) + ' that you want to exclude from enrichment.';
         apiPayload['jSONValue'] = keyValue[0].length > 0 ? keyValue : '';
       }
       if (action === 'findKeyStore') {
