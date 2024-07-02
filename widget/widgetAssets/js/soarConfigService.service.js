@@ -3,7 +3,6 @@
   Copyright (c) 2024 Fortinet Inc
   Copyright end */
 
-
 'use strict';
 
 (function () {
@@ -67,11 +66,11 @@
       }
     }
 
-    function getGblVarToKeyStoreMapping(){
+    function getGblVarToKeyStoreMapping() {
       var defer = $q.defer();
-      $http.get('widgets/installed/soarFrameworkConfigurationWizard-1.0.0/widgetAssets/gblVarToKeyStoreMapping.json').then(function(response){
+      $http.get('widgets/installed/soarFrameworkConfigurationWizard-1.0.0/widgetAssets/gblVarToKeyStoreMapping.json').then(function (response) {
         defer.resolve(response.data);
-      }).catch(function(err){
+      }).catch(function (err) {
         defer.reject(err);
       });
       return defer.promise;
@@ -130,7 +129,7 @@
         }
       }).update({ 'jSONValue': keyStoreValue }).$promise.then(function (response) {
         return response;
-      }).catch(function(err){
+      }).catch(function (err) {
         toaster.error({
           body: 'Global Setting Configuration Failed.'
         });

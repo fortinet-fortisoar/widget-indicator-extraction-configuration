@@ -9,20 +9,15 @@
     .module('cybersponse')
     .controller('soarFrameworkConfigurationWizard100Ctrl', soarFrameworkConfigurationWizard100Ctrl);
 
-  soarFrameworkConfigurationWizard100Ctrl.$inject = ['$scope', 'widgetUtilityService', '$rootScope', 'widgetBasePath', 'WizardHandler', 'soarConfigService', 'toaster'];
+  soarFrameworkConfigurationWizard100Ctrl.$inject = ['$scope', 'widgetUtilityService', 'soarConfigService'];
 
-  function soarFrameworkConfigurationWizard100Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, soarConfigService, toaster) {
+  function soarFrameworkConfigurationWizard100Ctrl($scope, widgetUtilityService, soarConfigService) {
     $scope.defaultGlobalSettings = {};
     $scope.initList = [];
-    $scope.updatedGlobalSettings = {};
-    $scope.widgetCSS = widgetBasePath + 'widgetAssets/css/wizard-style.css';
-    $scope.moveNext = moveNext;
-    $scope.moveBack = moveBack;
-    $scope.isLightTheme = $rootScope.theme.id === 'light';
-    $scope.startPageImage = $scope.isLightTheme ? widgetBasePath + 'images/sfsp-start-light.png' : widgetBasePath + 'images/sfsp-start-dark.png';
     $scope._buildPayload = _buildPayload;
     $scope.modifyGlobalSettings = modifyGlobalSettings;
     $scope.commitGlobalSettings = commitGlobalSettings;
+    $scope.cancel = cancel;
 
 
     function _handleTranslations() {
@@ -35,42 +30,34 @@
         widgetUtilityService.checkTranslationMode(widgetNameVersion).then(function () {
           $scope.viewWidgetVars = {
             // Create your translating static string variables here
-            START_PAGE_WZ_TITLE: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_WZ_TITLE'),
-            LABEL_TITLE: widgetUtilityService.translate('soarFrameworkConfigurationWizard.LABEL_TITLE'),
             START_PAGE_TITLE: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_TITLE'),
             START_PAGE_DESCRIPTION: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_DESCRIPTION'),
-            START_PAGE_BUTTON: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_BUTTON'),
-
-
-            SECOND_PAGE_WZ_TITLE: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_WZ_TITLE'),
-            SECOND_PAGE_TITLE: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_TITLE'),
-            SECOND_PAGE_DESCRIPTION: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_DESCRIPTION'),
-            SECOND_PAGE_IP_ADDRESS_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_IP_ADDRESS_LABEL'),
-            SECOND_PAGE_IP_ADDRESS_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_IP_ADDRESS_TOOLTIP'),
-            SECOND_PAGE_IP_ADDRESS_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_IP_ADDRESS_PLACEHOLDER'),
-            SECOND_PAGE_URL_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_URL_LABEL'),
-            SECOND_PAGE_URL_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_URL_TOOLTIP'),
-            SECOND_PAGE_URL_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_URL_PLACEHOLDER'),
-            SECOND_PAGE_DOMAIN_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_DOMAIN_LABEL'),
-            SECOND_PAGE_DOMAIN_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_DOMAIN_TOOLTIP'),
-            SECOND_PAGE_DOMAIN_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_DOMAIN_PLACEHOLDER'),
-            SECOND_PAGE_PORTS_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_PORTS_LABEL'),
-            SECOND_PAGE_PORTS_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_PORTS_TOOLTIP'),
-            SECOND_PAGE_PORTS_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_PORTS_PLACEHOLDER'),
-            SECOND_PAGE_FILES_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_FILES_LABEL'),
-            SECOND_PAGE_FILES_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_FILES_TOOLTIP'),
-            SECOND_PAGE_FILES_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_FILES_PLACEHOLDER'),
-            SECOND_PAGE_CIDR_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_CIDR_LABEL'),
-            SECOND_PAGE_CIDR_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_CIDR_TOOLTIP'),
-            SECOND_PAGE_CIDR_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_CIDR_PLACEHOLDER'),
-            SECOND_PAGE_BACK_BUTTON: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_BACK_BUTTON'),
-            SECOND_PAGE_NEXT_BUTTON: widgetUtilityService.translate('soarFrameworkConfigurationWizard.SECOND_PAGE_NEXT_BUTTON'),
+            START_PAGE_IP_ADDRESS_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_IP_ADDRESS_LABEL'),
+            START_PAGE_IP_ADDRESS_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_IP_ADDRESS_TOOLTIP'),
+            START_PAGE_IP_ADDRESS_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_IP_ADDRESS_PLACEHOLDER'),
+            START_PAGE_URL_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_URL_LABEL'),
+            START_PAGE_URL_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_URL_TOOLTIP'),
+            START_PAGE_URL_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_URL_PLACEHOLDER'),
+            START_PAGE_DOMAIN_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_DOMAIN_LABEL'),
+            START_PAGE_DOMAIN_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_DOMAIN_TOOLTIP'),
+            START_PAGE_DOMAIN_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_DOMAIN_PLACEHOLDER'),
+            START_PAGE_PORTS_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_PORTS_LABEL'),
+            START_PAGE_PORTS_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_PORTS_TOOLTIP'),
+            START_PAGE_PORTS_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_PORTS_PLACEHOLDER'),
+            START_PAGE_FILES_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_FILES_LABEL'),
+            START_PAGE_FILES_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_FILES_TOOLTIP'),
+            START_PAGE_FILES_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_FILES_PLACEHOLDER'),
+            START_PAGE_CIDR_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_CIDR_LABEL'),
+            START_PAGE_CIDR_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_CIDR_TOOLTIP'),
+            START_PAGE_CIDR_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_CIDR_PLACEHOLDER'),
+            START_PAGE_SAVE_BUTTON: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_SAVE_BUTTON'),
+            START_PAGE_CANCEL_BUTTON: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_CANCEL_BUTTON'),
           };
         });
       }
       else {
         $timeout(function () {
-          cancel();
+          $scope.cancel();
         }, 100)
       }
     }
@@ -146,36 +133,8 @@
     }
 
 
-    function moveNext() {
-      var currentStepTitle = WizardHandler.wizard('soarFrameworkConfigurationWizard').currentStep().wzTitle
-      if (currentStepTitle === 'Start') {
-        if (Object.keys($scope.updatedGlobalSettings).length === 0) {
-          $scope.updatedGlobalSettings = angular.copy($scope.defaultGlobalSettings);
-        }
-      }
-      if (currentStepTitle === 'Global Settings') {
-        commitGlobalSettings();
-      }
-      WizardHandler.wizard('soarFrameworkConfigurationWizard').next();
-    }
-
-
-    function moveBack() {
-      WizardHandler.wizard('soarFrameworkConfigurationWizard').previous();
-    }
-
-
     function modifyGlobalSettings(updatedKeyStoreValue, keyStoreName) {
-      $scope.updatedGlobalSettings[keyStoreName].recordValue = updatedKeyStoreValue;
-    }
-
-
-    function commitGlobalSettings() {
-      Object.keys($scope.updatedGlobalSettings).forEach(function (item) {
-        var keyValue = $scope.updatedGlobalSettings[item].recordValue;
-        var uuid = $scope.updatedGlobalSettings[item].recordUUID;
-        soarConfigService.updateKeyStoreRecord(keyValue, uuid);
-        });
+      $scope.defaultGlobalSettings[keyStoreName].recordValue = updatedKeyStoreValue;
     }
 
 
@@ -187,5 +146,19 @@
     }
 
     init();
+
+    function commitGlobalSettings() {
+      Object.keys($scope.defaultGlobalSettings).forEach(function (item) {
+        var keyValue = $scope.defaultGlobalSettings[item].recordValue;
+        var uuid = $scope.defaultGlobalSettings[item].recordUUID;
+        soarConfigService.updateKeyStoreRecord(keyValue, uuid);
+      });
+      $scope.close();
+    }
+
+    function cancel() {
+      $scope.close();
+    }
+
   }
 })();
