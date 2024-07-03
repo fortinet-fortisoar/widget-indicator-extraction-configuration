@@ -9,9 +9,9 @@
     .module('cybersponse')
     .controller('soarFrameworkConfigurationWizard100Ctrl', soarFrameworkConfigurationWizard100Ctrl);
 
-  soarFrameworkConfigurationWizard100Ctrl.$inject = ['$scope', 'widgetUtilityService', 'soarConfigService'];
+  soarFrameworkConfigurationWizard100Ctrl.$inject = ['$scope', 'widgetUtilityService', 'soarConfigService', 'widgetBasePath'];
 
-  function soarFrameworkConfigurationWizard100Ctrl($scope, widgetUtilityService, soarConfigService) {
+  function soarFrameworkConfigurationWizard100Ctrl($scope, widgetUtilityService, soarConfigService, widgetBasePath) {
     $scope.defaultGlobalSettings = {};
     $scope.initList = [];
     $scope._buildPayload = _buildPayload;
@@ -78,7 +78,7 @@
 
 
     function _handleGblVarsAndKeyStores() {
-      soarConfigService.getGblVarToKeyStoreMapping().then(function (gblVarToKeyStoreMapping) {
+      soarConfigService.getGblVarToKeyStoreMapping(widgetBasePath).then(function (gblVarToKeyStoreMapping) {
         Object.keys(gblVarToKeyStoreMapping).forEach(function (item) {
           if (item === 'CIDR_Range') {
             var payload = _buildPayload('sfsp-cidr-range', null, 'findKeyStore');
