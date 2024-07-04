@@ -17,7 +17,7 @@
         ],
         "standalone": true,
         "help_online": "https://github.com/fortinet-fortisoar/widget-soar-framework-configuration-wizard/blob/release/1.0.0/README.md",
-        "windowClass": "Full Width",
+        "windowClass": "Pop-Up",
         "category": [
             "FortiSOAR Essentials"
         ]

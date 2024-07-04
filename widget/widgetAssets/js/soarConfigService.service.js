@@ -3,7 +3,6 @@
   Copyright (c) 2024 Fortinet Inc
   Copyright end */
 
-
 'use strict';
 
 (function () {
@@ -30,10 +29,11 @@
       return {
         createKeyStorePayload: {
           "key": "",
+          "notes": "",
           "__replace": true,
           "jSONValue": [],
           "recordTags": [
-            API.API_3_BASE + 'tags/excludeListIndicators'
+            API.API_3_BASE + 'tags/ExcludeListIOCs'
           ],
           "__fieldsToUpdate": [
             "jSONValue"
@@ -66,11 +66,12 @@
       }
     }
 
-    function getGblVarToKeyStoreMapping(){
+    function getGblVarToKeyStoreMapping(widgetBasePath) {
       var defer = $q.defer();
-      $http.get('widgets/installed/soarFrameworkConfigurationWizard-1.0.0/widgetAssets/gblVarToKeyStoreMapping.json').then(function(response){
+      var url = widgetBasePath + 'widgetAssets/gblVarToKeyStoreMapping.json'
+      $http.get(url).then(function (response) {
         defer.resolve(response.data);
-      }).catch(function(err){
+      }).catch(function (err) {
         defer.reject(err);
       });
       return defer.promise;
@@ -129,7 +130,7 @@
         }
       }).update({ 'jSONValue': keyStoreValue }).$promise.then(function (response) {
         return response;
-      }).catch(function(err){
+      }).catch(function (err) {
         toaster.error({
           body: 'Global Setting Configuration Failed.'
         });
