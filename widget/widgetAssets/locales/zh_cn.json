@@ -1,5 +1,5 @@
 {
-    "soarFrameworkConfigurationWizard": {
+    "configureIndicatorExtraction": {
         "START_PAGE_TITLE": "配置排除列表",
         "START_PAGE_DESCRIPTION": "指定应从丰富和进一步分析中排除的项目。",
         "START_PAGE_IP_ADDRESS_LABEL": "IP 地址",
