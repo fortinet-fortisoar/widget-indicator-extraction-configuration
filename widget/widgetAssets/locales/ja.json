@@ -1,5 +1,5 @@
 {
-    "soarFrameworkConfigurationWizard": {
+    "configureIndicatorExtraction": {
         "START_PAGE_TITLE": "除外リストの構成",
         "START_PAGE_DESCRIPTION": "強化およびさらなる分析から除外するアーティファクトを指定します。",
         "START_PAGE_IP_ADDRESS_LABEL": "IPアドレス",

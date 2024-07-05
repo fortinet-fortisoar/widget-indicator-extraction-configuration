@@ -1,5 +1,5 @@
 {
-    "soarFrameworkConfigurationWizard": {
+    "configureIndicatorExtraction": {
         "START_PAGE_TITLE": "Configure Exclude List",
         "START_PAGE_DESCRIPTION": "Specify artifacts that should be excluded from enrichment and further analysis.",
         "START_PAGE_IP_ADDRESS_LABEL": "IP Addresses",

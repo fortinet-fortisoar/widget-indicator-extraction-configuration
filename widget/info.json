@@ -1,22 +1,22 @@
 {
-    "name": "soarFrameworkConfigurationWizard",
-    "title": "SOAR Framework Configuration Wizard",
-    "subTitle": "The configuration wizard for SOAR Framework",
+    "name": "configureIndicatorExtraction",
+    "title": "Configure Indicator Extraction",
+    "subTitle": "Configures Excluded IOC List from Extraction",
     "version": "1.0.0",
     "published_date": 1716368544,
     "metadata": {
-        "description": "The configuration wizard for SOAR Framework",
+        "description": "The widget configures specific IOCs to be excluded for the indicator extraction.",
         "pages": [],
         "certified": "Yes",
         "publisher": "Fortinet",
         "compatibility": [
-            "7.5.0"
+            "7.6.0"
         ],
         "snapshots": [
-            "https://repo.fortisoar.fortinet.com/fsr-widgets/soarFrameworkConfigurationWizard-1.0.0/images/landing-page.png"
+            "https://repo.fortisoar.fortinet.com/fsr-widgets/configureIndicatorExtraction-1.0.0/images/landing-page.png"
         ],
         "standalone": true,
-        "help_online": "https://github.com/fortinet-fortisoar/widget-soar-framework-configuration-wizard/blob/release/1.0.0/README.md",
+        "help_online": "https://github.com/fortinet-fortisoar/widget-configure-indicator-extraction/blob/release/1.0.0/README.md",
         "windowClass": "Pop-Up",
         "category": [
             "FortiSOAR Essentials"

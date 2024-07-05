@@ -1,5 +1,5 @@
 {
-    "soarFrameworkConfigurationWizard": {
+    "configureIndicatorExtraction": {
         "START_PAGE_TITLE": "제외 목록 구성",
         "START_PAGE_DESCRIPTION": "분석 및 추가 분석에서 제외해야 할 아티팩트를 지정하십시오.",
         "START_PAGE_IP_ADDRESS_LABEL": "IP 주소",

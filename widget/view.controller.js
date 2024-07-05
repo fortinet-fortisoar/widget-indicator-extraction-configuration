@@ -7,11 +7,11 @@
 (function () {
   angular
     .module('cybersponse')
-    .controller('soarFrameworkConfigurationWizard100Ctrl', soarFrameworkConfigurationWizard100Ctrl);
+    .controller('configureIndicatorExtraction100Ctrl', configureIndicatorExtraction100Ctrl);
 
-  soarFrameworkConfigurationWizard100Ctrl.$inject = ['$scope', 'widgetUtilityService', 'soarConfigService', 'widgetBasePath'];
+  configureIndicatorExtraction100Ctrl.$inject = ['$scope', 'widgetUtilityService', 'soarConfigService', 'widgetBasePath'];
 
-  function soarFrameworkConfigurationWizard100Ctrl($scope, widgetUtilityService, soarConfigService, widgetBasePath) {
+  function configureIndicatorExtraction100Ctrl($scope, widgetUtilityService, soarConfigService, widgetBasePath) {
     $scope.defaultGlobalSettings = {};
     $scope.initList = [];
     $scope._buildPayload = _buildPayload;
@@ -30,28 +30,28 @@
         widgetUtilityService.checkTranslationMode(widgetNameVersion).then(function () {
           $scope.viewWidgetVars = {
             // Create your translating static string variables here
-            START_PAGE_TITLE: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_TITLE'),
-            START_PAGE_DESCRIPTION: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_DESCRIPTION'),
-            START_PAGE_IP_ADDRESS_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_IP_ADDRESS_LABEL'),
-            START_PAGE_IP_ADDRESS_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_IP_ADDRESS_TOOLTIP'),
-            START_PAGE_IP_ADDRESS_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_IP_ADDRESS_PLACEHOLDER'),
-            START_PAGE_URL_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_URL_LABEL'),
-            START_PAGE_URL_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_URL_TOOLTIP'),
-            START_PAGE_URL_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_URL_PLACEHOLDER'),
-            START_PAGE_DOMAIN_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_DOMAIN_LABEL'),
-            START_PAGE_DOMAIN_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_DOMAIN_TOOLTIP'),
-            START_PAGE_DOMAIN_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_DOMAIN_PLACEHOLDER'),
-            START_PAGE_PORTS_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_PORTS_LABEL'),
-            START_PAGE_PORTS_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_PORTS_TOOLTIP'),
-            START_PAGE_PORTS_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_PORTS_PLACEHOLDER'),
-            START_PAGE_FILES_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_FILES_LABEL'),
-            START_PAGE_FILES_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_FILES_TOOLTIP'),
-            START_PAGE_FILES_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_FILES_PLACEHOLDER'),
-            START_PAGE_CIDR_LABEL: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_CIDR_LABEL'),
-            START_PAGE_CIDR_TOOLTIP: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_CIDR_TOOLTIP'),
-            START_PAGE_CIDR_PLACEHOLDER: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_CIDR_PLACEHOLDER'),
-            START_PAGE_SAVE_BUTTON: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_SAVE_BUTTON'),
-            START_PAGE_CANCEL_BUTTON: widgetUtilityService.translate('soarFrameworkConfigurationWizard.START_PAGE_CANCEL_BUTTON'),
+            START_PAGE_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_TITLE'),
+            START_PAGE_DESCRIPTION: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DESCRIPTION'),
+            START_PAGE_IP_ADDRESS_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_LABEL'),
+            START_PAGE_IP_ADDRESS_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_TOOLTIP'),
+            START_PAGE_IP_ADDRESS_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_PLACEHOLDER'),
+            START_PAGE_URL_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_LABEL'),
+            START_PAGE_URL_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_TOOLTIP'),
+            START_PAGE_URL_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_PLACEHOLDER'),
+            START_PAGE_DOMAIN_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_LABEL'),
+            START_PAGE_DOMAIN_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_TOOLTIP'),
+            START_PAGE_DOMAIN_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_PLACEHOLDER'),
+            START_PAGE_PORTS_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_LABEL'),
+            START_PAGE_PORTS_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_TOOLTIP'),
+            START_PAGE_PORTS_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_PLACEHOLDER'),
+            START_PAGE_FILES_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_FILES_LABEL'),
+            START_PAGE_FILES_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_FILES_TOOLTIP'),
+            START_PAGE_FILES_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_FILES_PLACEHOLDER'),
+            START_PAGE_CIDR_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_LABEL'),
+            START_PAGE_CIDR_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_TOOLTIP'),
+            START_PAGE_CIDR_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_PLACEHOLDER'),
+            START_PAGE_SAVE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_SAVE_BUTTON'),
+            START_PAGE_CANCEL_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CANCEL_BUTTON'),
           };
         });
       }
