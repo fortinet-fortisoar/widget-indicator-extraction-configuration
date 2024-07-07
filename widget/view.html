@@ -133,9 +133,9 @@
                     </label>
                     <div class="cs-select padding-left-3">
                         <ui-select name="excludedCIDRList"
-                            data-ng-model="defaultGlobalSettings['sfsp-cidr-range'].recordValue" multiple
+                            data-ng-model="defaultGlobalSettings['sfsp-excludelist-cidr-ranges'].recordValue" multiple
                             class="custom-multi-select" tagging="undefined" tagging-label="false"
-                            data-ng-change="modifyGlobalSettings($select.selected, 'sfsp-cidr-range')">
+                            data-ng-change="modifyGlobalSettings($select.selected, 'sfsp-excludelist-cidr-ranges')">
                             <ui-select-match
                                 placeholder="{{viewWidgetVars.START_PAGE_CIDR_PLACEHOLDER}}">{{$item}}</ui-select-match>
                             <ui-select-choices repeat="option in initList" refresh-delay="0"
