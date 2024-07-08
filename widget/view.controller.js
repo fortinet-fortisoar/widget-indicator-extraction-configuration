@@ -81,11 +81,11 @@
       soarConfigService.getGblVarToKeyStoreMapping(widgetBasePath).then(function (gblVarToKeyStoreMapping) {
         Object.keys(gblVarToKeyStoreMapping).forEach(function (item) {
           if (item === 'CIDR_Range') {
-            var payload = _buildPayload('sfsp-cidr-range', null, 'findKeyStore');
+            var payload = _buildPayload('sfsp-excludelist-cidr-ranges', null, 'findKeyStore');
             soarConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
               if (response && response['hydra:member'] && response['hydra:member'].length === 0) {
                 var keyValue = gblVarToKeyStoreMapping['CIDR_Range'].defaultValue.split(',');
-                var payload = _buildPayload('sfsp-cidr-range', keyValue, 'createKeyStore');
+                var payload = _buildPayload('sfsp-excludelist-cidr-ranges', keyValue, 'createKeyStore');
                 soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
                   $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
                 });
