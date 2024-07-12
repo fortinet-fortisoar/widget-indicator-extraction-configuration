@@ -14,6 +14,8 @@
 
 The **Configure Indicator Extraction** wizard helps you configure indicators to be excluded during the IOC (Indicator of Compromise) extraction process within your FortiSOAR environment. In this wizard, you can add one or multiple IOCs specific to your organization. By doing so, these IOCs won’t be extracted from incoming data ingestion and won’t create any indicators in your FortiSOAR.
 
+![configure-indicator-extraction](./docs/res/indicator-extraction-settings-page.png)
+
 This wizard doesn't need any configuration settings before its usage.
 
 
