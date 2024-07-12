@@ -6,16 +6,26 @@
 
 The Configure Indicator Extraction wizard helps you configure indicators to be excluded during the IOC (Indicator of Compromise) extraction process within your FortiSOAR environment. In this wizard, you can add one or multiple IOCs specific to your organization.
 
-## Features
+You can review and edit settings for below indicator types;
+- IP Addresses
+- URLs
+- Domains
+- Ports
+- Files
+- CIDR Ranges
+
 
 ### Launch Configuration Wizard
 - Launch **Setup Guide**
+  
   ![setup-guide-launch-point](../docs/res/setup-guide-launch-point.png)
   
 - Locate **Deploy** section
+
 ![setup-guide-launch-point](../docs/res/setup-guide-indicator-extraction-section.png)
   
 - Click on **Configure** button under **Configure Indicator Extraction** section
+  
 ![setup-guide-launch-point](../docs/res/indicator-extraction-settings-page.png)
 
 
