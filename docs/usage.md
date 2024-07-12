@@ -10,9 +10,13 @@ The Configure Indicator Extraction wizard helps you configure indicators to be e
 
 ### Launch Configuration Wizard
 - Launch **Setup Guide**
+  ![setup-guide-launch-point](../docs/res/setup-guide-launch-point.png)
+  
 - Locate **Deploy** section
+![setup-guide-launch-point](../docs/res/setup-guide-indicator-extraction-section.png)
+  
 - Click on **Configure** button under **Configure Indicator Extraction** section
-- 
+![setup-guide-launch-point](../docs/res/indicator-extraction-settings-page.png)
 
 
 ### Edit Configuration Settings
