@@ -12,12 +12,23 @@
 
 # Overview
 
-The **Configure Indicator Extraction** wizard helps you configure indicators to be excluded during the IOC (Indicator of Compromise) extraction process within your FortiSOAR environment. In this wizard, you can add one or multiple IOCs specific to your organization. By doing so, these IOCs won’t be extracted from incoming data ingestion and won’t create any indicators in your FortiSOAR.
+Streamline your threat management with the **Configure Indicator Extraction** widget in your FortiSOAR environment. This powerful tool allows you to customize the indicator extraction process by excluding indicators specific to your organization’s needs. By excluding these indicators, you ensure that corresponding Indicators of Compromise (IoCs) are excluded from data ingestion.
+
+## Key Features:
+
+- **Custom Exclusions**: Add one or more indicators of any type, unique to your organization, to the exclusion list.
+
+- **Streamlined Threat Detection**: Prevent the creation of redundant IoCs, optimizing threat analysis efficiency.
+
+- **Enhanced Security**: Tailor indicator extraction to focus on relevant threats, reducing noise and false positives.
+
+- **Operational Efficiency:** Simplify threat triage and response by focusing on pertinent data.
+
+- **Adaptability:** Easily update exclusions as your security requirements evolve.
+
+By leveraging the **Configure Indicator Extraction** widget, you empower your security operations team to proactively manage threats with precision and efficiency by excluding false positives using this widget, thereby safeguarding your organization against potential risks.
 
 ![configure-indicator-extraction](./docs/res/indicator-extraction-settings-page.png)
-
-This wizard doesn't need any configuration settings before its usage.
-
 
 ## Next Steps
 

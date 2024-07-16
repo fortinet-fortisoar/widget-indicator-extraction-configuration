@@ -1,17 +1,19 @@
 | [Home](../README.md) |
-|--------------------------------------------|
+|----------------------|
 
 # Installation
 
-This widget will be installed by default as part of **SOAR framework Solution Pack 3.0.0 or later**
+1. To install a widget, click **Content Hub** > **Discover**.
 
-![setup-guide-launch-point](../docs/res/setup-guide-launch-point.png)
+2. From the list of widgets that appears, search **Configure Indicator Extraction**.
 
+3. Click the **Configure Indicator Extraction** widget.
+
+4. Click **Install** on the lower part of the screen to begin installation.
 
 # Configuration
 
-This wizard doesn't need any configuration settings.
+The widget is a part of [**SOAR Framework**](https://github.com/fortinet-fortisoar/solution-pack-soar-framework) solution pack `v3.0.0` and does not require any standalone configuration.
 
-
-## Upgrade from SOAR framework Solution Pack 2.x.x to 3.0.0 or later
-- This wizard will help you migrating your pre-configured indicator exclude settings in FortiSOAR global variables to key-store values automatically.  
+| [Usage](./usage.md) |
+|---------------------|
