@@ -18,6 +18,9 @@
     $scope.modifyGlobalSettings = modifyGlobalSettings;
     $scope.commitGlobalSettings = commitGlobalSettings;
     $scope.cancel = cancel;
+    $scope.errorFound = { 'index': 0, 'status': false };
+    $scope.validateIOC = validateIOC;
+    var regexPatternMapping = {};
 
 
     function _handleTranslations() {
@@ -84,9 +87,11 @@
             var payload = _buildPayload('sfsp-excludelist-cidr-ranges', null, 'findKeyStore');
             soarConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
               if (response && response['hydra:member'] && response['hydra:member'].length === 0) {
+                // Check if the keystore record exists for CIDR range; create it if not found
                 var keyValue = gblVarToKeyStoreMapping['CIDR_Range'].defaultValue.split(',');
                 var payload = _buildPayload('sfsp-excludelist-cidr-ranges', keyValue, 'createKeyStore');
                 soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
+                  // Create keystore record
                   $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
                 });
               }
@@ -102,7 +107,7 @@
                 var gblVarName = response['hydra:member'][0].name;
                 var gblVarID = response['hydra:member'][0].id;
                 var keyName = gblVarToKeyStoreMapping[gblVarName].keystore;
-                var keyValue = response['hydra:member'][0].value.split(',');
+                var keyValue = [...new Set(response['hydra:member'][0].value.split(','))];
                 var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
                 soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
                   $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
@@ -128,10 +133,46 @@
               }
             });
           }
+          regexPatternMapping[gblVarToKeyStoreMapping[item].keystore] = { 'index': gblVarToKeyStoreMapping[item].index, "pattern": gblVarToKeyStoreMapping[item].pattern };
         });
       });
     }
 
+
+    function validateIOC(updatedKeyStoreValue, keyStoreName) {
+      var regexPattern = regexPatternMapping[keyStoreName];
+
+      if (keyStoreName === 'sfsp-excludelist-ips') {
+        var ipv4Regex = new RegExp(regexPattern.pattern.ipv4);
+        var ipv6Regex = new RegExp(regexPattern.pattern.ipv6);
+        var invalidIOCs = []
+        updatedKeyStoreValue.forEach(function (item) {
+          if (!(ipv4Regex.test(item) || ipv6Regex.test(item))) {
+            invalidIOCs.push(item);
+          }
+        });
+      } else if (keyStoreName === 'sfsp-excludelist-urls' || keyStoreName === 'sfsp-excludelist-domains') {
+        var genericRegex = new RegExp(regexPattern.pattern);
+        updatedKeyStoreValue.forEach(function (item) {
+          if (!genericRegex.test(item)) {
+            invalidIOCs.push(item);
+          }
+        });
+      } else {
+        $scope.defaultGlobalSettings[keyStoreName].recordValue = updatedKeyStoreValue;
+        return;
+      }
+
+      if (invalidIOCs.length > 0) {
+        $scope.errorFound['index'] = regexPattern.index;
+        $scope.errorFound['status'] = true;
+        $scope.errorItem = invalidIOCs.join(', ');
+      } else {
+        $scope.errorFound['index'] = 0;
+        $scope.errorFound['status'] = false;
+        $scope.defaultGlobalSettings[keyStoreName].recordValue = updatedKeyStoreValue;
+      }
+    }
 
     function modifyGlobalSettings(updatedKeyStoreValue, keyStoreName) {
       $scope.defaultGlobalSettings[keyStoreName].recordValue = updatedKeyStoreValue;
@@ -141,6 +182,7 @@
     function init() {
       // To set value to be displayed on "Global Settings" page
       _handleGblVarsAndKeyStores();
+
       // To handle backward compatibility for widget
       _handleTranslations();
     }
