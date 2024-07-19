@@ -25,8 +25,7 @@
                         <ui-select name="excludedIPList"
                             data-ng-model="defaultGlobalSettings['sfsp-excludelist-ips'].recordValue" multiple
                             class="custom-multi-select" tagging="undefined" tagging-label="false"
-                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-ips')"
-                            data-ng-disabled="errorFound.status && (errorFound.index !== 0 && errorFound.index !== 1)">
+                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-ips')">
                             <ui-select-match
                                 placeholder="{{viewWidgetVars.START_PAGE_IP_ADDRESS_PLACEHOLDER}}">{{$item}}</ui-select-match>
                             <ui-select-choices repeat="option in initList" refresh-delay="0"
@@ -35,7 +34,7 @@
                             </ui-select-choices>
                         </ui-select>
                         <span class="font-075em padding-left-10 text-danger"
-                            data-ng-if="errorFound.status && errorFound.index === 1">{{viewWidgetVars.START_PAGE_IP_ADDRESS_ERROR_MESSAGE}}<strong>{{errorItem}}</strong></span>
+                            data-ng-if="invalidIPs.length > 0">{{viewWidgetVars.START_PAGE_IP_ADDRESS_ERROR_MESSAGE}}<strong>{{invalidIPs.join(', ')}}</strong></span>
                     </div>
                 </div>
             </div>
@@ -50,8 +49,7 @@
                         <ui-select name="excludedURLList"
                             data-ng-model="defaultGlobalSettings['sfsp-excludelist-urls'].recordValue" multiple
                             class="custom-multi-select" tagging="undefined" tagging-label="false"
-                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-urls')"
-                            data-ng-disabled="errorFound.status && (errorFound.index !== 0 && errorFound.index !== 2)">
+                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-urls')">
                             <ui-select-match
                                 placeholder="{{viewWidgetVars.START_PAGE_URL_PLACEHOLDER}}">{{$item}}</ui-select-match>
                             <ui-select-choices repeat="option in initList" refresh-delay="0"
@@ -60,7 +58,7 @@
                             </ui-select-choices>
                         </ui-select>
                         <span class="font-075em padding-left-10 text-danger"
-                            data-ng-if="errorFound.status && errorFound.index === 2">{{viewWidgetVars.START_PAGE_URL_ERROR_MESSAGE}}<strong>{{errorItem}}</strong></span>
+                            data-ng-if="invalidURLs.length > 0">{{viewWidgetVars.START_PAGE_URL_ERROR_MESSAGE}}<strong>{{invalidURLs.join(', ')}}</strong></span>
                     </div>
                 </div>
             </div>
@@ -75,8 +73,7 @@
                         <ui-select name="excludedDomainList"
                             data-ng-model="defaultGlobalSettings['sfsp-excludelist-domains'].recordValue" multiple
                             class="custom-multi-select" tagging="undefined" tagging-label="false"
-                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-domains')"
-                            data-ng-disabled="errorFound.status && (errorFound.index !== 0 && errorFound.index !== 3)">
+                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-domains')">
                             <ui-select-match
                                 placeholder="{{viewWidgetVars.START_PAGE_DOMAIN_PLACEHOLDER}}">{{$item}}</ui-select-match>
                             <ui-select-choices repeat="option in initList" refresh-delay="0"
@@ -85,7 +82,7 @@
                             </ui-select-choices>
                         </ui-select>
                         <span class="font-075em padding-left-10 text-danger"
-                            data-ng-if="errorFound.status && errorFound.index === 3">{{viewWidgetVars.START_PAGE_DOMAIN_ERROR_MESSAGE}}<strong>{{errorItem}}</strong></span>
+                            data-ng-if="invalidDomains.length > 0">{{viewWidgetVars.START_PAGE_DOMAIN_ERROR_MESSAGE}}<strong>{{invalidDomains.join(', ')}}</strong></span>
                     </div>
                 </div>
             </div>
@@ -100,8 +97,7 @@
                         <ui-select name="excludedPortList"
                             data-ng-model="defaultGlobalSettings['sfsp-excludelist-ports'].recordValue" multiple
                             class="custom-multi-select" tagging="undefined" tagging-label="false"
-                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-ports')"
-                            data-ng-disabled="errorFound.status && (errorFound.index !== 0 && errorFound.index !== 4)">
+                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-ports')">
                             <ui-select-match
                                 placeholder="{{viewWidgetVars.START_PAGE_PORTS_PLACEHOLDER}}">{{$item}}</ui-select-match>
                             <ui-select-choices repeat="option in initList" refresh-delay="0"
@@ -110,7 +106,7 @@
                             </ui-select-choices>
                         </ui-select>
                         <span class="font-075em padding-left-10 text-danger"
-                            data-ng-if="errorFound.status && errorFound.index === 4">{{viewWidgetVars.START_PAGE_PORTS_ERROR_MESSAGE}}<strong>{{errorItem}}</strong></span>
+                            data-ng-if="invalidPorts.length > 0">{{viewWidgetVars.START_PAGE_PORTS_ERROR_MESSAGE}}<strong>{{invalidPorts.join(', ')}}</strong></span>
                     </div>
                 </div>
             </div>
@@ -125,8 +121,7 @@
                         <ui-select name="excludedFilesList"
                             data-ng-model="defaultGlobalSettings['sfsp-excludelist-files'].recordValue" multiple
                             class="custom-multi-select" tagging="undefined" tagging-label="false"
-                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-files')"
-                            data-ng-disabled="errorFound.status && (errorFound.index !== 0 && errorFound.index !== 5)">
+                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-files')">
                             <ui-select-match
                                 placeholder="{{viewWidgetVars.START_PAGE_FILES_PLACEHOLDER}}">{{$item}}</ui-select-match>
                             <ui-select-choices repeat="option in initList" refresh-delay="0"
@@ -148,8 +143,7 @@
                         <ui-select name="excludedCIDRList"
                             data-ng-model="defaultGlobalSettings['sfsp-excludelist-cidr-ranges'].recordValue" multiple
                             class="custom-multi-select" tagging="undefined" tagging-label="false"
-                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-cidr-ranges')"
-                            data-ng-disabled="errorFound.status && (errorFound.index !== 0 && errorFound.index !== 6)">
+                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-cidr-ranges')">
                             <ui-select-match
                                 placeholder="{{viewWidgetVars.START_PAGE_CIDR_PLACEHOLDER}}">{{$item}}</ui-select-match>
                             <ui-select-choices repeat="option in initList" refresh-delay="0"
@@ -158,7 +152,7 @@
                             </ui-select-choices>
                         </ui-select>
                         <span class="font-075em padding-left-10 text-danger"
-                            data-ng-if="errorFound.status && errorFound.index === 6">{{viewWidgetVars.START_PAGE_CIDR_ERROR_MESSAGE}}<strong>{{errorItem}}</strong></span>
+                            data-ng-if="invalidCIDRs.length > 0">{{viewWidgetVars.START_PAGE_CIDR_ERROR_MESSAGE}}<strong>{{invalidCIDRs.join(', ')}}</strong></span>
                     </div>
                 </div>
             </div>
@@ -166,7 +160,7 @@
     </div>
     <div class="modal-footer">
         <button id="edit-widget-save" type="submit" class="btn btn-sm btn-primary margin-left-1-percent"
-            data-ng-click="commitGlobalSettings()" data-ng-disabled="errorFound.status"><i
+            data-ng-click="commitGlobalSettings()" data-ng-disabled="invalidIPs.length > 0 || invalidURLs.length > 0 || invalidDomains.length > 0 || invalidPorts.length > 0 || invalidCIDRs.length > 0"><i
                 class="icon icon-check margin-right-sm"></i>{{viewWidgetVars.START_PAGE_SAVE_BUTTON}}</button>
         <button type="button" class="btn btn-sm btn-default" data-ng-click="cancel()"><i
                 class="icon icon-close margin-right-sm"></i>{{viewWidgetVars.START_PAGE_CANCEL_BUTTON}}</button>
