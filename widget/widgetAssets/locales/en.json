@@ -2,24 +2,36 @@
     "configureIndicatorExtraction": {
         "START_PAGE_TITLE": "Configure Exclude List",
         "START_PAGE_DESCRIPTION": "Specify artifacts that should be excluded from enrichment and further analysis.",
+
         "START_PAGE_IP_ADDRESS_LABEL": "IP Addresses",
         "START_PAGE_IP_ADDRESS_TOOLTIP": "Specify IP addresses to exclude from enrichment.",
         "START_PAGE_IP_ADDRESS_PLACEHOLDER": "IP Addresses To Exclude",
+        "START_PAGE_IP_ADDRESS_ERROR_MESSAGE": "Invalid IP Address - ",
+
         "START_PAGE_URL_LABEL": "URLs",
         "START_PAGE_URL_TOOLTIP": "Specify URLs to exclude from enrichment.",
         "START_PAGE_URL_PLACEHOLDER": "URLs To Exclude",
+        "START_PAGE_URL_ERROR_MESSAGE": "Invalid URL - ",
+
         "START_PAGE_DOMAIN_LABEL": "Domains",
         "START_PAGE_DOMAIN_TOOLTIP": "Specify Domains to exclude from enrichment.",
         "START_PAGE_DOMAIN_PLACEHOLDER": "Domains To Exclude",
+        "START_PAGE_DOMAIN_ERROR_MESSAGE": "Invalid Domain - ",
+
         "START_PAGE_PORTS_LABEL": "Ports",
         "START_PAGE_PORTS_TOOLTIP": "Specify Ports to exclude from enrichment.",
         "START_PAGE_PORTS_PLACEHOLDER": "Ports To Exclude",
+        "START_PAGE_PORTS_ERROR_MESSAGE": "Invalid Port - ",
+
         "START_PAGE_FILES_LABEL": "Files",
         "START_PAGE_FILES_TOOLTIP": "Specify Files to exclude from enrichment.",
         "START_PAGE_FILES_PLACEHOLDER": "Files To Exclude",
+
         "START_PAGE_CIDR_LABEL": "CIDR Ranges",
         "START_PAGE_CIDR_TOOLTIP": "Specify CIDR Ranges to exclude from enrichment.",
         "START_PAGE_CIDR_PLACEHOLDER": "CIDR Ranges To Exclude",
+        "START_PAGE_CIDR_ERROR_MESSAGE": "Invalid CIDR Range - ",
+
         "START_PAGE_SAVE_BUTTON": "Save",
         "START_PAGE_CANCEL_BUTTON": "Cancel"
     }

@@ -33,7 +33,7 @@
                                 <div ng-bind="option"></div>
                             </ui-select-choices>
                         </ui-select>
-                        <span style="color: red;" data-ng-if="errorFound.status && errorFound.index === 1">Entered Invalid IP Address {{errorItem}}. Please remove the same</span>
+                        <span class="font-075em padding-left-10 text-danger" data-ng-if="errorFound.status && errorFound.index === 1">{{viewWidgetVars.START_PAGE_IP_ADDRESS_ERROR_MESSAGE}}<strong>{{errorItem}}</strong></span>
                     </div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                                 <div ng-bind="option"></div>
                             </ui-select-choices>
                         </ui-select>
-                        <span style="color: red;" data-ng-if="errorFound.status && errorFound.index === 2">Entered Invalid URL {{errorItem}}, Please remove the same</span>
+                        <span class="font-075em padding-left-10 text-danger" data-ng-if="errorFound.status && errorFound.index === 2">{{viewWidgetVars.START_PAGE_URL_ERROR_MESSAGE}}<strong>{{errorItem}}</strong></span>
                     </div>
                 </div>
             </div>
@@ -79,7 +79,7 @@
                                 <div ng-bind="option"></div>
                             </ui-select-choices>
                         </ui-select>
-                        <span style="color: red;" data-ng-if="errorFound.status && errorFound.index === 3">Entered Invalid Domain {{errorItem}}, Please remove the same</span>
+                        <span class="font-075em padding-left-10 text-danger" data-ng-if="errorFound.status && errorFound.index === 3">{{viewWidgetVars.START_PAGE_DOMAIN_ERROR_MESSAGE}}<strong>{{errorItem}}</strong></span>
                     </div>
                 </div>
             </div>
@@ -102,6 +102,7 @@
                                 <div ng-bind="option"></div>
                             </ui-select-choices>
                         </ui-select>
+                        <span class="font-075em padding-left-10 text-danger" data-ng-if="errorFound.status && errorFound.index === 4">{{viewWidgetVars.START_PAGE_PORTS_ERROR_MESSAGE}}<strong>{{errorItem}}</strong></span>
                     </div>
                 </div>
             </div>
@@ -146,13 +147,14 @@
                                 <div ng-bind="option"></div>
                             </ui-select-choices>
                         </ui-select>
+                        <span class="font-075em padding-left-10 text-danger" data-ng-if="errorFound.status && errorFound.index === 6">{{viewWidgetVars.START_PAGE_CIDR_ERROR_MESSAGE}}<strong>{{errorItem}}</strong></span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button id="edit-widget-save" type="submit" class="btn btn-sm btn-primary"
+        <button id="edit-widget-save" type="submit" class="btn btn-sm btn-primary margin-left-1-percent"
             data-ng-click="commitGlobalSettings()" data-ng-disabled="errorFound.status"><i
                 class="icon icon-check margin-right-sm"></i>{{viewWidgetVars.START_PAGE_SAVE_BUTTON}}</button>
         <button type="button" class="btn btn-sm btn-default" data-ng-click="cancel()"><i

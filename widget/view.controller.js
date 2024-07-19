@@ -38,23 +38,28 @@
             START_PAGE_IP_ADDRESS_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_LABEL'),
             START_PAGE_IP_ADDRESS_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_TOOLTIP'),
             START_PAGE_IP_ADDRESS_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_PLACEHOLDER'),
+            START_PAGE_IP_ADDRESS_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_ERROR_MESSAGE'),
             START_PAGE_URL_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_LABEL'),
             START_PAGE_URL_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_TOOLTIP'),
             START_PAGE_URL_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_PLACEHOLDER'),
+            START_PAGE_URL_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_ERROR_MESSAGE'),
             START_PAGE_DOMAIN_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_LABEL'),
             START_PAGE_DOMAIN_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_TOOLTIP'),
             START_PAGE_DOMAIN_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_PLACEHOLDER'),
+            START_PAGE_DOMAIN_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_ERROR_MESSAGE'),
             START_PAGE_PORTS_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_LABEL'),
             START_PAGE_PORTS_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_TOOLTIP'),
             START_PAGE_PORTS_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_PLACEHOLDER'),
+            START_PAGE_PORTS_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_ERROR_MESSAGE'),
             START_PAGE_FILES_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_FILES_LABEL'),
             START_PAGE_FILES_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_FILES_TOOLTIP'),
             START_PAGE_FILES_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_FILES_PLACEHOLDER'),
             START_PAGE_CIDR_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_LABEL'),
             START_PAGE_CIDR_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_TOOLTIP'),
             START_PAGE_CIDR_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_PLACEHOLDER'),
+            START_PAGE_CIDR_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_ERROR_MESSAGE'),
             START_PAGE_SAVE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_SAVE_BUTTON'),
-            START_PAGE_CANCEL_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CANCEL_BUTTON'),
+            START_PAGE_CANCEL_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CANCEL_BUTTON')
           };
         });
       }
@@ -141,17 +146,17 @@
 
     function validateIOC(updatedKeyStoreValue, keyStoreName) {
       var regexPattern = regexPatternMapping[keyStoreName];
+      var invalidIOCs = []
 
       if (keyStoreName === 'sfsp-excludelist-ips') {
         var ipv4Regex = new RegExp(regexPattern.pattern.ipv4);
         var ipv6Regex = new RegExp(regexPattern.pattern.ipv6);
-        var invalidIOCs = []
         updatedKeyStoreValue.forEach(function (item) {
           if (!(ipv4Regex.test(item) || ipv6Regex.test(item))) {
             invalidIOCs.push(item);
           }
         });
-      } else if (keyStoreName === 'sfsp-excludelist-urls' || keyStoreName === 'sfsp-excludelist-domains') {
+      } else if (keyStoreName === 'sfsp-excludelist-urls' || keyStoreName === 'sfsp-excludelist-domains' || keyStoreName === 'sfsp-excludelist-ports' || keyStoreName === 'sfsp-excludelist-cidr-ranges') {
         var genericRegex = new RegExp(regexPattern.pattern);
         updatedKeyStoreValue.forEach(function (item) {
           if (!genericRegex.test(item)) {
