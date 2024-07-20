@@ -15,9 +15,11 @@
     $scope.defaultGlobalSettings = {};
     $scope.initList = [];
     $scope._buildPayload = _buildPayload;
-    $scope.modifyGlobalSettings = modifyGlobalSettings;
     $scope.commitGlobalSettings = commitGlobalSettings;
     $scope.cancel = cancel;
+    // $scope.errorFound = { 'index': [], 'status': false };
+    $scope.validateIOC = validateIOC;
+    var regexPatternMapping = {};
 
 
     function _handleTranslations() {
@@ -35,23 +37,28 @@
             START_PAGE_IP_ADDRESS_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_LABEL'),
             START_PAGE_IP_ADDRESS_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_TOOLTIP'),
             START_PAGE_IP_ADDRESS_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_PLACEHOLDER'),
+            START_PAGE_IP_ADDRESS_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_ERROR_MESSAGE'),
             START_PAGE_URL_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_LABEL'),
             START_PAGE_URL_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_TOOLTIP'),
             START_PAGE_URL_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_PLACEHOLDER'),
+            START_PAGE_URL_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_ERROR_MESSAGE'),
             START_PAGE_DOMAIN_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_LABEL'),
             START_PAGE_DOMAIN_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_TOOLTIP'),
             START_PAGE_DOMAIN_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_PLACEHOLDER'),
+            START_PAGE_DOMAIN_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_ERROR_MESSAGE'),
             START_PAGE_PORTS_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_LABEL'),
             START_PAGE_PORTS_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_TOOLTIP'),
             START_PAGE_PORTS_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_PLACEHOLDER'),
+            START_PAGE_PORTS_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_ERROR_MESSAGE'),
             START_PAGE_FILES_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_FILES_LABEL'),
             START_PAGE_FILES_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_FILES_TOOLTIP'),
             START_PAGE_FILES_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_FILES_PLACEHOLDER'),
             START_PAGE_CIDR_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_LABEL'),
             START_PAGE_CIDR_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_TOOLTIP'),
             START_PAGE_CIDR_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_PLACEHOLDER'),
+            START_PAGE_CIDR_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_ERROR_MESSAGE'),
             START_PAGE_SAVE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_SAVE_BUTTON'),
-            START_PAGE_CANCEL_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CANCEL_BUTTON'),
+            START_PAGE_CANCEL_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CANCEL_BUTTON')
           };
         });
       }
@@ -84,9 +91,11 @@
             var payload = _buildPayload('sfsp-excludelist-cidr-ranges', null, 'findKeyStore');
             soarConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
               if (response && response['hydra:member'] && response['hydra:member'].length === 0) {
+                // Check if the keystore record exists for CIDR range; create it if not found
                 var keyValue = gblVarToKeyStoreMapping['CIDR_Range'].defaultValue.split(',');
                 var payload = _buildPayload('sfsp-excludelist-cidr-ranges', keyValue, 'createKeyStore');
                 soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
+                  // Create keystore record
                   $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
                 });
               }
@@ -102,7 +111,7 @@
                 var gblVarName = response['hydra:member'][0].name;
                 var gblVarID = response['hydra:member'][0].id;
                 var keyName = gblVarToKeyStoreMapping[gblVarName].keystore;
-                var keyValue = response['hydra:member'][0].value.split(',');
+                var keyValue = [...new Set(response['hydra:member'][0].value.split(','))];
                 var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
                 soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
                   $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
@@ -128,19 +137,64 @@
               }
             });
           }
+          regexPatternMapping[gblVarToKeyStoreMapping[item].keystore] = { 'index': gblVarToKeyStoreMapping[item].index, "pattern": gblVarToKeyStoreMapping[item].pattern };
         });
       });
     }
 
 
-    function modifyGlobalSettings(updatedKeyStoreValue, keyStoreName) {
-      $scope.defaultGlobalSettings[keyStoreName].recordValue = updatedKeyStoreValue;
+    function validateIOC(updatedKeyStoreValue, keyStoreName) {
+      var regexPattern = regexPatternMapping[keyStoreName];
+
+      if (keyStoreName === 'sfsp-excludelist-ips') {
+        $scope.invalidIPs = [];
+        var ipv4Regex = new RegExp(regexPattern.pattern.ipv4);
+        var ipv6Regex = new RegExp(regexPattern.pattern.ipv6);
+        updatedKeyStoreValue.forEach(function (item) {
+          if (!(ipv4Regex.test(item) || ipv6Regex.test(item))) {
+            $scope.invalidIPs.push(item);
+          }
+        });
+      } else if (keyStoreName === 'sfsp-excludelist-urls'){
+        $scope.invalidURLs = [];
+        var urlRegex = new RegExp(regexPattern.pattern);
+        updatedKeyStoreValue.forEach(function (item) {
+          if (!urlRegex.test(item)) {
+            $scope.invalidURLs.push(item);
+          }
+        });
+      } else if (keyStoreName === 'sfsp-excludelist-domains'){
+        $scope.invalidDomains = [];
+        var domainRegex = new RegExp(regexPattern.pattern);
+        updatedKeyStoreValue.forEach(function (item) {
+          if (!domainRegex.test(item)) {
+            $scope.invalidDomains.push(item);
+          }
+        });
+      }else if (keyStoreName === 'sfsp-excludelist-ports'){
+        $scope.invalidPorts = [];
+        var portsRegex = new RegExp(regexPattern.pattern);
+        updatedKeyStoreValue.forEach(function (item) {
+          if (!portsRegex.test(item)) {
+            $scope.invalidPorts.push(item);
+          }
+        });
+      }else if (keyStoreName === 'sfsp-excludelist-cidr-ranges'){
+        $scope.invalidCIDRs = [];
+        var cidrRegex = new RegExp(regexPattern.pattern);
+        updatedKeyStoreValue.forEach(function (item) {
+          if (!cidrRegex.test(item)) {
+            $scope.invalidCIDRs.push(item);
+          }
+        });
+      }
     }
 
 
     function init() {
       // To set value to be displayed on "Global Settings" page
       _handleGblVarsAndKeyStores();
+
       // To handle backward compatibility for widget
       _handleTranslations();
     }
