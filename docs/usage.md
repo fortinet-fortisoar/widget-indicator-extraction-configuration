@@ -4,7 +4,7 @@
 
 # Usage
 
-You can exclude indicators from the extraction process within your FortiSOAR environment by running the **Configure Indicator Extraction** wizard.
+You can exclude indicators from the extraction process within your FortiSOAR environment by running the **Indicator Extraction Configuration** wizard.
 
 Following indicator types are available for you to review and edit:
 
@@ -18,7 +18,7 @@ Following indicator types are available for you to review and edit:
 
 ## Launch Configuration Wizard
 
-The **Configure Indicator Extraction** widget is available under the Setup Guide ![](./res/icon-chevron-right.svg) Streamline ![](./res/icon-chevron-right.svg) Configure Indicator Extraction.
+The **Indicator Extraction Configuration** widget is available under the Setup Guide ![](./res/icon-chevron-right.svg) Streamline ![](./res/icon-chevron-right.svg) Indicator Extraction Configuration.
 
 1. Launch **Setup Guide**.
   
@@ -28,11 +28,11 @@ The **Configure Indicator Extraction** widget is available under the Setup Guide
 
     ![setup-guide-launch-point](./res/setup-guide-streamline-section.png)
   
-3. Click to expand the **Configure Indicator Extraction** section.
+3. Click to expand the **Indicator Extraction Configuration** section.
   
     ![setup-guide-launch-point](./res/setup-guide-indicator-extraction-section.png)
 
-4. Click on **Configure Exclude List** button under **Configure Indicator Extraction** section
+4. Click on **Configure Exclude List** button under **Indicator Extraction Configuration** section
 
     ![setup-guide-launch-point](./res/setup-guide-configure-exclude-list.png)
 
