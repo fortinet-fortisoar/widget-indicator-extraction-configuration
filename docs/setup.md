@@ -5,9 +5,9 @@
 
 1. To install a widget, click **Content Hub** > **Discover**.
 
-2. From the list of widgets that appears, search **Configure Indicator Extraction**.
+2. From the list of widgets that appears, search **Indicator Extraction Configuration**.
 
-3. Click the **Configure Indicator Extraction** widget.
+3. Click the **Indicator Extraction Configuration** widget.
 
 4. Click **Install** on the lower part of the screen to begin installation.
 
