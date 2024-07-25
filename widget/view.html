@@ -1,0 +1,168 @@
+<!-- Copyright start
+  MIT License
+  Copyright (c) 2024 Fortinet Inc
+  Copyright end -->
+
+<form data-ng-submit="save()" class="noMargin" name="editWidgetForm" data-ng-class="{'state-wait': processing }"
+    novalidate>
+    <div class="modal-header">
+        <h3 class="modal-title col-md-9">{{viewWidgetVars.START_PAGE_TITLE}}</h3>
+    </div>
+    <div class="modal-body" style="padding: 15px 15px;">
+        <div style="border:2px solid;border-color: #29323e;padding: 10px;">
+            <div class="padding-right-30 margin-top-sm max-width-450px">
+                <p class="font-size-14 grey-text margin-bottom-0 z-index-0">{{viewWidgetVars.START_PAGE_DESCRIPTION}}
+                </p>
+            </div><br />
+            <div>
+                <div class="padding-bottom-md">
+                    <label class="control-label text-transform-none">{{viewWidgetVars.START_PAGE_IP_ADDRESS_LABEL}}:
+                        <span data-uib-tooltip="{{viewWidgetVars.START_PAGE_IP_ADDRESS_TOOLTIP}}"
+                            data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
+                                class="icon icon-information" aria-hidden="true"></i></span>
+                    </label>
+                    <div class="cs-select padding-left-3">
+                        <ui-select name="excludedIPList"
+                            data-ng-model="defaultGlobalSettings['sfsp-excludelist-ips'].recordValue" multiple
+                            class="custom-multi-select" tagging="undefined" tagging-label="false"
+                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-ips')">
+                            <ui-select-match
+                                placeholder="{{viewWidgetVars.START_PAGE_IP_ADDRESS_PLACEHOLDER}}">{{$item}}</ui-select-match>
+                            <ui-select-choices repeat="option in initList" refresh-delay="0"
+                                show="(initList.length > 0)">
+                                <div ng-bind="option"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                        <span class="font-075em padding-left-10 text-danger"
+                            data-ng-if="invalidIPs.length > 0">{{viewWidgetVars.START_PAGE_IP_ADDRESS_ERROR_MESSAGE}}<strong>{{invalidIPs.join(', ')}}</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="padding-bottom-md">
+                    <label class="control-label text-transform-none">{{viewWidgetVars.START_PAGE_URL_LABEL}}:
+                        <span data-uib-tooltip="{{viewWidgetVars.START_PAGE_URL_TOOLTIP}}"
+                            data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
+                                class="icon icon-information" aria-hidden="true"></i></span>
+                    </label>
+                    <div class="cs-select padding-left-3">
+                        <ui-select name="excludedURLList"
+                            data-ng-model="defaultGlobalSettings['sfsp-excludelist-urls'].recordValue" multiple
+                            class="custom-multi-select" tagging="undefined" tagging-label="false"
+                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-urls')">
+                            <ui-select-match
+                                placeholder="{{viewWidgetVars.START_PAGE_URL_PLACEHOLDER}}">{{$item}}</ui-select-match>
+                            <ui-select-choices repeat="option in initList" refresh-delay="0"
+                                show="(initList.length > 0)">
+                                <div ng-bind="option"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                        <span class="font-075em padding-left-10 text-danger"
+                            data-ng-if="invalidURLs.length > 0">{{viewWidgetVars.START_PAGE_URL_ERROR_MESSAGE}}<strong>{{invalidURLs.join(', ')}}</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="padding-bottom-md">
+                    <label class="control-label text-transform-none">{{viewWidgetVars.START_PAGE_DOMAIN_LABEL}}:
+                        <span data-uib-tooltip="{{viewWidgetVars.START_PAGE_DOMAIN_TOOLTIP}}"
+                            data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
+                                class="icon icon-information" aria-hidden="true"></i></span>
+                    </label>
+                    <div class="cs-select padding-left-3">
+                        <ui-select name="excludedDomainList"
+                            data-ng-model="defaultGlobalSettings['sfsp-excludelist-domains'].recordValue" multiple
+                            class="custom-multi-select" tagging="undefined" tagging-label="false"
+                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-domains')">
+                            <ui-select-match
+                                placeholder="{{viewWidgetVars.START_PAGE_DOMAIN_PLACEHOLDER}}">{{$item}}</ui-select-match>
+                            <ui-select-choices repeat="option in initList" refresh-delay="0"
+                                show="(initList.length > 0)">
+                                <div ng-bind="option"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                        <span class="font-075em padding-left-10 text-danger"
+                            data-ng-if="invalidDomains.length > 0">{{viewWidgetVars.START_PAGE_DOMAIN_ERROR_MESSAGE}}<strong>{{invalidDomains.join(', ')}}</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="padding-bottom-md">
+                    <label class="control-label text-transform-none">{{viewWidgetVars.START_PAGE_PORTS_LABEL}}:
+                        <span data-uib-tooltip="{{viewWidgetVars.START_PAGE_PORTS_TOOLTIP}}"
+                            data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
+                                class="icon icon-information" aria-hidden="true"></i></span>
+                    </label>
+                    <div class="cs-select padding-left-3">
+                        <ui-select name="excludedPortList"
+                            data-ng-model="defaultGlobalSettings['sfsp-excludelist-ports'].recordValue" multiple
+                            class="custom-multi-select" tagging="undefined" tagging-label="false"
+                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-ports')">
+                            <ui-select-match
+                                placeholder="{{viewWidgetVars.START_PAGE_PORTS_PLACEHOLDER}}">{{$item}}</ui-select-match>
+                            <ui-select-choices repeat="option in initList" refresh-delay="0"
+                                show="(initList.length > 0)">
+                                <div ng-bind="option"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                        <span class="font-075em padding-left-10 text-danger"
+                            data-ng-if="invalidPorts.length > 0">{{viewWidgetVars.START_PAGE_PORTS_ERROR_MESSAGE}}<strong>{{invalidPorts.join(', ')}}</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="padding-bottom-md">
+                    <label class="control-label text-transform-none">{{viewWidgetVars.START_PAGE_FILES_LABEL}}:
+                        <span data-uib-tooltip="{{viewWidgetVars.START_PAGE_FILES_TOOLTIP}}"
+                            data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
+                                class="icon icon-information" aria-hidden="true"></i></span>
+                    </label>
+                    <div class="cs-select padding-left-3">
+                        <ui-select name="excludedFilesList"
+                            data-ng-model="defaultGlobalSettings['sfsp-excludelist-files'].recordValue" multiple
+                            class="custom-multi-select" tagging="undefined" tagging-label="false"
+                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-files')">
+                            <ui-select-match
+                                placeholder="{{viewWidgetVars.START_PAGE_FILES_PLACEHOLDER}}">{{$item}}</ui-select-match>
+                            <ui-select-choices repeat="option in initList" refresh-delay="0"
+                                show="(initList.length > 0)">
+                                <div ng-bind="option"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="padding-bottom-md">
+                    <label class="control-label text-transform-none">{{viewWidgetVars.START_PAGE_CIDR_LABEL}}:
+                        <span data-uib-tooltip="{{viewWidgetVars.START_PAGE_CIDR_TOOLTIP}}"
+                            data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
+                                class="icon icon-information" aria-hidden="true"></i></span>
+                    </label>
+                    <div class="cs-select padding-left-3">
+                        <ui-select name="excludedCIDRList"
+                            data-ng-model="defaultGlobalSettings['sfsp-excludelist-cidr-ranges'].recordValue" multiple
+                            class="custom-multi-select" tagging="undefined" tagging-label="false"
+                            data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-cidr-ranges')">
+                            <ui-select-match
+                                placeholder="{{viewWidgetVars.START_PAGE_CIDR_PLACEHOLDER}}">{{$item}}</ui-select-match>
+                            <ui-select-choices repeat="option in initList" refresh-delay="0"
+                                show="(initList.length > 0)">
+                                <div ng-bind="option"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                        <span class="font-075em padding-left-10 text-danger"
+                            data-ng-if="invalidCIDRs.length > 0">{{viewWidgetVars.START_PAGE_CIDR_ERROR_MESSAGE}}<strong>{{invalidCIDRs.join(', ')}}</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button id="edit-widget-save" type="submit" class="btn btn-sm btn-primary margin-left-1-percent"
+            data-ng-click="commitGlobalSettings()" data-ng-disabled="invalidIPs.length > 0 || invalidURLs.length > 0 || invalidDomains.length > 0 || invalidPorts.length > 0 || invalidCIDRs.length > 0"><i
+                class="icon icon-check margin-right-sm"></i>{{viewWidgetVars.START_PAGE_SAVE_BUTTON}}</button>
+        <button type="button" class="btn btn-sm btn-default" data-ng-click="cancel()"><i
+                class="icon icon-close margin-right-sm"></i>{{viewWidgetVars.START_PAGE_CANCEL_BUTTON}}</button>
+    </div>
+</form>
