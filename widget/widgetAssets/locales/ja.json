@@ -1,31 +1,5 @@
 {
     "configureIndicatorExtraction": {
-        "START_PAGE_TITLE": "除外リストの設定",
-        "START_PAGE_DESCRIPTION": "アーティファクトを指定して、強化およびさらなる分析から除外します。",
-        "START_PAGE_IP_ADDRESS_LABEL": "IPアドレス",
-        "START_PAGE_IP_ADDRESS_TOOLTIP": "強化から除外するIPアドレスを指定します。",
-        "START_PAGE_IP_ADDRESS_PLACEHOLDER": "除外するIPアドレス",
-        "START_PAGE_IP_ADDRESS_ERROR_MESSAGE": "無効なIPアドレス - ",
-        "START_PAGE_URL_LABEL": "URL",
-        "START_PAGE_URL_TOOLTIP": "強化から除外するURLを指定します。",
-        "START_PAGE_URL_PLACEHOLDER": "除外するURL",
-        "START_PAGE_URL_ERROR_MESSAGE": "無効なURL - ",
-        "START_PAGE_DOMAIN_LABEL": "ドメイン",
-        "START_PAGE_DOMAIN_TOOLTIP": "強化から除外するドメインを指定します。",
-        "START_PAGE_DOMAIN_PLACEHOLDER": "除外するドメイン",
-        "START_PAGE_DOMAIN_ERROR_MESSAGE": "無効なドメイン - ",
-        "START_PAGE_PORTS_LABEL": "ポート",
-        "START_PAGE_PORTS_TOOLTIP": "強化から除外するポートを指定します。",
-        "START_PAGE_PORTS_PLACEHOLDER": "除外するポート",
-        "START_PAGE_PORTS_ERROR_MESSAGE": "無効なポート - ",
-        "START_PAGE_FILES_LABEL": "ファイル",
-        "START_PAGE_FILES_TOOLTIP": "強化から除外するファイルを指定します。",
-        "START_PAGE_FILES_PLACEHOLDER": "除外するファイル",
-        "START_PAGE_CIDR_LABEL": "CIDR範囲",
-        "START_PAGE_CIDR_TOOLTIP": "強化から除外するCIDR範囲を指定します。",
-        "START_PAGE_CIDR_PLACEHOLDER": "除外するCIDR範囲",
-        "START_PAGE_CIDR_ERROR_MESSAGE": "無効なCIDR範囲 - ",
-        "START_PAGE_SAVE_BUTTON": "保存",
-        "START_PAGE_CANCEL_BUTTON": "キャンセル"
+        "KEY_NAME": ""
     }
 }
