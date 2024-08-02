@@ -36,7 +36,8 @@
         </div>
         </div>
     </wz-step>
-    <wz-step wz-title="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_WZ_TITLE}}" wz-order="2" class="ingestion-modal-padding">
+    <wz-step wz-title="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_WZ_TITLE}}" wz-order="2"
+        class="ingestion-modal-padding">
         <div class="full-width wz-step-height padding-bottom-md solutionpack-wizard-modal-body">
             <div class="full-height overflow-auto">
                 <div class="display-table fixed-table-layout full-height full-width">
@@ -59,19 +60,20 @@
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_LABEL}}:
-                                            <span data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_TOOLTIP}}"
+                                            <span
+                                                data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
                                         <div class="cs-select padding-left-3">
                                             <ui-select name="excludedIPList"
                                                 data-ng-model="updatedGlobalSettings['sfsp-excludelist-ips'].recordValue"
-                                                multiple class="custom-multi-select" tagging="undefined"
-                                                tagging-label="false"
+                                                multiple class="custom-multi-select" tagging
+                                                tagging-label="(custom 'new' label)"
                                                 data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-ips')">
                                                 <ui-select-match
                                                     placeholder="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_PLACEHOLDER}}">{{$item}}</ui-select-match>
-                                                    <ui-select-choices repeat="option in initList" refresh-delay="0"
+                                                <ui-select-choices repeat="option in initList" refresh-delay="0"
                                                     show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
@@ -86,7 +88,8 @@
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_URL_LABEL}}:
-                                            <span data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_URL_TOOLTIP}}"
+                                            <span
+                                                data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_URL_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
@@ -104,7 +107,8 @@
                                                 </ui-select-choices>
                                             </ui-select>
                                             <span class="font-075em padding-left-10 text-danger"
-                            data-ng-if="invalidURLs.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_URL_ERROR_MESSAGE}}<strong>{{invalidURLs.join(', ')}}</strong></span>
+                                                data-ng-if="invalidURLs.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_URL_ERROR_MESSAGE}}<strong>{{invalidURLs.join(',
+                                                    ')}}</strong></span>
                                         </div>
                                     </div>
                                 </div>
@@ -112,7 +116,8 @@
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DOMAIN_LABEL}}:
-                                            <span data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DOMAIN_TOOLTIP}}"
+                                            <span
+                                                data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DOMAIN_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
@@ -130,7 +135,8 @@
                                                 </ui-select-choices>
                                             </ui-select>
                                             <span class="font-075em padding-left-10 text-danger"
-                            data-ng-if="invalidDomains.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DOMAIN_ERROR_MESSAGE}}<strong>{{invalidDomains.join(', ')}}</strong></span>
+                                                data-ng-if="invalidDomains.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DOMAIN_ERROR_MESSAGE}}<strong>{{invalidDomains.join(',
+                                                    ')}}</strong></span>
                                         </div>
                                     </div>
                                 </div>
@@ -138,7 +144,8 @@
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_PORTS_LABEL}}:
-                                            <span data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_PORTS_TOOLTIP}}"
+                                            <span
+                                                data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_PORTS_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
@@ -156,7 +163,8 @@
                                                 </ui-select-choices>
                                             </ui-select>
                                             <span class="font-075em padding-left-10 text-danger"
-                                            data-ng-if="invalidPorts.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_PORTS_ERROR_MESSAGE}}<strong>{{invalidPorts.join(', ')}}</strong></span>
+                                                data-ng-if="invalidPorts.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_PORTS_ERROR_MESSAGE}}<strong>{{invalidPorts.join(',
+                                                    ')}}</strong></span>
                                         </div>
                                     </div>
                                 </div>
@@ -164,7 +172,8 @@
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_FILES_LABEL}}:
-                                            <span data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_FILES_TOOLTIP}}"
+                                            <span
+                                                data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_FILES_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
@@ -188,7 +197,8 @@
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CIDR_LABEL}}:
-                                            <span data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CIDR_TOOLTIP}}"
+                                            <span
+                                                data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CIDR_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
@@ -206,7 +216,8 @@
                                                 </ui-select-choices>
                                             </ui-select>
                                             <span class="font-075em padding-left-10 text-danger"
-                                            data-ng-if="invalidCIDRs.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CIDR_ERROR_MESSAGE}}<strong>{{invalidCIDRs.join(', ')}}</strong></span>
+                                                data-ng-if="invalidCIDRs.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CIDR_ERROR_MESSAGE}}<strong>{{invalidCIDRs.join(',
+                                                    ')}}</strong></span>
                                         </div>
                                     </div>
                                 </div>
@@ -220,8 +231,8 @@
                     id="solutionpack-configure-back-env-btn" data-ng-click="moveBack()"><i
                         class="fa fa-chevron-left margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON}}</button>
                 <button type="button" class="btn btn-primary pull-right btn-sm margin-top-lg margin-right-lg"
-                    data-ng-click="moveNext()"
-                    id="solutionpack-configure-env-next-btn">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON}}<i
+                    data-ng-click="moveNext()" id="solutionpack-configure-env-next-btn"
+                    data-ng-disabled="invalidIPs.length > 0 || invalidURLs.length > 0 || invalidDomains.length > 0 || invalidPorts.length > 0 || invalidCIDRs.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON}}<i
                         class="fa fa-chevron-right margin-left-sm"></i>
                 </button>
             </div>
