@@ -20,6 +20,8 @@
     $scope.moveBack = moveBack;
     $scope.isLightTheme = $rootScope.theme.id === 'light';
     $scope.startPageImage = $scope.isLightTheme ? widgetBasePath + 'images/sfsp-start-light.png' : widgetBasePath + 'images/sfsp-start-dark.png';
+    $scope.excludeIOCPageImage = widgetBasePath + 'images/sfsp-global-settings.png';
+    $scope.finishPageImage = widgetBasePath + 'images/finish.png';
     $scope._buildPayload = _buildPayload;
     // $scope.modifyGlobalSettings = modifyGlobalSettings;
     $scope.commitGlobalSettings = commitGlobalSettings;
