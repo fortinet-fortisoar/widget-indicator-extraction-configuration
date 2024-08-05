@@ -230,11 +230,6 @@
     }
 
 
-    // function modifyGlobalSettings(updatedKeyStoreValue, keyStoreName) {
-    //   $scope.updatedGlobalSettings[keyStoreName].recordValue = updatedKeyStoreValue;
-    // }
-
-
     function commitGlobalSettings() {
       Object.keys($scope.updatedGlobalSettings).forEach(function (item) {
         var keyValue = $scope.updatedGlobalSettings[item].recordValue;
