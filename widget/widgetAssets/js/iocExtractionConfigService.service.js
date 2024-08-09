@@ -22,7 +22,7 @@
       deleteGBLVariable: deleteGBLVariable,
       getKeyStoreRecord: getKeyStoreRecord,
       updateKeyStoreRecord: updateKeyStoreRecord,
-      getGblVarToKeyStoreMapping: getGblVarToKeyStoreMapping
+      getKeyStoreMetadata: getKeyStoreMetadata
     }
     return service;
 
@@ -67,9 +67,9 @@
       }
     }
 
-    function getGblVarToKeyStoreMapping(widgetBasePath){
+    function getKeyStoreMetadata(widgetBasePath){
       var defer = $q.defer();
-      var url = widgetBasePath + 'widgetAssets/json/gblVarToKeyStoreMapping.json'
+      var url = widgetBasePath + 'widgetAssets/json/gblVarToKeyStoreMapping.json' // This JSON defines exclusion lists for IOCs like IPs, URLs, and domains, with default values and validation patterns
       $http.get(url).then(function(response){
         defer.resolve(response.data);
       }).catch(function(err){

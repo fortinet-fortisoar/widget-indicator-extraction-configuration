@@ -99,7 +99,7 @@
 
 
     function _handleGblVarsAndKeyStores() {
-      iocExtractionConfigService.getGblVarToKeyStoreMapping(widgetBasePath).then(function (gblVarToKeyStoreMapping) {
+      iocExtractionConfigService.getKeyStoreMetadata(widgetBasePath).then(function (gblVarToKeyStoreMapping) {
         Object.keys(gblVarToKeyStoreMapping).forEach(function (item) {
           if (item === 'CIDR_Range') {
             var payload = _buildPayload('sfsp-excludelist-cidr-ranges', null, 'findKeyStore');
@@ -160,50 +160,51 @@
       var regexPattern = regexPatternMapping[keyStoreName];
 
       if (keyStoreName === 'sfsp-excludelist-ips') {
-        $scope.invalidIPs = [];
+        var _tempInvalidIPs = [];
         var ipv4Regex = new RegExp(regexPattern.pattern.ipv4);
         var ipv6Regex = new RegExp(regexPattern.pattern.ipv6);
         updatedKeyStoreValue.forEach(function (item) {
           if (!(ipv4Regex.test(item) || ipv6Regex.test(item))) {
-            $scope.invalidIPs.push(item);
-            var index = $scope.updatedGlobalSettings[keyStoreName].recordValue.indexOf(item);
-            if (index !== -1) {
-              $scope.updatedGlobalSettings[keyStoreName].recordValue.splice(index, 1);
-            }
+            _tempInvalidIPs.push(item);
           }
         });
-      } else if (keyStoreName === 'sfsp-excludelist-urls'){
-        $scope.invalidURLs = [];
+        $scope.invalidIPs = _tempInvalidIPs.join(', ');
+      } else if (keyStoreName === 'sfsp-excludelist-urls') {
+        var _tempInvalidURLs = [];
         var urlRegex = new RegExp(regexPattern.pattern);
         updatedKeyStoreValue.forEach(function (item) {
           if (!urlRegex.test(item)) {
-            $scope.invalidURLs.push(item);
+            _tempInvalidURLs.push(item);
           }
         });
-      } else if (keyStoreName === 'sfsp-excludelist-domains'){
-        $scope.invalidDomains = [];
+        $scope.invalidURLs = _tempInvalidURLs.join(', ');
+      } else if (keyStoreName === 'sfsp-excludelist-domains') {
+        var _tempInvalidDomains = [];
         var domainRegex = new RegExp(regexPattern.pattern);
         updatedKeyStoreValue.forEach(function (item) {
           if (!domainRegex.test(item)) {
-            $scope.invalidDomains.push(item);
+            _tempInvalidDomains.push(item);
           }
         });
-      }else if (keyStoreName === 'sfsp-excludelist-ports'){
-        $scope.invalidPorts = [];
+        $scope.invalidDomains = _tempInvalidDomains.join(', ');
+      } else if (keyStoreName === 'sfsp-excludelist-ports') {
+        var _tempInvalidPorts = [];
         var portsRegex = new RegExp(regexPattern.pattern);
         updatedKeyStoreValue.forEach(function (item) {
           if (!portsRegex.test(item)) {
-            $scope.invalidPorts.push(item);
+            _tempInvalidPorts.push(item);
           }
         });
-      }else if (keyStoreName === 'sfsp-excludelist-cidr-ranges'){
-        $scope.invalidCIDRs = [];
+        $scope.invalidPorts = _tempInvalidPorts.join(', ');
+      } else if (keyStoreName === 'sfsp-excludelist-cidr-ranges') {
+        var _tempInvalidCIDRs = [];
         var cidrRegex = new RegExp(regexPattern.pattern);
         updatedKeyStoreValue.forEach(function (item) {
           if (!cidrRegex.test(item)) {
-            $scope.invalidCIDRs.push(item);
+            _tempInvalidCIDRs.push(item);
           }
         });
+        $scope.invalidCIDRs = _tempInvalidCIDRs.join(', ');
       }
     }
 
