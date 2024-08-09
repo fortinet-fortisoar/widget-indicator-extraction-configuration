@@ -7,17 +7,23 @@
 (function () {
   angular
     .module('cybersponse')
-    .controller('configureIndicatorExtraction100Ctrl', configureIndicatorExtraction100Ctrl);
+    .controller('configureIndicatorExtraction110Ctrl', configureIndicatorExtraction110Ctrl);
 
-  configureIndicatorExtraction100Ctrl.$inject = ['$scope', 'widgetUtilityService', 'soarConfigService', 'widgetBasePath'];
+  configureIndicatorExtraction110Ctrl.$inject = ['$scope', 'widgetUtilityService', '$rootScope', 'widgetBasePath', 'WizardHandler', 'iocExtractionConfigService', 'toaster'];
 
-  function configureIndicatorExtraction100Ctrl($scope, widgetUtilityService, soarConfigService, widgetBasePath) {
+  function configureIndicatorExtraction110Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, iocExtractionConfigService, toaster) {
     $scope.defaultGlobalSettings = {};
     $scope.initList = [];
+    $scope.updatedGlobalSettings = {};
+    $scope.widgetCSS = widgetBasePath + 'widgetAssets/css/wizard-style.css';
+    $scope.moveNext = moveNext;
+    $scope.moveBack = moveBack;
+    $scope.isLightTheme = $rootScope.theme.id === 'light';
+    $scope.startPageImage = $scope.isLightTheme ? widgetBasePath + 'images/sfsp-start-light.png' : widgetBasePath + 'images/sfsp-start-dark.png';
+    $scope.excludeIOCPageImage = widgetBasePath + 'images/sfsp-global-settings.png';
+    $scope.finishPageImage = widgetBasePath + 'images/finish.png';
     $scope._buildPayload = _buildPayload;
     $scope.commitGlobalSettings = commitGlobalSettings;
-    $scope.cancel = cancel;
-    // $scope.errorFound = { 'index': [], 'status': false };
     $scope.validateIOC = validateIOC;
     var regexPatternMapping = {};
 
@@ -32,52 +38,60 @@
         widgetUtilityService.checkTranslationMode(widgetNameVersion).then(function () {
           $scope.viewWidgetVars = {
             // Create your translating static string variables here
+            START_PAGE_WZ_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_WZ_TITLE'),
+            LABEL_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.LABEL_TITLE'),
             START_PAGE_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_TITLE'),
             START_PAGE_DESCRIPTION: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DESCRIPTION'),
-            START_PAGE_IP_ADDRESS_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_LABEL'),
-            START_PAGE_IP_ADDRESS_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_TOOLTIP'),
-            START_PAGE_IP_ADDRESS_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_PLACEHOLDER'),
-            START_PAGE_IP_ADDRESS_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_IP_ADDRESS_ERROR_MESSAGE'),
-            START_PAGE_URL_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_LABEL'),
-            START_PAGE_URL_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_TOOLTIP'),
-            START_PAGE_URL_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_PLACEHOLDER'),
-            START_PAGE_URL_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_URL_ERROR_MESSAGE'),
-            START_PAGE_DOMAIN_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_LABEL'),
-            START_PAGE_DOMAIN_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_TOOLTIP'),
-            START_PAGE_DOMAIN_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_PLACEHOLDER'),
-            START_PAGE_DOMAIN_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DOMAIN_ERROR_MESSAGE'),
-            START_PAGE_PORTS_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_LABEL'),
-            START_PAGE_PORTS_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_TOOLTIP'),
-            START_PAGE_PORTS_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_PLACEHOLDER'),
-            START_PAGE_PORTS_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_PORTS_ERROR_MESSAGE'),
-            START_PAGE_FILES_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_FILES_LABEL'),
-            START_PAGE_FILES_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_FILES_TOOLTIP'),
-            START_PAGE_FILES_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_FILES_PLACEHOLDER'),
-            START_PAGE_CIDR_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_LABEL'),
-            START_PAGE_CIDR_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_TOOLTIP'),
-            START_PAGE_CIDR_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_PLACEHOLDER'),
-            START_PAGE_CIDR_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CIDR_ERROR_MESSAGE'),
-            START_PAGE_SAVE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_SAVE_BUTTON'),
-            START_PAGE_CANCEL_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_CANCEL_BUTTON')
+            START_PAGE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_BUTTON'),
+
+
+            EXCLUDELIST_CONFIG_PAGE_WZ_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_WZ_TITLE'),
+            EXCLUDELIST_CONFIG_PAGE_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_TITLE'),
+            EXCLUDELIST_CONFIG_PAGE_DESCRIPTION: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_DESCRIPTION'),
+            EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_TOOLTIP'),
+            EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_PLACEHOLDER'),
+            EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_ERROR_MESSAGE'),
+            EXCLUDELIST_CONFIG_PAGE_URL_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_URL_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_URL_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_URL_TOOLTIP'),
+            EXCLUDELIST_CONFIG_PAGE_URL_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_URL_PLACEHOLDER'),
+            EXCLUDELIST_CONFIG_PAGE_URL_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_URL_ERROR_MESSAGE'),
+            EXCLUDELIST_CONFIG_PAGE_DOMAIN_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_DOMAIN_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_DOMAIN_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_DOMAIN_TOOLTIP'),
+            EXCLUDELIST_CONFIG_PAGE_DOMAIN_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_DOMAIN_PLACEHOLDER'),
+            EXCLUDELIST_CONFIG_PAGE_DOMAIN_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_DOMAIN_ERROR_MESSAGE'),
+            EXCLUDELIST_CONFIG_PAGE_PORTS_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_PORTS_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_PORTS_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_PORTS_TOOLTIP'),
+            EXCLUDELIST_CONFIG_PAGE_PORTS_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_PORTS_PLACEHOLDER'),
+            EXCLUDELIST_CONFIG_PAGE_PORTS_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_PORTS_ERROR_MESSAGE'),
+            EXCLUDELIST_CONFIG_PAGE_FILES_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_FILES_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_FILES_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_FILES_TOOLTIP'),
+            EXCLUDELIST_CONFIG_PAGE_FILES_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_FILES_PLACEHOLDER'),
+            EXCLUDELIST_CONFIG_PAGE_CIDR_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_CIDR_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_CIDR_TOOLTIP: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_CIDR_TOOLTIP'),
+            EXCLUDELIST_CONFIG_PAGE_CIDR_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_CIDR_PLACEHOLDER'),
+            EXCLUDELIST_CONFIG_PAGE_CIDR_ERROR_MESSAGE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_CIDR_ERROR_MESSAGE'),
+            EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON'),
           };
         });
       }
       else {
         $timeout(function () {
-          $scope.cancel();
+          cancel();
         }, 100)
       }
     }
 
     function _buildPayload(keyName, keyValue, action) {
       if (action === 'createKeyStore') {
-        var apiPayload = soarConfigService.constants().createKeyStorePayload;
+        var apiPayload = iocExtractionConfigService.constants().createKeyStorePayload;
         apiPayload['key'] = keyName;
         apiPayload['notes'] = 'Enter the ' + (keyName.split('-')[2] === 'range' ? 'CIDR ranges' : keyName.split('-')[2]) + ' that you want to exclude from enrichment.';
         apiPayload['jSONValue'] = keyValue[0].length > 0 ? keyValue : '';
       }
       if (action === 'findKeyStore') {
-        var apiPayload = soarConfigService.constants().findKeyStorePayload;
+        var apiPayload = iocExtractionConfigService.constants().findKeyStorePayload;
         apiPayload['filters'][0]['value'] = keyName;
       }
       return apiPayload;
@@ -85,16 +99,16 @@
 
 
     function _handleGblVarsAndKeyStores() {
-      soarConfigService.getGblVarToKeyStoreMapping(widgetBasePath).then(function (gblVarToKeyStoreMapping) {
+      iocExtractionConfigService.getGblVarToKeyStoreMapping(widgetBasePath).then(function (gblVarToKeyStoreMapping) {
         Object.keys(gblVarToKeyStoreMapping).forEach(function (item) {
           if (item === 'CIDR_Range') {
             var payload = _buildPayload('sfsp-excludelist-cidr-ranges', null, 'findKeyStore');
-            soarConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
+            iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
               if (response && response['hydra:member'] && response['hydra:member'].length === 0) {
                 // Check if the keystore record exists for CIDR range; create it if not found
                 var keyValue = gblVarToKeyStoreMapping['CIDR_Range'].defaultValue.split(',');
                 var payload = _buildPayload('sfsp-excludelist-cidr-ranges', keyValue, 'createKeyStore');
-                soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
+                iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
                   // Create keystore record
                   $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
                 });
@@ -105,7 +119,7 @@
             });
           }
           else {
-            soarConfigService.getGBLVariable(item).then(function (response) {
+            iocExtractionConfigService.getGBLVariable(item).then(function (response) {
               // Check if exclude list global variable already present 
               if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
                 var gblVarName = response['hydra:member'][0].name;
@@ -113,15 +127,15 @@
                 var keyName = gblVarToKeyStoreMapping[gblVarName].keystore;
                 var keyValue = [...new Set(response['hydra:member'][0].value.split(','))];
                 var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
-                soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
+                iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
                   $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
                 });
-                soarConfigService.deleteGBLVariable(gblVarID);
+                iocExtractionConfigService.deleteGBLVariable(gblVarID);
               }
               else {
                 var keyName = gblVarToKeyStoreMapping[item].keystore;
                 var payload = _buildPayload(keyName, null, 'findKeyStore');
-                soarConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
+                iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
                   if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
                     $scope.defaultGlobalSettings[response['hydra:member'][0].key] = { 'recordValue': response['hydra:member'][0].jSONValue, 'recordUUID': response['hydra:member'][0].uuid };
                   }
@@ -129,7 +143,7 @@
                     var keyName = gblVarToKeyStoreMapping[item].keystore;
                     var keyValue = gblVarToKeyStoreMapping[item].defaultValue.split(',');
                     var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
-                    soarConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
+                    iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
                       $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
                     });
                   }
@@ -141,8 +155,7 @@
         });
       });
     }
-
-
+    
     function validateIOC(updatedKeyStoreValue, keyStoreName) {
       var regexPattern = regexPatternMapping[keyStoreName];
 
@@ -153,6 +166,10 @@
         updatedKeyStoreValue.forEach(function (item) {
           if (!(ipv4Regex.test(item) || ipv6Regex.test(item))) {
             $scope.invalidIPs.push(item);
+            var index = $scope.updatedGlobalSettings[keyStoreName].recordValue.indexOf(item);
+            if (index !== -1) {
+              $scope.updatedGlobalSettings[keyStoreName].recordValue.splice(index, 1);
+            }
           }
         });
       } else if (keyStoreName === 'sfsp-excludelist-urls'){
@@ -191,28 +208,41 @@
     }
 
 
-    function init() {
-      // To set value to be displayed on "Global Settings" page
-      _handleGblVarsAndKeyStores();
+    function moveNext() {
+      var currentStepTitle = WizardHandler.wizard('configureIndicatorExtraction').currentStep().wzTitle
+      if (currentStepTitle === 'Start') {
+        if (Object.keys($scope.updatedGlobalSettings).length === 0) {
+          $scope.updatedGlobalSettings = angular.copy($scope.defaultGlobalSettings);
+        }
+      }
+      if (currentStepTitle === 'Excludelist Configuration') {
+        commitGlobalSettings();
+      }
+      WizardHandler.wizard('configureIndicatorExtraction').next();
+    }
 
+
+    function moveBack() {
+      WizardHandler.wizard('configureIndicatorExtraction').previous();
+    }
+
+
+    function commitGlobalSettings() {
+      Object.keys($scope.updatedGlobalSettings).forEach(function (item) {
+        var keyValue = $scope.updatedGlobalSettings[item].recordValue;
+        var uuid = $scope.updatedGlobalSettings[item].recordUUID;
+        iocExtractionConfigService.updateKeyStoreRecord(keyValue, uuid);
+      });
+    }
+
+
+    function init() {
+      // To set value to be displayed on "Excludelist Settings" page
+      _handleGblVarsAndKeyStores();
       // To handle backward compatibility for widget
       _handleTranslations();
     }
 
     init();
-
-    function commitGlobalSettings() {
-      Object.keys($scope.defaultGlobalSettings).forEach(function (item) {
-        var keyValue = $scope.defaultGlobalSettings[item].recordValue;
-        var uuid = $scope.defaultGlobalSettings[item].recordUUID;
-        soarConfigService.updateKeyStoreRecord(keyValue, uuid);
-      });
-      $scope.close();
-    }
-
-    function cancel() {
-      $scope.close();
-    }
-
   }
 })();

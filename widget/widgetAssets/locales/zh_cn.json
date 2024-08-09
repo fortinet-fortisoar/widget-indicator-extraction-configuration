@@ -1,31 +1,5 @@
 {
     "configureIndicatorExtraction": {
-        "START_PAGE_TITLE": "配置排除列表",
-        "START_PAGE_DESCRIPTION": "指定应从丰富和进一步分析中排除的工件。",
-        "START_PAGE_IP_ADDRESS_LABEL": "IP 地址",
-        "START_PAGE_IP_ADDRESS_TOOLTIP": "指定要排除在丰富之外的 IP 地址。",
-        "START_PAGE_IP_ADDRESS_PLACEHOLDER": "要排除的 IP 地址",
-        "START_PAGE_IP_ADDRESS_ERROR_MESSAGE": "无效的 IP 地址 - ",
-        "START_PAGE_URL_LABEL": "URL",
-        "START_PAGE_URL_TOOLTIP": "指定要排除在丰富之外的 URL。",
-        "START_PAGE_URL_PLACEHOLDER": "要排除的 URL",
-        "START_PAGE_URL_ERROR_MESSAGE": "无效的 URL - ",
-        "START_PAGE_DOMAIN_LABEL": "域名",
-        "START_PAGE_DOMAIN_TOOLTIP": "指定要排除在丰富之外的域名。",
-        "START_PAGE_DOMAIN_PLACEHOLDER": "要排除的域名",
-        "START_PAGE_DOMAIN_ERROR_MESSAGE": "无效的域名 - ",
-        "START_PAGE_PORTS_LABEL": "端口",
-        "START_PAGE_PORTS_TOOLTIP": "指定要排除在丰富之外的端口。",
-        "START_PAGE_PORTS_PLACEHOLDER": "要排除的端口",
-        "START_PAGE_PORTS_ERROR_MESSAGE": "无效的端口 - ",
-        "START_PAGE_FILES_LABEL": "文件",
-        "START_PAGE_FILES_TOOLTIP": "指定要排除在丰富之外的文件。",
-        "START_PAGE_FILES_PLACEHOLDER": "要排除的文件",
-        "START_PAGE_CIDR_LABEL": "CIDR 范围",
-        "START_PAGE_CIDR_TOOLTIP": "指定要排除在丰富之外的 CIDR 范围。",
-        "START_PAGE_CIDR_PLACEHOLDER": "要排除的 CIDR 范围",
-        "START_PAGE_CIDR_ERROR_MESSAGE": "无效的 CIDR 范围 - ",
-        "START_PAGE_SAVE_BUTTON": "保存",
-        "START_PAGE_CANCEL_BUTTON": "取消"
+        "KEY_NAME": ""
     }
 }
