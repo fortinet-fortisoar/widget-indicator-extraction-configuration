@@ -3,16 +3,17 @@
   Copyright (c) 2024 Fortinet Inc
   Copyright end */
 
+
 'use strict';
 
 (function () {
   angular
     .module('cybersponse')
-    .factory('soarConfigService', soarConfigService);
+    .factory('iocExtractionConfigService', iocExtractionConfigService);
 
-  soarConfigService.$inject = ['$q', 'API', '$resource', 'toaster', '$http'];
+  iocExtractionConfigService.$inject = ['$q', 'API', '$resource', 'toaster', '$http'];
 
-  function soarConfigService($q, API, $resource, toaster, $http) {
+  function iocExtractionConfigService($q, API, $resource, toaster, $http) {
 
     var service = {
       constants: constants,
@@ -21,7 +22,7 @@
       deleteGBLVariable: deleteGBLVariable,
       getKeyStoreRecord: getKeyStoreRecord,
       updateKeyStoreRecord: updateKeyStoreRecord,
-      getGblVarToKeyStoreMapping: getGblVarToKeyStoreMapping
+      getKeyStoreMetadata: getKeyStoreMetadata
     }
     return service;
 
@@ -66,12 +67,12 @@
       }
     }
 
-    function getGblVarToKeyStoreMapping(widgetBasePath) {
+    function getKeyStoreMetadata(widgetBasePath){
       var defer = $q.defer();
-      var url = widgetBasePath + 'widgetAssets/gblVarToKeyStoreMapping.json'
-      $http.get(url).then(function (response) {
+      var url = widgetBasePath + 'widgetAssets/json/gblVarToKeyStoreMapping.json' // This JSON defines exclusion lists for IOCs like IPs, URLs, and domains, with default values and validation patterns
+      $http.get(url).then(function(response){
         defer.resolve(response.data);
-      }).catch(function (err) {
+      }).catch(function(err){
         defer.reject(err);
       });
       return defer.promise;
@@ -130,7 +131,7 @@
         }
       }).update({ 'jSONValue': keyStoreValue }).$promise.then(function (response) {
         return response;
-      }).catch(function (err) {
+      }).catch(function(err){
         toaster.error({
           body: 'Global Setting Configuration Failed.'
         });

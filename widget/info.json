@@ -2,7 +2,7 @@
     "name": "configureIndicatorExtraction",
     "title": "Indicator Extraction Configuration",
     "subTitle": "Configures Excluded IOC List from Extraction",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "published_date": 1716368544,
     "metadata": {
         "description": "The widget configures specific IOCs to be excluded for the indicator extraction.",
@@ -13,11 +13,11 @@
             "7.6.0"
         ],
         "snapshots": [
-            "https://repo.fortisoar.fortinet.com/fsr-widgets/configureIndicatorExtraction-1.0.0/images/landing-page.png"
+            "https://repo.fortisoar.fortinet.com/fsr-widgets/configureIndicatorExtraction-1.1.0/images/landing-page.png"
         ],
         "standalone": true,
-        "help_online": "https://github.com/fortinet-fortisoar/widget-indicator-extraction-configuration/blob/release/1.0.0/README.md",
-        "windowClass": "Pop-Up",
+        "help_online": "https://github.com/fortinet-fortisoar/widget-indicator-extraction-configuration/blob/release/1.1.0/README.md",
+        "windowClass": "Full Width",
         "category": [
             "FortiSOAR Essentials"
         ]
