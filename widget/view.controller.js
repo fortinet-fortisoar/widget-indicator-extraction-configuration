@@ -195,30 +195,27 @@
 
     function validateIOC(updatedKeyStoreValue, keyStoreName) {
       var regexPattern = regexPatternMapping[keyStoreName];
+      var _tempInvalidIOCs = [];
 
       if (keyStoreName === 'sfsp-excludelist-ips') {
         var ipv4Regex = new RegExp(regexPattern.pattern.ipv4);
         var ipv6Regex = new RegExp(regexPattern.pattern.ipv6);
-        var _tempInvalidIPs = updatedKeyStoreValue.filter(function (item) {
+        _tempInvalidIOCs = updatedKeyStoreValue.filter(function (item) {
           return !(ipv4Regex.test(item) || ipv6Regex.test(item));
         });
-        if (_tempInvalidIPs.length > 0) {
-          $scope.invalidIOCs[keyStoreName] = _tempInvalidIPs.join(', ');
-        } else {
-          delete $scope.invalidIOCs[keyStoreName];
-        }
-        console.log($scope.invalidIOCs);
       } else {
         var iocRegex = new RegExp(regexPattern.pattern);
-        var _tempInvalidIOCs  = updatedKeyStoreValue.filter(function (item) {
+        _tempInvalidIOCs  = updatedKeyStoreValue.filter(function (item) {
           return !(iocRegex.test(item));
         });
-        if (_tempInvalidIOCs.length > 0) {
-          $scope.invalidIOCs[keyStoreName] = _tempInvalidIOCs.join(', ');
-        } else {
-          delete $scope.invalidIOCs[keyStoreName];
-        }
       } 
+
+      if (_tempInvalidIOCs.length > 0) {
+        $scope.invalidIOCs[keyStoreName] = _tempInvalidIOCs.join(', ');
+      } else {
+        delete $scope.invalidIOCs[keyStoreName];
+      }
+      
       $scope.isInvalidIOCsNotEmpty = function() {
         return Object.keys($scope.invalidIOCs).length > 0;
       };
