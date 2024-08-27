@@ -36,7 +36,8 @@
         </div>
         </div>
     </wz-step>
-    <wz-step wz-title="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_WZ_TITLE}}" wz-order="2" class="ingestion-modal-padding">
+    <wz-step wz-title="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_WZ_TITLE}}" wz-order="2"
+        class="ingestion-modal-padding">
         <div class="full-width wz-step-height padding-bottom-md solutionpack-wizard-modal-body">
             <div class="full-height overflow-auto">
                 <div class="display-table fixed-table-layout full-height full-width">
@@ -44,8 +45,7 @@
                         <div class="col-md-5 full-height padding-bottom-md"
                             style="padding-left: 8%; padding-top: 150px; padding-right: 150px;">
                             <div class="full-width">
-                                <img class="img-responsive d-info-image"
-                                    src="{{excludeIOCPageImage}}">
+                                <img class="img-responsive d-info-image" src="{{excludeIOCPageImage}}">
                             </div>
                         </div>
                         <div class="col-md-7 config-section">
@@ -55,11 +55,61 @@
                                     <p class="font-size-14 grey-text margin-bottom-0 z-index-0">
                                         {{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DESCRIPTION}}</p>
                                 </div><br />
-                                <div>
+                                <div class="margin-right-lg margin-top-md position-relative filterSearch">
+                                    <span
+                                        class="font-075em icon icon-search margin-left-md margin-top-11 position-absolute right-10" data-ng-click="setSearchStatus('on')" data-ng-if="searchStatus === 'off'"></span>
+                                    <span class="icon icon-close margin-top-md position-absolute right-10"
+                                        data-ng-click="setSearchStatus('off')" data-ng-if="searchStatus === 'on'"></span>
+                                    <input id="search" type="text" class="form-control padding-right-30"
+                                        placeholder="Search Excluded Indicator" aria-labelledby="search-btn"
+                                        data-ng-model="searchString" aria-invalid="false"
+                                        data-ng-change="updateSearchQuery(searchString)">
+                                </div>
+                                <div class="padding-bottom-md padding-right-lg padding-top-sm filterContent"
+                                    data-ng-if="searchString.length > 0 && searchStatus === 'on'">
+                                    <div data-ng-repeat="item in globalSearchList | filter:searchString"
+                                        class="align-items-start margin-top-sm display-flex margin-bottom-sm">
+                                        <input type="checkbox" class="margin-left-sm margin-right-md"
+                                            name="select-type-{{iocValue}}" id="select-type-{{iocValue}}"></input>
+                                        <label for="select-type-{{iocValue}}"
+                                            class="font-size-12 muted labelClass">{{item.iocValue}} ->
+                                            {{item.type}}</label>
+                                    </div>
+                                </div>
+                                <div data-ng-repeat="(keyStoreName, keyStoreDetails) in updatedGlobalSettings" class="excluded-ui-select">
+                                    <div class="padding-bottom-md">
+                                        <label
+                                            class="control-label text-transform-none">{{keyStoreDetails.type}}:
+                                            <span
+                                                data-uib-tooltip="Specify {{keyStoreDetails.type}} to exclude from enrichment."
+                                                data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
+                                                    class="icon icon-information" aria-hidden="true"></i></span>
+                                        </label>
+                                        <div class="cs-select padding-left-3">
+                                            <ui-select name="{{keyStoreName}}"
+                                                data-ng-model="keyStoreDetails.recordValue"
+                                                multiple class="custom-multi-select" tagging="undefined"
+                                                tagging-label="false"
+                                                data-ng-change="validateIOC($select.selected, keyStoreName)">
+                                                <ui-select-match
+                                                    placeholder="Excluded {{keyStoreDetails.type}}">{{$item}}</ui-select-match>
+                                                <ui-select-choices repeat="option in initList" refresh-delay="0"
+                                                    show="(initList.length > 0)">
+                                                    <div ng-bind="option"></div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                            <span class="font-075em padding-left-10 text-danger"
+                                                data-ng-if="invalidIOCs[keyStoreName].length > 0">Invalid {{keyStoreDetails.type}} - <strong>{{invalidIOCs[keyStoreName]}}</strong>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div data-ng-if="searchStatus === 'off'">
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_LABEL}}:
-                                            <span data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_TOOLTIP}}"
+                                            <span
+                                                data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
@@ -71,22 +121,23 @@
                                                 data-ng-change="validateIOC($select.selected, 'sfsp-excludelist-ips')">
                                                 <ui-select-match
                                                     placeholder="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_PLACEHOLDER}}">{{$item}}</ui-select-match>
-                                                    <ui-select-choices repeat="option in initList" refresh-delay="0"
+                                                <ui-select-choices repeat="option in initList" refresh-delay="0"
                                                     show="(initList.length > 0)">
                                                     <div ng-bind="option"></div>
                                                 </ui-select-choices>
                                             </ui-select>
                                             <span class="font-075em padding-left-10 text-danger"
-                                                data-ng-if="invalidIPs.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_ERROR_MESSAGE}}<strong>{{invalidIPs.join(',')}}</strong>
+                                                data-ng-if="invalidIPs.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_IP_ADDRESS_ERROR_MESSAGE}}<strong>{{invalidIPs}}</strong>
                                             </span>
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div data-ng-if="searchStatus === 'off'">
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_URL_LABEL}}:
-                                            <span data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_URL_TOOLTIP}}"
+                                            <span
+                                                data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_URL_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
@@ -104,15 +155,16 @@
                                                 </ui-select-choices>
                                             </ui-select>
                                             <span class="font-075em padding-left-10 text-danger"
-                            data-ng-if="invalidURLs.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_URL_ERROR_MESSAGE}}<strong>{{invalidURLs}}</strong></span>
+                                                data-ng-if="invalidURLs.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_URL_ERROR_MESSAGE}}<strong>{{invalidURLs}}</strong></span>
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div data-ng-if="searchStatus === 'off'">
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DOMAIN_LABEL}}:
-                                            <span data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DOMAIN_TOOLTIP}}"
+                                            <span
+                                                data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DOMAIN_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
@@ -130,15 +182,16 @@
                                                 </ui-select-choices>
                                             </ui-select>
                                             <span class="font-075em padding-left-10 text-danger"
-                            data-ng-if="invalidDomains.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DOMAIN_ERROR_MESSAGE}}<strong>{{invalidDomains}}</strong></span>
+                                                data-ng-if="invalidDomains.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DOMAIN_ERROR_MESSAGE}}<strong>{{invalidDomains}}</strong></span>
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div data-ng-if="searchStatus === 'off'">
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_PORTS_LABEL}}:
-                                            <span data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_PORTS_TOOLTIP}}"
+                                            <span
+                                                data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_PORTS_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
@@ -156,15 +209,16 @@
                                                 </ui-select-choices>
                                             </ui-select>
                                             <span class="font-075em padding-left-10 text-danger"
-                                            data-ng-if="invalidPorts.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_PORTS_ERROR_MESSAGE}}<strong>{{invalidPorts}}</strong></span>
+                                                data-ng-if="invalidPorts.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_PORTS_ERROR_MESSAGE}}<strong>{{invalidPorts}}</strong></span>
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div data-ng-if="searchStatus === 'off'">
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_FILES_LABEL}}:
-                                            <span data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_FILES_TOOLTIP}}"
+                                            <span
+                                                data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_FILES_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
@@ -184,11 +238,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div data-ng-if="searchStatus === 'off'">
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CIDR_LABEL}}:
-                                            <span data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CIDR_TOOLTIP}}"
+                                            <span
+                                                data-uib-tooltip="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CIDR_TOOLTIP}}"
                                                 data-tooltip-placement="top-left" data-tooltip-append-to-body="true"><i
                                                     class="icon icon-information" aria-hidden="true"></i></span>
                                         </label>
@@ -206,10 +261,10 @@
                                                 </ui-select-choices>
                                             </ui-select>
                                             <span class="font-075em padding-left-10 text-danger"
-                                            data-ng-if="invalidCIDRs.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CIDR_ERROR_MESSAGE}}<strong>{{invalidCIDRs}}</strong></span>
+                                                data-ng-if="invalidCIDRs.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CIDR_ERROR_MESSAGE}}<strong>{{invalidCIDRs}}</strong></span>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>
@@ -221,7 +276,7 @@
                         class="fa fa-chevron-left margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON}}</button>
                 <button type="button" class="btn btn-primary pull-right btn-sm margin-top-lg margin-right-lg"
                     data-ng-click="moveNext()" id="solutionpack-configure-env-next-btn"
-                    data-ng-disabled="invalidIPs.length > 0 || invalidURLs.length > 0 || invalidDomains.length > 0 || invalidPorts.length > 0 || invalidCIDRs.length > 0">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON}}<i
+                    data-ng-disabled="isInvalidIOCsNotEmpty()">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON}}<i
                         class="fa fa-chevron-right margin-left-sm"></i>
                 </button>
             </div>
@@ -233,8 +288,7 @@
                     <div class="full-height display-table-cell vertical-align-middle">
                         <div class="col-md-6 display-flex align-items-center margin-top-34 padding-0">
                             <div class="full-width">
-                                <img class="img-responsive d-info-image"
-                                    src="{{finishPageImage}}">
+                                <img class="img-responsive d-info-image" src="{{finishPageImage}}">
                             </div>
                         </div>
                         <div class="col-md-6 prerequisites-section padding-bottom-25 padding-left-0">

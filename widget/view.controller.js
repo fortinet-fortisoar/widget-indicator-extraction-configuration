@@ -12,21 +12,42 @@
   configureIndicatorExtraction110Ctrl.$inject = ['$scope', 'widgetUtilityService', '$rootScope', 'widgetBasePath', 'WizardHandler', 'iocExtractionConfigService', 'toaster'];
 
   function configureIndicatorExtraction110Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, iocExtractionConfigService, toaster) {
+    // Initialization variables
     $scope.defaultGlobalSettings = {};
-    $scope.initList = [];
     $scope.updatedGlobalSettings = {};
-    $scope.widgetCSS = widgetBasePath + 'widgetAssets/css/wizard-style.css';
-    $scope.moveNext = moveNext;
-    $scope.moveBack = moveBack;
+    $scope.initList = [];
+    $scope.searchString = '';
+    $scope.searchStatus = 'off';
+    $scope.globalSearchList = [];
     $scope.isLightTheme = $rootScope.theme.id === 'light';
+    $scope.invalidIOCs = {}; // This dict holds invalid IOCs for various indicator types
+    var regexPatternMapping = {};
+
+    // File Import Paths
+    $scope.widgetCSS = widgetBasePath + 'widgetAssets/css/wizard-style.css';
     $scope.startPageImage = $scope.isLightTheme ? widgetBasePath + 'images/sfsp-start-light.png' : widgetBasePath + 'images/sfsp-start-dark.png';
     $scope.excludeIOCPageImage = widgetBasePath + 'images/sfsp-global-settings.png';
     $scope.finishPageImage = widgetBasePath + 'images/finish.png';
+
+    // Functions 
     $scope._buildPayload = _buildPayload;
+    $scope.moveNext = moveNext;
+    $scope.moveBack = moveBack;
     $scope.commitGlobalSettings = commitGlobalSettings;
     $scope.validateIOC = validateIOC;
-    var regexPatternMapping = {};
+    $scope.setSearchStatus = setSearchStatus;
+    $scope.updateSearchQuery = updateSearchQuery;
 
+
+    function updateSearchQuery(searchStringValue) {
+      $scope.searchStatus = 'on';
+      $scope.searchString = searchStringValue;
+      console.log($scope.searchString);
+    }
+
+    function setSearchStatus(status) {
+      $scope.searchStatus = status;
+    }
 
     function _handleTranslations() {
       let widgetData = {
@@ -83,16 +104,18 @@
       }
     }
 
-    function _buildPayload(keyName, keyValue, action) {
+    function _buildPayload(keyName, keyValue, notes, action) {
       if (action === 'createKeyStore') {
         var apiPayload = iocExtractionConfigService.constants().createKeyStorePayload;
         apiPayload['key'] = keyName;
-        apiPayload['notes'] = 'Enter the ' + (keyName.split('-')[2] === 'range' ? 'CIDR ranges' : keyName.split('-')[2]) + ' that you want to exclude from enrichment.';
-        apiPayload['jSONValue'] = keyValue[0].length > 0 ? keyValue : '';
+        apiPayload['notes'] = notes;
+        apiPayload['jSONValue'] = keyName === 'sfsp-indicator-type-mapping' ? keyValue : (keyValue[0].length > 0 ? keyValue : '');
+        console.log(apiPayload);
       }
       if (action === 'findKeyStore') {
         var apiPayload = iocExtractionConfigService.constants().findKeyStorePayload;
         apiPayload['filters'][0]['value'] = keyName;
+        console.log(apiPayload);
       }
       return apiPayload;
     }
@@ -102,19 +125,22 @@
       iocExtractionConfigService.getKeyStoreMetadata(widgetBasePath).then(function (gblVarToKeyStoreMapping) {
         Object.keys(gblVarToKeyStoreMapping).forEach(function (item) {
           if (item === 'CIDR_Range') {
-            var payload = _buildPayload('sfsp-excludelist-cidr-ranges', null, 'findKeyStore');
+            var payload = _buildPayload('sfsp-excludelist-cidr-ranges', null, null, 'findKeyStore');
             iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
               if (response && response['hydra:member'] && response['hydra:member'].length === 0) {
-                // Check if the keystore record exists for CIDR range; create it if not found
+                // Check if the keystore record exists for CIDR range them create the same
                 var keyValue = gblVarToKeyStoreMapping['CIDR_Range'].defaultValue.split(',');
-                var payload = _buildPayload('sfsp-excludelist-cidr-ranges', keyValue, 'createKeyStore');
+                var notes = gblVarToKeyStoreMapping['CIDR_Range'].notes;
+                var type = gblVarToKeyStoreMapping[item].type;
+                var payload = _buildPayload('sfsp-excludelist-cidr-ranges', keyValue, notes, 'createKeyStore');
                 iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-                  // Create keystore record
-                  $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
+                  // Create keystore record for CIDR Ranges
+                  $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid, 'type': type };
                 });
               }
               else {
-                $scope.defaultGlobalSettings[response['hydra:member'][0].key] = { 'recordValue': response['hydra:member'][0].jSONValue, 'recordUUID': response['hydra:member'][0].uuid };
+                var type = gblVarToKeyStoreMapping[item].type;
+                $scope.defaultGlobalSettings[response['hydra:member'][0].key] = { 'recordValue': response['hydra:member'][0].jSONValue, 'recordUUID': response['hydra:member'][0].uuid, 'type': type };
               }
             });
           }
@@ -125,26 +151,37 @@
                 var gblVarName = response['hydra:member'][0].name;
                 var gblVarID = response['hydra:member'][0].id;
                 var keyName = gblVarToKeyStoreMapping[gblVarName].keystore;
-                var keyValue = [...new Set(response['hydra:member'][0].value.split(','))];
-                var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
+                if (gblVarName === 'Indicator_Type_Map') {
+                  var _temp = gblVarToKeyStoreMapping[gblVarName].defaultValue;
+                  _temp['field_mapping'] = JSON.parse(response['hydra:member'][0].value);
+                  var keyValue = _temp;
+                } else {
+                  var keyValue = [...new Set(response['hydra:member'][0].value.split(','))];
+                }
+                var notes = gblVarToKeyStoreMapping[gblVarName].notes;
+                var payload = _buildPayload(keyName, keyValue, notes, 'createKeyStore');
                 iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-                  $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
+                  var type = gblVarToKeyStoreMapping[item].type;
+                  $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid, 'type': type };
                 });
                 iocExtractionConfigService.deleteGBLVariable(gblVarID);
               }
               else {
                 var keyName = gblVarToKeyStoreMapping[item].keystore;
-                var payload = _buildPayload(keyName, null, 'findKeyStore');
+                var payload = _buildPayload(keyName, null, null, 'findKeyStore');
                 iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
                   if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
-                    $scope.defaultGlobalSettings[response['hydra:member'][0].key] = { 'recordValue': response['hydra:member'][0].jSONValue, 'recordUUID': response['hydra:member'][0].uuid };
+                    var type = gblVarToKeyStoreMapping[item].type;
+                    $scope.defaultGlobalSettings[response['hydra:member'][0].key] = { 'recordValue': response['hydra:member'][0].jSONValue, 'recordUUID': response['hydra:member'][0].uuid, 'type': type };
                   }
                   else {
                     var keyName = gblVarToKeyStoreMapping[item].keystore;
-                    var keyValue = gblVarToKeyStoreMapping[item].defaultValue.split(',');
-                    var payload = _buildPayload(keyName, keyValue, 'createKeyStore');
+                    var keyValue = item === 'Indicator_Type_Map' ? gblVarToKeyStoreMapping[item].defaultValue : gblVarToKeyStoreMapping[item].defaultValue.split(',');
+                    var notes = gblVarToKeyStoreMapping[item].notes;
+                    var payload = _buildPayload(keyName, keyValue, notes, 'createKeyStore');
                     iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-                      $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid };
+                      var type = gblVarToKeyStoreMapping[item].type;
+                      $scope.defaultGlobalSettings[res.key] = { 'recordValue': res.jSONValue, 'recordUUID': res.uuid, 'type': type };
                     });
                   }
                 });
@@ -155,57 +192,37 @@
         });
       });
     }
-    
+
     function validateIOC(updatedKeyStoreValue, keyStoreName) {
       var regexPattern = regexPatternMapping[keyStoreName];
 
       if (keyStoreName === 'sfsp-excludelist-ips') {
-        var _tempInvalidIPs = [];
         var ipv4Regex = new RegExp(regexPattern.pattern.ipv4);
         var ipv6Regex = new RegExp(regexPattern.pattern.ipv6);
-        updatedKeyStoreValue.forEach(function (item) {
-          if (!(ipv4Regex.test(item) || ipv6Regex.test(item))) {
-            _tempInvalidIPs.push(item);
-          }
+        var _tempInvalidIPs = updatedKeyStoreValue.filter(function (item) {
+          return !(ipv4Regex.test(item) || ipv6Regex.test(item));
         });
-        $scope.invalidIPs = _tempInvalidIPs.join(', ');
-      } else if (keyStoreName === 'sfsp-excludelist-urls') {
-        var _tempInvalidURLs = [];
-        var urlRegex = new RegExp(regexPattern.pattern);
-        updatedKeyStoreValue.forEach(function (item) {
-          if (!urlRegex.test(item)) {
-            _tempInvalidURLs.push(item);
-          }
+        if (_tempInvalidIPs.length > 0) {
+          $scope.invalidIOCs[keyStoreName] = _tempInvalidIPs.join(', ');
+        } else {
+          delete $scope.invalidIOCs[keyStoreName];
+        }
+        console.log($scope.invalidIOCs);
+      } else {
+        var iocRegex = new RegExp(regexPattern.pattern);
+        var _tempInvalidIOCs  = updatedKeyStoreValue.filter(function (item) {
+          return !(iocRegex.test(item));
         });
-        $scope.invalidURLs = _tempInvalidURLs.join(', ');
-      } else if (keyStoreName === 'sfsp-excludelist-domains') {
-        var _tempInvalidDomains = [];
-        var domainRegex = new RegExp(regexPattern.pattern);
-        updatedKeyStoreValue.forEach(function (item) {
-          if (!domainRegex.test(item)) {
-            _tempInvalidDomains.push(item);
-          }
-        });
-        $scope.invalidDomains = _tempInvalidDomains.join(', ');
-      } else if (keyStoreName === 'sfsp-excludelist-ports') {
-        var _tempInvalidPorts = [];
-        var portsRegex = new RegExp(regexPattern.pattern);
-        updatedKeyStoreValue.forEach(function (item) {
-          if (!portsRegex.test(item)) {
-            _tempInvalidPorts.push(item);
-          }
-        });
-        $scope.invalidPorts = _tempInvalidPorts.join(', ');
-      } else if (keyStoreName === 'sfsp-excludelist-cidr-ranges') {
-        var _tempInvalidCIDRs = [];
-        var cidrRegex = new RegExp(regexPattern.pattern);
-        updatedKeyStoreValue.forEach(function (item) {
-          if (!cidrRegex.test(item)) {
-            _tempInvalidCIDRs.push(item);
-          }
-        });
-        $scope.invalidCIDRs = _tempInvalidCIDRs.join(', ');
-      }
+        if (_tempInvalidIOCs.length > 0) {
+          $scope.invalidIOCs[keyStoreName] = _tempInvalidIOCs.join(', ');
+        } else {
+          delete $scope.invalidIOCs[keyStoreName];
+        }
+      } 
+      $scope.isInvalidIOCsNotEmpty = function() {
+        return Object.keys($scope.invalidIOCs).length > 0;
+      };
+      console.log($scope.isInvalidIOCsNotEmpty);
     }
 
 
@@ -214,6 +231,15 @@
       if (currentStepTitle === 'Start') {
         if (Object.keys($scope.updatedGlobalSettings).length === 0) {
           $scope.updatedGlobalSettings = angular.copy($scope.defaultGlobalSettings);
+          Object.keys($scope.updatedGlobalSettings).forEach(function (item) {
+            if (item.includes('excludelist') && $scope.updatedGlobalSettings[item].recordValue.length > 0) {
+              $scope.updatedGlobalSettings[item].recordValue.forEach(function (iocVal) {
+                $scope.globalSearchList.push({ 'keyStoreName': item, 'iocValue': iocVal, 'type': $scope.updatedGlobalSettings[item].type });
+              });
+            }
+          });
+          console.log($scope.updatedGlobalSettings);
+          console.log($scope.globalSearchList);
         }
       }
       if (currentStepTitle === 'Excludelist Configuration') {
