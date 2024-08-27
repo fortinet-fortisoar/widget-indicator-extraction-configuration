@@ -205,18 +205,18 @@
         });
       } else {
         var iocRegex = new RegExp(regexPattern.pattern);
-        _tempInvalidIOCs  = updatedKeyStoreValue.filter(function (item) {
+        _tempInvalidIOCs = updatedKeyStoreValue.filter(function (item) {
           return !(iocRegex.test(item));
         });
-      } 
+      }
 
       if (_tempInvalidIOCs.length > 0) {
         $scope.invalidIOCs[keyStoreName] = _tempInvalidIOCs.join(', ');
       } else {
         delete $scope.invalidIOCs[keyStoreName];
       }
-      
-      $scope.isInvalidIOCsNotEmpty = function() {
+
+      $scope.isInvalidIOCsNotEmpty = function () {
         return Object.keys($scope.invalidIOCs).length > 0;
       };
       console.log($scope.isInvalidIOCsNotEmpty);
