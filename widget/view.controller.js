@@ -129,7 +129,7 @@
             if (item.jSONValue.globalVariable.length > 0) {
 
               // Move global variable value to keystore and delete the global variable
-              iocExtractionConfigService.getGBLVariable(item.jSONValue.globalVariable).then(function (gblVariableDetails) {
+              iocExtractionConfigService.getGlobalVariable(item.jSONValue.globalVariable).then(function (gblVariableDetails) {
                 if (gblVariableDetails && gblVariableDetails['hydra:member'] && gblVariableDetails['hydra:member'].length > 0) {
                   var keyStoreValue = item.jSONValue;
                   var gblVarID = gblVariableDetails['hydra:member'][0].id;
@@ -138,7 +138,7 @@
                   iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
                     $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue };
                   });
-                  iocExtractionConfigService.deleteGBLVariable(gblVarID);
+                  iocExtractionConfigService.deleteGlobalVariable(gblVarID);
                 }
                 else {
                   $scope.defaultGlobalSettings[item.key] = { 'recordUUID': item.uuid, 'recordValue': item.jSONValue };

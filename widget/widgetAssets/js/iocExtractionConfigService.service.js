@@ -17,9 +17,9 @@
 
     var service = {
       constants: constants,
-      getGBLVariable: getGBLVariable,
+      getGlobalVariable: getGlobalVariable,
       createOrUpdateKeyStore: createOrUpdateKeyStore,
-      deleteGBLVariable: deleteGBLVariable,
+      deleteGlobalVariable: deleteGlobalVariable,
       getKeyStoreRecord: getKeyStoreRecord,
       updateKeyStoreRecord: updateKeyStoreRecord
     }
@@ -66,7 +66,7 @@
       }
     }
 
-    function getGBLVariable(gblVarName) {
+    function getGlobalVariable(gblVarName) {
       var defer = $q.defer();
       var url = API.WORKFLOW + API.API + '/dynamic-variable/?name=' + gblVarName;
       $resource(url).get(null, function (response) {
@@ -88,7 +88,7 @@
       return defer.promise;
     }
 
-    function deleteGBLVariable(gblVarName) {
+    function deleteGlobalVariable(gblVarName) {
       var defer = $q.defer();
       var url = API.WORKFLOW + API.API + '/dynamic-variable/' + gblVarName + '/?format=json';
       $resource(url, null, {
