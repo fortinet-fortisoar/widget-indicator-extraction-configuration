@@ -17,12 +17,11 @@
 
     var service = {
       constants: constants,
-      getGBLVariable: getGBLVariable,
+      getGlobalVariable: getGlobalVariable,
       createOrUpdateKeyStore: createOrUpdateKeyStore,
-      deleteGBLVariable: deleteGBLVariable,
+      deleteGlobalVariable: deleteGlobalVariable,
       getKeyStoreRecord: getKeyStoreRecord,
-      updateKeyStoreRecord: updateKeyStoreRecord,
-      getKeyStoreMetadata: getKeyStoreMetadata
+      updateKeyStoreRecord: updateKeyStoreRecord
     }
     return service;
 
@@ -67,18 +66,7 @@
       }
     }
 
-    function getKeyStoreMetadata(widgetBasePath){
-      var defer = $q.defer();
-      var url = widgetBasePath + 'widgetAssets/json/gblVarToKeyStoreMapping.json' // This JSON defines exclusion lists for IOCs like IPs, URLs, and domains, with default values and validation patterns
-      $http.get(url).then(function(response){
-        defer.resolve(response.data);
-      }).catch(function(err){
-        defer.reject(err);
-      });
-      return defer.promise;
-    }
-
-    function getGBLVariable(gblVarName) {
+    function getGlobalVariable(gblVarName) {
       var defer = $q.defer();
       var url = API.WORKFLOW + API.API + '/dynamic-variable/?name=' + gblVarName;
       $resource(url).get(null, function (response) {
@@ -100,9 +88,9 @@
       return defer.promise;
     }
 
-    function deleteGBLVariable(varName) {
+    function deleteGlobalVariable(gblVarName) {
       var defer = $q.defer();
-      var url = API.WORKFLOW + API.API + '/dynamic-variable/' + varName + '/?format=json';
+      var url = API.WORKFLOW + API.API + '/dynamic-variable/' + gblVarName + '/?format=json';
       $resource(url, null, {
         'delete': { method: 'DELETE' }
       }).delete(null, function (response) {

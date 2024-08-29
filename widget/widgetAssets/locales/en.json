@@ -2,8 +2,8 @@
     "configureIndicatorExtraction": {
         "LABEL_TITLE": "Indicator Extraction Configuration",
         "START_PAGE_WZ_TITLE": "Start",
-        "START_PAGE_TITLE": "Indicator Extraction Configuration",
-        "START_PAGE_DESCRIPTION": "To be Added Later",
+        "START_PAGE_TITLE": "Welcome to Indicator Extraction Configuration",
+        "START_PAGE_DESCRIPTION": "Optimize your threat management with the Indicator Extraction Configuration widget in FortiSOAR. This tool lets you customize indicator extraction by excluding specific indicators, reducing false positives and improving threat analysis efficiency. Key features include custom exclusions, streamlined threat detection, and adaptability to evolving security needs.",
         "START_PAGE_BUTTON": "Let's get started",
 
         
