@@ -55,28 +55,67 @@
                                     <p class="font-size-14 grey-text margin-bottom-0 z-index-0">
                                         {{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DESCRIPTION}}</p>
                                 </div><br />
-                                <!-- <div class="margin-right-lg margin-top-md position-relative filterSearch">
+
+                                <!-- Search Section -->
+                                <div class="margin-top-md position-relative filterSearch">
                                     <span
-                                        class="font-075em icon icon-search margin-left-md margin-top-11 position-absolute right-10" data-ng-click="setSearchStatus('on')" data-ng-if="searchStatus === 'off'"></span>
+                                        class="font-075em icon icon-search margin-left-md margin-top-11 position-absolute right-10"
+                                        data-ng-click="setSearchStatus('on')"
+                                        data-ng-if="searchStatus === 'off'"></span>
                                     <span class="icon icon-close margin-top-md position-absolute right-10"
-                                        data-ng-click="setSearchStatus('off')" data-ng-if="searchStatus === 'on'"></span>
+                                        data-ng-click="setSearchStatus('off')"
+                                        data-ng-if="searchStatus === 'on'"></span>
                                     <input id="search" type="text" class="form-control padding-right-30"
-                                        placeholder="Search Excluded Indicator" aria-labelledby="search-btn"
+                                        placeholder="Search added artefact" aria-labelledby="search-btn"
                                         data-ng-model="searchString" aria-invalid="false"
                                         data-ng-change="updateSearchQuery(searchString)">
                                 </div>
-                                <div class="padding-bottom-md padding-right-lg padding-top-sm filterContent"
-                                    data-ng-if="searchString.length > 0 && searchStatus === 'on'">
-                                    <div data-ng-repeat="item in globalSearchList | filter:searchString"
-                                        class="align-items-start margin-top-sm display-flex margin-bottom-sm">
-                                        <input type="checkbox" class="margin-left-sm margin-right-md"
-                                            name="select-type-{{iocValue}}" id="select-type-{{iocValue}}"></input>
-                                        <label for="select-type-{{iocValue}}"
-                                            class="font-size-12 muted labelClass">{{item.iocValue}} ->
-                                            {{item.type}}</label>
+                                <div data-ng-if="searchStatus === 'on'">
+                                    <div class="margin-bottom-lg margin-top-12">                                    
+                                        <span class="control-label font-size-12">Search Result : {{searchResultCount}} Found</span>
                                     </div>
-                                </div> -->
-                                <div data-ng-repeat="(keyStoreName, keyStoreDetails) in updatedGlobalSettings" class="excluded-ui-select">
+                                    <div data-ng-repeat="(keyStoreName, filteredDetails) in globalSearchList"
+                                        class="excluded-ui-select">
+                                        <div class="padding-bottom-md">
+                                            <label class="control-label text-transform-none">{{filteredDetails.type}}:
+                                                <span
+                                                    data-uib-tooltip="Search results for the {{filteredDetails.type}} entered in the search box."
+                                                    data-tooltip-placement="top-left"
+                                                    data-tooltip-append-to-body="true"><i class="icon icon-information"
+                                                        aria-hidden="true"></i></span>
+                                            </label>
+                                            <div class="cs-select padding-left-3">
+                                                <ui-select name="{{keyStoreName}}"
+                                                    data-ng-model="filteredDetails.filteredValues" multiple
+                                                    class="custom-multi-select" tagging tagging-label="false"
+                                                    search-enabled="false" style="max-height: 90px;overflow-y: auto;">
+                                                    <ui-select-match
+                                                        ui-lock-choice="$item.length > 0">{{$item}}</ui-select-match>
+                                                    <ui-select-choices
+                                                        repeat="option in filteredDetails.filteredValues | filter:$select.search"
+                                                        refresh-delay="0" show="($select.search.length > 0)">
+                                                        <div ng-bind="option"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div data-ng-if="searchStatus === 'off'">
+                                    <div class="font-size-12 margin-bottom-lg margin-top-12"> 
+                                        <span class="control-label font-size-12">Add indicators manually or use</span>
+                                        <button type="button"
+                                            class="btn-link text-decoration-none font-light"
+                                            data-ng-click="" id="indicator-bulk-import" aria-hidden="false"><span class="icon icon-import"></span>&nbsp;bulk import</button>
+                                        <button type="button"
+                                            class="btn-link text-decoration-none font-light pull-right"
+                                            data-ng-click="" id="add-new-indicator-type" aria-hidden="false">+ Add New Indicator Type</button>
+                                    </div>
+                                </div>
+
+                                <!-- -------------- -->
+                                <div data-ng-repeat="(keyStoreName, keyStoreDetails) in updatedGlobalSettings"
+                                    class="excluded-ui-select" data-ng-if="searchStatus === 'off'">
                                     <div class="padding-bottom-md">
                                         <label
                                             class="control-label text-transform-none">{{keyStoreDetails.recordValue.type}}:
@@ -87,10 +126,10 @@
                                         </label>
                                         <div class="cs-select padding-left-3">
                                             <ui-select name="{{keyStoreName}}"
-                                                data-ng-model="keyStoreDetails.recordValue.values"
-                                                multiple class="custom-multi-select" tagging="undefined"
-                                                tagging-label="false"
-                                                data-ng-change="validateIOC($select.selected, keyStoreName)">
+                                                data-ng-model="keyStoreDetails.recordValue.iocValues" multiple
+                                                class="custom-multi-select" tagging="undefined" tagging-label="false"
+                                                data-ng-change="validateIOC($select.selected, keyStoreName)"
+                                                style="max-height: 90px; overflow-y: auto;">
                                                 <ui-select-match
                                                     placeholder="Excluded {{keyStoreDetails.recordValue.type}}">{{$item}}</ui-select-match>
                                                 <ui-select-choices repeat="option in initList" refresh-delay="0"
@@ -99,7 +138,9 @@
                                                 </ui-select-choices>
                                             </ui-select>
                                             <span class="font-075em padding-left-10 text-danger"
-                                                data-ng-if="invalidIOCs[keyStoreName].length > 0">Invalid {{keyStoreDetails.recordValue.type}} - <strong>{{invalidIOCs[keyStoreName]}}</strong>
+                                                data-ng-if="invalidIOCs[keyStoreName].length > 0">Invalid
+                                                {{keyStoreDetails.recordValue.type}} -
+                                                <strong>{{invalidIOCs[keyStoreName]}}</strong>
                                             </span>
                                         </div>
                                     </div>
