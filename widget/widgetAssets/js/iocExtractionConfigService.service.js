@@ -22,7 +22,7 @@
       deleteGlobalVariable: deleteGlobalVariable,
       getKeyStoreRecord: getKeyStoreRecord,
       updateKeyStoreRecord: updateKeyStoreRecord,
-      executeAction: executeAction,
+      executeConnectorOperation: executeConnectorOperation,
       getIndicatorRegex: getIndicatorRegex
     }
     return service;
@@ -80,11 +80,11 @@
 
 
     function getIndicatorRegex() {
-      return executeAction('cyops_utilities', 'get_regx_of_indicators', null, []);
+      return executeConnectorOperation('cyops_utilities', 'get_regx_of_indicators', null, []);
     }
 
 
-    function executeAction(connector_name, connector_action, userLoginId, payload) {
+    function executeConnectorOperation(connector_name, connector_action, userLoginId, payload) {
       return $resource(API.INTEGRATIONS + 'connectors/?name=' + connector_name)
         .get()
         .$promise
