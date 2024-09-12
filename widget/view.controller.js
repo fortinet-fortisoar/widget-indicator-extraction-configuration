@@ -115,48 +115,55 @@
 
 
     function _handleGblVarsAndKeyStores() {
+      // Fetch regex mappings for different indicator types using Utilities connector
       iocExtractionConfigService.getIndicatorRegex().then(function (regexMapping) {
+        // Create a dictionary to map indicator types to regex patterns
         let regexDict = regexMapping.data.reduce(function (acc, item) {
-          acc[item.indicator_type] = item.regx.replace(/\\\\/g, '\\');
+          acc[item.indicator_type] = item.regx.replace(/\\\\/g, '\\'); // Normalizing the JSON response from the utilities connector by replacing escape characters in the encoded regex
           return acc;
         }, {});
-
-        let payload = _buildPayload('%sfsp-excludelist%', null, 'findKeyStore');
-
+    
+        // Build payload to fetch all the key store records associated with excludelist
+        let keyName = '%sfsp-excludelist%';
+        let payload = _buildPayload(keyName, null, 'findKeyStore');
+    
+        // Fetch key store records based on the payload
         iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (keystoreDetails) {
           if (keystoreDetails && keystoreDetails['hydra:member'] && keystoreDetails['hydra:member'].length > 0) {
+            // Process each key store record
             keystoreDetails['hydra:member'].forEach(function (item) {
-              let keyStoreName = item.key;
-              let keyStoreValue = _getKeyStoreValue(keyStoreName, regexDict);
-
-              // Move global variable value to keystore and delete the global variable
+              let keyStoreName = item.key; 
+              let keyStoreValue = _getKeyStoreValue(keyStoreName, regexDict); 
+    
+              // Fetch global variable details for the corresponding key store value
               iocExtractionConfigService.getGlobalVariable(keyStoreValue.globalVariable).then(function (gblVariableDetails) {
-
-                // Check if the global variables exists
+                
+                // Check if global variables exist for the key store
                 if (gblVariableDetails && gblVariableDetails['hydra:member'] && gblVariableDetails['hydra:member'].length > 0) {
-                  let globalVariableID = gblVariableDetails['hydra:member'][0].id;
-                  let globalVariableValue = gblVariableDetails['hydra:member'][0].value.length > 0 ? [...new Set(gblVariableDetails['hydra:member'][0].value.split(','))] : [];
-                  keyStoreValue['iocValues'] = globalVariableValue;
-
+                  let globalVariableValue = gblVariableDetails['hydra:member'][0].value.length > 0 ? [...new Set(gblVariableDetails['hydra:member'][0].value.split(','))] : []; // Get the value of the global variable as an array
+                  keyStoreValue['iocValues'] = globalVariableValue; // Assign global variable values to key store
+    
+                  // Build payload to update global variable values to key store
                   let payload = _buildPayload(keyStoreName, keyStoreValue, 'createKeyStore');
 
                   iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-
-                    // Check if the global variable's value was correctly migrated to the keystore
+    
+                    // Verify if the global variable value was correctly migrated to the key store
                     if (res.jSONValue.iocValues.sort().toString() === globalVariableValue.sort().toString()) {
-                      $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue };
-                      iocExtractionConfigService.deleteGlobalVariable(globalVariableID);
+                      $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue }; 
                     }
                   });
                 }
                 else if (Array.isArray(item.jSONValue)) {
+                  // If key store record already exists and has JSON values, assign it to the key store
                   keyStoreValue['iocValues'] = item.jSONValue;
                   let payload = _buildPayload(keyStoreName, keyStoreValue, 'createKeyStore');
                   iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-                    $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue };
+                    $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue }; 
                   });
                 }
                 else {
+                  // If no global variable exists and JSON values are not an array then simply update the settings
                   $scope.defaultGlobalSettings[keyStoreName] = { 'recordUUID': item.uuid, 'recordValue': item.jSONValue };
                 }
               });
