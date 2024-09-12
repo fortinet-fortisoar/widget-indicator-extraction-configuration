@@ -56,7 +56,7 @@
                                         {{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_DESCRIPTION}}</p>
                                 </div><br />
 
-                                <!-- Search Section -->
+                                <!-- Search Section START -->
                                 <div class="margin-top-md position-relative filterSearch">
                                     <span
                                         class="font-075em icon icon-search margin-left-md margin-top-11 position-absolute right-10"
@@ -66,13 +66,13 @@
                                         data-ng-click="setSearchStatus('off')"
                                         data-ng-if="searchStatus === 'on'"></span>
                                     <input id="search" type="text" class="form-control padding-right-30"
-                                        placeholder="Search added artefact" aria-labelledby="search-btn"
+                                        placeholder="{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_SEARCH_PLACEHOLDER}}" aria-labelledby="search-btn"
                                         data-ng-model="searchString" aria-invalid="false"
                                         data-ng-change="updateSearchQuery(searchString)">
                                 </div>
                                 <div data-ng-if="searchStatus === 'on'">
                                     <div class="margin-bottom-lg margin-top-12">                                    
-                                        <span class="control-label font-size-12">Search Result : {{searchResultCount}} Found</span>
+                                        <span class="control-label font-size-12">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL}} {{searchResultCount}} Found</span>
                                     </div>
                                     <div data-ng-repeat="(keyStoreName, filteredDetails) in globalSearchList"
                                         class="excluded-ui-select">
@@ -103,17 +103,18 @@
                                 </div>
                                 <div data-ng-if="searchStatus === 'off'">
                                     <div class="font-size-12 margin-bottom-lg margin-top-12"> 
-                                        <span class="control-label font-size-12">Add indicators manually or use</span>
+                                        <span class="control-label font-size-12">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL}}</span>
                                         <button type="button"
                                             class="btn-link text-decoration-none font-light"
-                                            data-ng-click="" id="indicator-bulk-import" aria-hidden="false"><span class="icon icon-import"></span>&nbsp;bulk import</button>
+                                            data-ng-click="" id="indicator-bulk-import" aria-hidden="false"><span class="icon icon-import"></span>&nbsp;{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON}}</button>
                                         <button type="button"
                                             class="btn-link text-decoration-none font-light pull-right"
-                                            data-ng-click="" id="add-new-indicator-type" aria-hidden="false">+ Add New Indicator Type</button>
+                                            data-ng-click="" id="add-new-indicator-type" aria-hidden="false">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON}}</button>
                                     </div>
                                 </div>
 
-                                <!-- -------------- -->
+                                <!-- Search Section END  -->
+
                                 <div data-ng-repeat="(keyStoreName, keyStoreDetails) in updatedGlobalSettings"
                                     class="excluded-ui-select" data-ng-if="searchStatus === 'off'">
                                     <div class="padding-bottom-md">
