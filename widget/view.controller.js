@@ -122,35 +122,35 @@
           acc[item.indicator_type] = item.regx.replace(/\\\\/g, '\\'); // Normalizing the JSON response from the utilities connector by replacing escape characters in the encoded regex
           return acc;
         }, {});
-    
+
         // Build payload to fetch all the key store records associated with excludelist
         let keyName = '%sfsp-excludelist%';
         let payload = _buildPayload(keyName, null, 'findKeyStore');
-    
+
         // Fetch key store records based on the payload
         iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (keystoreDetails) {
           if (keystoreDetails && keystoreDetails['hydra:member'] && keystoreDetails['hydra:member'].length > 0) {
             // Process each key store record
             keystoreDetails['hydra:member'].forEach(function (item) {
-              let keyStoreName = item.key; 
-              let keyStoreValue = _getKeyStoreValue(keyStoreName, regexDict); 
-    
+              let keyStoreName = item.key;
+              let keyStoreValue = _getKeyStoreValue(keyStoreName, regexDict);
+
               // Fetch global variable details for the corresponding key store value
               iocExtractionConfigService.getGlobalVariable(keyStoreValue.globalVariable).then(function (gblVariableDetails) {
-                
+
                 // Check if global variables exist for the key store
                 if (gblVariableDetails && gblVariableDetails['hydra:member'] && gblVariableDetails['hydra:member'].length > 0) {
                   let globalVariableValue = gblVariableDetails['hydra:member'][0].value.length > 0 ? [...new Set(gblVariableDetails['hydra:member'][0].value.split(','))] : []; // Get the value of the global variable as an array
                   keyStoreValue['iocValues'] = globalVariableValue; // Assign global variable values to key store
-    
+
                   // Build payload to update global variable values to key store
                   let payload = _buildPayload(keyStoreName, keyStoreValue, 'createKeyStore');
 
                   iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-    
+
                     // Verify if the global variable value was correctly migrated to the key store
                     if (res.jSONValue.iocValues.sort().toString() === globalVariableValue.sort().toString()) {
-                      $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue }; 
+                      $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue };
                     }
                   });
                 }
@@ -159,7 +159,7 @@
                   keyStoreValue['iocValues'] = item.jSONValue;
                   let payload = _buildPayload(keyStoreName, keyStoreValue, 'createKeyStore');
                   iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-                    $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue }; 
+                    $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue };
                   });
                 }
                 else {
@@ -206,40 +206,25 @@
 
 
     function validateIOC(updatedKeyStoreValue, keyStoreName) {
-      let regexPattern = $scope.updatedGlobalSettings[keyStoreName].recordValue.pattern;
-      let _tempInvalidIOCs = [];
+      if ($scope.updatedGlobalSettings[keyStoreName].recordValue.pattern.length > 0) {
+        let regexPattern = $scope.updatedGlobalSettings[keyStoreName].recordValue.pattern;
+        let regExObjects = regexPattern.map(pattern => new RegExp(pattern)); // Creates an array of RegExp objects
 
-      if (keyStoreName === 'sfsp-excludelist-ips') {
-        let ipv4Regex = new RegExp(regexPattern[0]);
-        let ipv6Regex = new RegExp(regexPattern[1]);
-        _tempInvalidIOCs = updatedKeyStoreValue.filter(function (item) {
-          return !(ipv4Regex.test(item) || ipv6Regex.test(item));
+        let _tempInvalidIOCs = updatedKeyStoreValue.filter(item => {
+          // Checks if IOC matches any regex pattern
+          return !regExObjects.some(regex => regex.test(item));
         });
-      }
-      else if (keyStoreName === 'sfsp-excludelist-file-hashes') {
-        let md5Regex = new RegExp(regexPattern[0]);
-        let sha1Regex = new RegExp(regexPattern[1]);
-        let sha256Regex = new RegExp(regexPattern[2]);
-        _tempInvalidIOCs = updatedKeyStoreValue.filter(function (item) {
-          return !(md5Regex.test(item) || sha1Regex.test(item) || sha256Regex.test(item));
-        });
-      }
-      else {
-        let iocRegex = new RegExp(regexPattern[0]);
-        _tempInvalidIOCs = updatedKeyStoreValue.filter(function (item) {
-          return !(iocRegex.test(item));
-        });
-      }
 
-      if (_tempInvalidIOCs.length > 0) {
-        $scope.invalidIOCs[keyStoreName] = _tempInvalidIOCs.join(', ');
-      } else {
-        delete $scope.invalidIOCs[keyStoreName];
-      }
+        if (_tempInvalidIOCs.length > 0) {
+          $scope.invalidIOCs[keyStoreName] = _tempInvalidIOCs.join(', ');
+        } else {
+          delete $scope.invalidIOCs[keyStoreName];
+        }
 
-      $scope.isInvalidIOCsNotEmpty = function () {
-        return Object.keys($scope.invalidIOCs).length > 0;
-      };
+        $scope.isInvalidIOCsNotEmpty = function () {
+          return Object.keys($scope.invalidIOCs).length > 0;
+        };
+      }
     }
 
 
