@@ -38,6 +38,12 @@
     $scope.updateSearchQuery = updateSearchQuery;
     $scope._getRegexPattern = _getRegexPattern;
     $scope._getKeyStoreValue = _getKeyStoreValue;
+    $scope.bulkImportStatus = bulkImportStatus;
+
+
+    function bulkImportStatus(importStatus) {
+      $scope.importStatus = importStatus;
+    }
 
 
     function _handleTranslations() {
