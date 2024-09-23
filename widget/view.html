@@ -108,18 +108,21 @@
                                 <!-- Excluded IOCs List Div START -->
                                 <div data-ng-if="searchStatus === 'off'">
                                     <div class="font-size-12 margin-bottom-lg margin-top-12">
-                                        <span
-                                            class="control-label font-size-12">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL}}</span>
-                                        <button type="button" class="btn-link text-decoration-none font-light"
-                                            data-ng-click="bulkImportStatus(true)" id="indicator-bulk-import"
-                                            aria-hidden="false"><span
-                                                class="icon icon-import"></span>&nbsp;{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON}}</button>
+
                                         <!-- Bulk Import BUTTON -->
+                                        <span class="control-label font-size-12">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL}}</span>
+                                        <button type="button" class="btn-link text-decoration-none font-light"
+                                            data-ng-click="bulkImportStatus(true)" id="indicator-bulk-import-button"
+                                            aria-hidden="false"><span
+                                                class="icon icon-import"></span>&nbsp;{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON}}
+                                        </button>
+
+                                        <!-- Add New Indicator BUTTON -->
                                         <button type="button"
                                             class="btn-link text-decoration-none font-light pull-right" data-ng-click=""
                                             id="add-new-indicator-type"
-                                            aria-hidden="false">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON}}</button>
-                                        <!-- Add New Indicator BUTTON -->
+                                            aria-hidden="false">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON}}
+                                        </button>
                                     </div>
 
                                     <!-- Bulk Import Div START -->
@@ -134,8 +137,6 @@
                                                 name="uploadFileDiv" ngf-select="uploadFiles(uploadedFile)"
                                                 data-ngf-drop="uploadFiles(uploadedFile)" data-accept=".csv,.txt,.pdf"
                                                 data-ngf-pattern="'.csv,.txt,.pdf'" data-ng-show="!uploadedFileFlag">
-                                                <!-- data-ng-show="!uploadedFileFlag"
-                                            data-accept=".tgz" data-ngf-pattern="'.zip,.tgz,.json'" -->
                                                 <h2 class="margin-0">
                                                     <span class="padding-right-sm fa fa-folder-open"></span>
                                                 </h2>
@@ -145,11 +146,6 @@
                                                 <div>or click to use standard uploader</div>
                                                 <div>File Size should not exceed 25MB</div>
                                             </div>
-                                            <!-- <button type="button" data-ng-show="uploadedFileFlag"
-                                                class="icon icon-edit btn btn-link margin-top-sm center-block"
-                                                data-ng-click="resetUpload()" id="change-profile-image">
-                                                {{fileName}}
-                                            </button> -->
                                             <div class="file-upload" data-ng-show="uploadedFileFlag">
                                                 <div class="file-attachment">
                                                     <div class="width-min-content position-relative">
