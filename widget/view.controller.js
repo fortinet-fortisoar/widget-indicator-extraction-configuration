@@ -9,9 +9,9 @@
     .module('cybersponse')
     .controller('configureIndicatorExtraction110Ctrl', configureIndicatorExtraction110Ctrl);
 
-  configureIndicatorExtraction110Ctrl.$inject = ['$scope', 'widgetUtilityService', '$rootScope', 'widgetBasePath', 'WizardHandler', 'iocExtractionConfigService', 'toaster'];
+  configureIndicatorExtraction110Ctrl.$inject = ['$scope', 'widgetUtilityService', '$rootScope', 'widgetBasePath', 'WizardHandler', 'iocExtractionConfigService', 'toaster', 'Upload', 'API'];
 
-  function configureIndicatorExtraction110Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, iocExtractionConfigService, toaster) {
+  function configureIndicatorExtraction110Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, iocExtractionConfigService, toaster, Upload, API) {
     // Initialization variables
     $scope.defaultGlobalSettings = {};
     $scope.updatedGlobalSettings = {};
@@ -20,6 +20,9 @@
     $scope.searchStatus = 'off';
     $scope.isLightTheme = $rootScope.theme.id === 'light';
     $scope.invalidIOCs = {}; // This dict holds invalid IOCs for various indicator types
+    $scope.fileName = '';
+    $scope.uploadedFileFlag = false;
+    const maxFileSize = 25072682;
 
 
     // File Paths
@@ -39,12 +42,59 @@
     $scope._getRegexPattern = _getRegexPattern;
     $scope._getKeyStoreValue = _getKeyStoreValue;
     $scope.bulkImportStatus = bulkImportStatus;
+    $scope.uploadFiles = uploadFiles;
+    $scope.resetUpload = resetUpload;
+
+    function resetUpload(){
+      $scope.uploadedFileFlag = false;
+    }
 
 
     function bulkImportStatus(importStatus) {
       $scope.importStatus = importStatus;
     }
 
+    function uploadFiles(file) {
+      if (file.size < maxFileSize) {
+        if (file.type) {
+          file.upload = Upload.upload({
+            url: API.BASE + 'files',
+            data: {
+              file: file
+            }
+          });
+          $scope.enableSpinner = true;
+          // $scope.loadingJob = true;
+          file.upload.then(function (response) {
+            $scope.fileMetadata = response.data;
+            $scope.fileName = response.data.filename;
+            // $scope.loadingJob = false;
+            $scope.uploadedFileFlag = true;
+            $scope.enableSpinner = false;
+            // if ($scope.showCreatedSolutions === 'created') {
+            //   submitContentFormService.triggerPlaybook($scope);
+            // }
+          },
+            function (response) {
+              // $scope.loadingJob = false;
+              $scope.enableSpinner = false;
+              if (response.status > 0) {
+                $log.debug(response.status + ': ' + response.data);
+              }
+              var message = $scope.viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_UPLOAD_FAILED;
+              if (response.status === 413) {
+                message = $scope.viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_FILE_SIZE_EXCEEDED;
+              }
+              $scope.enableSpinner = false;
+              toaster.error({ body: message });
+            });
+        }
+      }
+      else {
+        $scope.enableSpinner = false;
+        toaster.error({ body: $scope.viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_FILE_SIZE_EXCEEDED });
+      }
+    }
 
     function _handleTranslations() {
       let widgetData = {
@@ -70,6 +120,8 @@
             EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL'),
             EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON'),
             EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_UPLOAD_FAILED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_UPLOAD_FAILED'),
+            EXCLUDELIST_CONFIG_PAGE_FILE_SIZE_EXCEEDED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_FILE_SIZE_EXCEEDED'),
             EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON'),
             EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON')
           };

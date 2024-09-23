@@ -105,29 +105,96 @@
                                 </div>
                                 <!-- Search Div END -->
 
-                                
+                                <!-- Excluded IOCs List Div START -->
                                 <div data-ng-if="searchStatus === 'off'">
                                     <div class="font-size-12 margin-bottom-lg margin-top-12">
                                         <span
                                             class="control-label font-size-12">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL}}</span>
                                         <button type="button" class="btn-link text-decoration-none font-light"
-                                            data-ng-click="bulkImportStatus(true)" id="indicator-bulk-import" aria-hidden="false"><span
-                                                class="icon icon-import"></span>&nbsp;{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON}}</button> <!-- Bulk Import BUTTON -->
+                                            data-ng-click="bulkImportStatus(true)" id="indicator-bulk-import"
+                                            aria-hidden="false"><span
+                                                class="icon icon-import"></span>&nbsp;{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON}}</button>
+                                        <!-- Bulk Import BUTTON -->
                                         <button type="button"
                                             class="btn-link text-decoration-none font-light pull-right" data-ng-click=""
                                             id="add-new-indicator-type"
-                                            aria-hidden="false">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON}}</button> <!-- Add New Indicator BUTTON -->
+                                            aria-hidden="false">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON}}</button>
+                                        <!-- Add New Indicator BUTTON -->
                                     </div>
 
                                     <!-- Bulk Import Div START -->
-                                    <div data-ng-if="importStatus">
-                                        
+                                    <div id="bulk-import-container" data-ng-show="importStatus">
+                                        <!-- <label class="control-label display-block manual-input-list-container"
+                                            style="padding: 10px 20px;">
+                                            <span class="padding-top-lg font-size-16 ng-binding">Excludelist Indicators
+                                                Import</span>
+                                        </label> -->
+                                        <div id="upload-a-file" class="margin-top-md">
+                                            <div class="file-upload margin-top-6" data-ng-model="uploadedFile"
+                                                name="uploadFileDiv" ngf-select="uploadFiles(uploadedFile)"
+                                                data-ngf-drop="uploadFiles(uploadedFile)" data-accept=".csv,.txt,.pdf"
+                                                data-ngf-pattern="'.csv,.txt,.pdf'" data-ng-show="!uploadedFileFlag">
+                                                <!-- data-ng-show="!uploadedFileFlag"
+                                            data-accept=".tgz" data-ngf-pattern="'.zip,.tgz,.json'" -->
+                                                <h2 class="margin-0">
+                                                    <span class="padding-right-sm fa fa-folder-open"></span>
+                                                </h2>
+                                                <h5 class="margin-top-sm margin-bottom-0 padding-0"
+                                                    style="background-color: unset; text-align: center;">
+                                                    Drop a csv, txt or pdf file</h5>
+                                                <div>or click to use standard uploader</div>
+                                                <div>File Size should not exceed 25MB</div>
+                                            </div>
+                                            <!-- <button type="button" data-ng-show="uploadedFileFlag"
+                                                class="icon icon-edit btn btn-link margin-top-sm center-block"
+                                                data-ng-click="resetUpload()" id="change-profile-image">
+                                                {{fileName}}
+                                            </button> -->
+                                            <div class="file-upload" data-ng-show="uploadedFileFlag">
+                                                <div class="file-attachment">
+                                                    <div class="width-min-content position-relative">
+                                                        <div class="file-attachment-icon">
+                                                            <i class="fa fa-5x fa-file-o" aria-hidden="false"></i>
+                                                        </div>
+                                                        <span class="file-attachment-actions">
+                                                            <span
+                                                                class="icon icon-close btn btn-danger comment-file-remove"
+                                                                data-ng-click="resetUpload()" title="Delete"
+                                                                role="button" tabindex="0">
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div>{{ fileName }}</div>
+                                            </div>
+                                        </div>
+                                        <div data-ng-if="enableSpinner">
+                                            <cs-spinner></cs-spinner>
+                                        </div>
+                                        <div class="modal-footer"
+                                            style="padding-top: 20px !important; text-align: right !important; border: none;">
+                                            <button type="submit" class="btn btn-primary" data-ng-disabled="processing"
+                                                id="upload-bulk-import-file" data-ng-click="submit()">
+                                                <cs-spinner data-ng-show="processing"
+                                                    class="pull-left margin-top-xsm state-wait button-spinner margin-right-sm"
+                                                    data-show-background="true" data-no-margin="margin-0"
+                                                    aria-hidden="true">
+                                                    <div class="loader background margin-0"
+                                                        data-ng-class="{'background' : showBackground, 'margin-0': noMargin}">
+                                                        <div class="cs-spinner"></div>
+                                                    </div>
+                                                </cs-spinner>Import
+                                            </button>
+                                            <button type="button" class="btn btn-default" data-ng-click="cancel()"
+                                                id="cancel-bulk-import">Cancel
+                                            </button>
+                                        </div>
                                     </div>
                                     <!-- Bulk Import Div END -->
-                                    
-                                    <!-- Excluded IOCs List Div START -->
+
+                                    <!-- UI-SELECT Excluded List Div START -->
                                     <div data-ng-repeat="(keyStoreName, keyStoreDetails) in updatedGlobalSettings"
-                                        class="excluded-ui-select">
+                                        class="excluded-ui-select" data-ng-show="!importStatus">
                                         <div class="padding-bottom-md">
                                             <label
                                                 class="control-label text-transform-none">{{keyStoreDetails.recordValue.type}}:
@@ -159,8 +226,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- Excluded IOCs List Div END -->
+                                    <!-- UI-SELECT Excluded List Div END -->
                                 </div>
+                                <!-- Excluded IOCs List Div END -->
                             </div>
                         </div>
                     </div>
