@@ -19,6 +19,7 @@
     $scope.searchString = '';
     $scope.searchStatus = 'off';
     $scope.isLightTheme = $rootScope.theme.id === 'light';
+    $scope.isSteelTheme = $rootScope.theme.id === 'steel';
     $scope.invalidIOCs = {}; // This dict holds invalid IOCs for various indicator types
     $scope.fileName = '';
     $scope.uploadedFileFlag = false;
@@ -41,18 +42,24 @@
     $scope.updateSearchQuery = updateSearchQuery;
     $scope._getRegexPattern = _getRegexPattern;
     $scope._getKeyStoreValue = _getKeyStoreValue;
-    $scope.bulkImportStatus = bulkImportStatus;
     $scope.uploadFiles = uploadFiles;
-    $scope.resetUpload = resetUpload;
+    $scope.setBulkImportFlags = setBulkImportFlags;
 
-    function resetUpload(){
-      $scope.uploadedFileFlag = false;
+
+    function setBulkImportFlags(flag) {
+      if (flag === 'bulkImportOn') {
+        $scope.importStatus = true;
+      }
+      if (flag === 'bulkImportOff') {
+        $scope.importStatus = false;
+        $scope.uploadedFileFlag = false;
+      }
+      if (flag === 'resetUpload') {
+        $scope.uploadedFileFlag = false;
+
+      }
     }
 
-
-    function bulkImportStatus(importStatus) {
-      $scope.importStatus = importStatus;
-    }
 
     function uploadFiles(file) {
       if (file.size < maxFileSize) {
@@ -119,11 +126,19 @@
             EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL'),
             EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL'),
             EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_IMPORT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_IMPORT_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_CANCEL_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_CANCEL_BUTTON'),
             EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON'),
             EXCLUDELIST_CONFIG_PAGE_UPLOAD_FAILED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_UPLOAD_FAILED'),
             EXCLUDELIST_CONFIG_PAGE_FILE_SIZE_EXCEEDED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_FILE_SIZE_EXCEEDED'),
+            EXCLUDELIST_CONFIG_PAGE_FILE_TYPE_NOT_SUPPORTED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_FILE_TYPE_NOT_SUPPORTED'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_SHOULD_NOT_EXCEED_25MB: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_SHOULD_NOT_EXCEED_25MB'),
             EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON'),
-            EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON')
+            EXCLUDELIST_CONFIG_PAGE_SAVE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SAVE_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_SKIP_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SKIP_BUTTON'),
           };
         });
       }
@@ -286,7 +301,7 @@
     }
 
 
-    function moveNext() {
+    function moveNext(param) {
       let currentStepTitle = WizardHandler.wizard('configureIndicatorExtraction').currentStep().wzTitle
       if (currentStepTitle === 'Start') {
         if (Object.keys($scope.updatedGlobalSettings).length === 0) {
@@ -294,7 +309,9 @@
         }
       }
       if (currentStepTitle === 'Excludelist Configuration') {
-        commitGlobalSettings();
+        if(param === 'save'){
+          commitGlobalSettings();
+        } 
       }
       WizardHandler.wizard('configureIndicatorExtraction').next();
     }

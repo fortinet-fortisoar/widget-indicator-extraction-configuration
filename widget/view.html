@@ -49,7 +49,7 @@
                             </div>
                         </div>
                         <div class="col-md-7 config-section">
-                            <div style="border:2px solid; border-color: #29323e;" class="padding-20">
+                            <div class="padding-20">
                                 <div class="font-size-25">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_TITLE}}</div>
                                 <div class="padding-right-30 margin-top-sm max-width-450px">
                                     <p class="font-size-14 grey-text margin-bottom-0 z-index-0">
@@ -109,45 +109,53 @@
                                 <div data-ng-if="searchStatus === 'off'">
                                     <div class="font-size-12 margin-bottom-lg margin-top-12">
 
-                                        <!-- Bulk Import BUTTON -->
-                                        <span class="control-label font-size-12">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL}}</span>
-                                        <button type="button" class="btn-link text-decoration-none font-light"
-                                            data-ng-click="bulkImportStatus(true)" id="indicator-bulk-import-button"
-                                            aria-hidden="false"><span
+                                        <!-- Bulk Import ON BUTTON -->
+                                        <span
+                                            class="control-label font-size-14 italic">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL}}</span>
+                                        <button type="button" class="btn-link text-decoration-none font-light italic font-size-14" style="margin-left: -6px !important;"
+                                            data-ng-click="setBulkImportFlags('bulkImportOn')"
+                                            id="indicator-bulk-import-button" aria-hidden="false"><span
                                                 class="icon icon-import"></span>&nbsp;{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON}}
                                         </button>
 
                                         <!-- Add New Indicator BUTTON -->
                                         <button type="button"
-                                            class="btn-link text-decoration-none font-light pull-right" data-ng-click=""
+                                            class="btn-link text-decoration-none font-light pull-right italic font-size-14" data-ng-click=""
                                             id="add-new-indicator-type"
                                             aria-hidden="false">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON}}
                                         </button>
                                     </div>
 
                                     <!-- Bulk Import Div START -->
-                                    <div id="bulk-import-container" data-ng-show="importStatus">
-                                        <!-- <label class="control-label display-block manual-input-list-container"
+                                    <div id="bulk-import-container" data-ng-show="importStatus" data-ng-style="{'background': isLightTheme ? '#fafaf9' : (isSteelTheme ? '#242b35' : '#262626')}">
+                                        <label class="control-label display-block manual-input-list-container"
                                             style="padding: 10px 20px;">
-                                            <span class="padding-top-lg font-size-16 ng-binding">Excludelist Indicators
-                                                Import</span>
-                                        </label> -->
+                                            <span class="padding-top-lg font-size-16">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL}}</span>
+                                        </label>
                                         <div id="upload-a-file" class="margin-top-md">
-                                            <div class="file-upload margin-top-6" data-ng-model="uploadedFile"
+                                            <div class="file-upload bulk-import-file-upload" data-ng-model="uploadedFile"
                                                 name="uploadFileDiv" ngf-select="uploadFiles(uploadedFile)"
-                                                data-ngf-drop="uploadFiles(uploadedFile)" data-accept=".csv,.txt,.pdf"
-                                                data-ngf-pattern="'.csv,.txt,.pdf'" data-ng-show="!uploadedFileFlag">
+                                                data-ngf-drop="uploadFiles(uploadedFile)"
+                                                data-accept=".csv,.txt,.pdf,.xls,.xlsx,.json,.doc,.docx"
+                                                data-ngf-pattern="'.csv,.txt,.pdf,.xls,.xlsx,.xlsm,.json,.doc,.docx'"
+                                                data-ng-show="!uploadedFileFlag">
                                                 <h2 class="margin-0">
                                                     <span class="padding-right-sm fa fa-folder-open"></span>
                                                 </h2>
                                                 <h5 class="margin-top-sm margin-bottom-0 padding-0"
                                                     style="background-color: unset; text-align: center;">
-                                                    Drop a csv, txt or pdf file</h5>
-                                                <div>or click to use standard uploader</div>
-                                                <div>File Size should not exceed 25MB</div>
+                                                    {{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE}}</h5>
+                                                <div>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER}}
+                                                </div>
+                                                <div>
+                                                    {{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_SHOULD_NOT_EXCEED_25MB}}
+                                                </div>
                                             </div>
-                                            <div class="file-upload" data-ng-show="uploadedFileFlag">
-                                                <div class="file-attachment">
+                                            <div class="file-upload" data-ng-show="uploadedFileFlag || enableSpinner">
+                                                <div data-ng-if="enableSpinner">
+                                                    <cs-spinner></cs-spinner>
+                                                </div>
+                                                <div class="file-attachment" data-ng-show="!enableSpinner">
                                                     <div class="width-min-content position-relative">
                                                         <div class="file-attachment-icon">
                                                             <i class="fa fa-5x fa-file-o" aria-hidden="false"></i>
@@ -155,8 +163,8 @@
                                                         <span class="file-attachment-actions">
                                                             <span
                                                                 class="icon icon-close btn btn-danger comment-file-remove"
-                                                                data-ng-click="resetUpload()" title="Delete"
-                                                                role="button" tabindex="0">
+                                                                data-ng-click="setBulkImportFlags('resetUpload')"
+                                                                title="Delete" role="button" tabindex="0">
                                                             </span>
                                                         </span>
                                                     </div>
@@ -164,11 +172,10 @@
                                                 <div>{{ fileName }}</div>
                                             </div>
                                         </div>
-                                        <div data-ng-if="enableSpinner">
+                                        <!-- <div data-ng-if="enableSpinner">
                                             <cs-spinner></cs-spinner>
-                                        </div>
-                                        <div class="modal-footer"
-                                            style="padding-top: 20px !important; text-align: right !important; border: none;">
+                                        </div> -->
+                                        <div class="modal-footer bulk-import-footer">
                                             <button type="submit" class="btn btn-primary" data-ng-disabled="processing"
                                                 id="upload-bulk-import-file" data-ng-click="submit()">
                                                 <cs-spinner data-ng-show="processing"
@@ -179,10 +186,11 @@
                                                         data-ng-class="{'background' : showBackground, 'margin-0': noMargin}">
                                                         <div class="cs-spinner"></div>
                                                     </div>
-                                                </cs-spinner>Import
+                                                </cs-spinner><i class="icon icon-import margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_IMPORT_BUTTON}}
                                             </button>
-                                            <button type="button" class="btn btn-default" data-ng-click="cancel()"
-                                                id="cancel-bulk-import">Cancel
+                                            <button type="button" class="btn btn-danger"
+                                                data-ng-click="setBulkImportFlags('bulkImportOff')"
+                                                id="cancel-bulk-import"><i class="icon icon-close margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_CANCEL_BUTTON}}
                                             </button>
                                         </div>
                                     </div>
@@ -235,8 +243,12 @@
                     id="solutionpack-configure-back-env-btn" data-ng-click="moveBack()"><i
                         class="fa fa-chevron-left margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON}}</button>
                 <button type="button" class="btn btn-primary pull-right btn-sm margin-top-lg margin-right-lg"
-                    data-ng-click="moveNext()" id="solutionpack-configure-env-next-btn"
-                    data-ng-disabled="isInvalidIOCsNotEmpty()">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON}}<i
+                    data-ng-click="moveNext('save')" id="solutionpack-configure-env-next-btn"
+                    data-ng-disabled="isInvalidIOCsNotEmpty()"><i class="icon icon-check margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_SAVE_BUTTON}}
+                </button>
+                <button type="button" class="btn btn-sm btn-second-primary pull-right margin-top-lg margin-right-lg"
+                    data-ng-click="moveNext()"
+                    id="solutionpack-configure-env-next-btn">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_SKIP_BUTTON}}<i
                         class="fa fa-chevron-right margin-left-sm"></i>
                 </button>
             </div>
