@@ -28,9 +28,12 @@
 
     // File Paths
     $scope.widgetCSS = widgetBasePath + 'widgetAssets/css/wizard-style.css';
-    $scope.startPageImage = $scope.isLightTheme ? widgetBasePath + 'images/sfsp-start-light.png' : widgetBasePath + 'images/sfsp-start-dark.png';
-    $scope.excludeIOCPageImage = widgetBasePath + 'images/sfsp-global-settings.png';
-    $scope.finishPageImage = widgetBasePath + 'images/finish.png';
+    $scope.pageImages = {
+      'startPageImage': $scope.isLightTheme ? widgetBasePath + 'images/ioc-extraction-start-light.png' : widgetBasePath + 'images/ioc-extraction-start-dark.png',
+      'excludeIOCPageImage': $scope.isLightTheme ? widgetBasePath + 'images/ioc-extraction-exclusion-light.png' : widgetBasePath + 'images/ioc-extraction-exclusion-dark.png',
+      'fieldMappingPageImage': $scope.isLightTheme ? widgetBasePath + 'images/ioc-extraction-field-map-light.png' : widgetBasePath + 'images/ioc-extraction-field-map-dark.png',
+      'finishPageImage': widgetBasePath + 'images/ioc-extraction-finish-both.png'
+    };
 
     // Functions
     $scope._buildPayload = _buildPayload;
@@ -309,9 +312,9 @@
         }
       }
       if (currentStepTitle === 'Excludelist Configuration') {
-        if(param === 'save'){
+        if (param === 'save') {
           commitGlobalSettings();
-        } 
+        }
       }
       WizardHandler.wizard('configureIndicatorExtraction').next();
     }
