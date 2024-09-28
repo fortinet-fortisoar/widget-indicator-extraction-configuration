@@ -204,36 +204,113 @@
                                     </div>
                                     <!-- Bulk Import Div END -->
 
+                                    <!-- Add New IOC Div START -->
+                                    <div id="add-new-indicator-type-container" data-ng-show="addNewIndicatorType"
+                                        data-ng-style="{'background': isLightTheme ? '#fafaf9' : (isSteelTheme ? '#242b35' : '#262626')}">
+                                        <label class="control-label display-block manual-input-list-container"
+                                            style="padding: 10px 20px;">
+                                            <span
+                                                class="padding-top-lg font-size-16">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL}}</span>
+                                        </label>
+                                        <div id="upload-a-file" class="margin-top-md">
+                                            <div class="file-upload bulk-import-file-upload"
+                                                data-ng-model="uploadedFile" name="uploadFileDiv"
+                                                ngf-select="uploadFiles(uploadedFile)"
+                                                data-ngf-drop="uploadFiles(uploadedFile)"
+                                                data-accept=".csv,.txt,.pdf,.xls,.xlsx,.json,.doc,.docx"
+                                                data-ngf-pattern="'.csv,.txt,.pdf,.xls,.xlsx,.xlsm,.json,.doc,.docx'"
+                                                data-ng-show="!uploadedFileFlag">
+                                                <h2 class="margin-0">
+                                                    <span class="padding-right-sm fa fa-folder-open"></span>
+                                                </h2>
+                                                <h5 class="margin-top-sm margin-bottom-0 padding-0"
+                                                    style="background-color: unset; text-align: center;">
+                                                    {{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE}}
+                                                </h5>
+                                                <div>
+                                                    {{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER}}
+                                                </div>
+                                                <div>
+                                                    {{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_SHOULD_NOT_EXCEED_25MB}}
+                                                </div>
+                                            </div>
+                                            <div class="file-upload" data-ng-show="uploadedFileFlag || enableSpinner">
+                                                <div data-ng-if="enableSpinner">
+                                                    <cs-spinner></cs-spinner>
+                                                </div>
+                                                <div class="file-attachment" data-ng-show="!enableSpinner">
+                                                    <div class="width-min-content position-relative">
+                                                        <div class="file-attachment-icon">
+                                                            <i class="fa fa-5x fa-file-o" aria-hidden="false"></i>
+                                                        </div>
+                                                        <span class="file-attachment-actions">
+                                                            <span
+                                                                class="icon icon-close btn btn-danger comment-file-remove"
+                                                                data-ng-click="setBulkImportFlags('resetUpload')"
+                                                                title="Delete" role="button" tabindex="0">
+                                                            </span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div>{{ fileName }}</div>
+                                            </div>
+                                        </div>
+                                        <!-- <div data-ng-if="enableSpinner">
+                                                                            <cs-spinner></cs-spinner>
+                                                                        </div> -->
+                                        <div class="modal-footer bulk-import-footer">
+                                            <button type="submit" class="btn btn-primary" data-ng-disabled="processing"
+                                                id="upload-bulk-import-file" data-ng-click="submit()">
+                                                <cs-spinner data-ng-show="processing"
+                                                    class="pull-left margin-top-xsm state-wait button-spinner margin-right-sm"
+                                                    data-show-background="true" data-no-margin="margin-0"
+                                                    aria-hidden="true">
+                                                    <div class="loader background margin-0"
+                                                        data-ng-class="{'background' : showBackground, 'margin-0': noMargin}">
+                                                        <div class="cs-spinner"></div>
+                                                    </div>
+                                                </cs-spinner><i
+                                                    class="icon icon-import margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_IMPORT_BUTTON}}
+                                            </button>
+                                            <button type="button" class="btn btn-danger"
+                                                data-ng-click="setBulkImportFlags('bulkImportOff')"
+                                                id="cancel-bulk-import"><i
+                                                    class="icon icon-close margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_CANCEL_BUTTON}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Add New IOC Div END -->
+
                                     <!-- UI-SELECT Excluded List Div START -->
-                                    <div data-ng-repeat="(keyStoreName, keyStoreDetails) in updatedGlobalSettings"
+                                    <div data-ng-repeat="(indicatorType, exclusionDetails) in updatedExclusionSettings.recordValue"
                                         class="excluded-ui-select" data-ng-show="!importStatus">
                                         <div class="padding-bottom-md">
                                             <label
-                                                class="control-label text-transform-none">{{keyStoreDetails.recordValue.type}}:
+                                                class="control-label text-transform-none">{{indicatorType}}:
                                                 <span
-                                                    data-uib-tooltip="Specify {{keyStoreDetails.recordValue.type}} to exclude from enrichment."
+                                                    data-uib-tooltip="Specify {{indicatorType}} to exclude from enrichment."
                                                     data-tooltip-placement="top-left"
                                                     data-tooltip-append-to-body="true"><i class="icon icon-information"
                                                         aria-hidden="true"></i></span>
                                             </label>
                                             <div class="cs-select padding-left-3">
-                                                <ui-select name="{{keyStoreName}}"
-                                                    data-ng-model="keyStoreDetails.recordValue.iocValues" multiple
+                                                <ui-select name="{{indicatorType}}"
+                                                    data-ng-model="exclusionDetails.excludedIOCs" multiple
                                                     class="custom-multi-select" tagging="undefined"
                                                     tagging-label="false"
-                                                    data-ng-change="validateIOC($select.selected, keyStoreName)"
+                                                    data-ng-change="validateIOC($select.selected, indicatorType)"
                                                     style="max-height: 90px; overflow-y: auto;">
                                                     <ui-select-match
-                                                        placeholder="Excluded {{keyStoreDetails.recordValue.type}}">{{$item}}</ui-select-match>
+                                                        placeholder="Excluded {{indicatorType}}">{{$item}}</ui-select-match>
                                                     <ui-select-choices repeat="option in initList" refresh-delay="0"
                                                         show="(initList.length > 0)">
                                                         <div ng-bind="option"></div>
                                                     </ui-select-choices>
                                                 </ui-select>
                                                 <span class="font-075em padding-left-10 text-danger"
-                                                    data-ng-if="invalidIOCs[keyStoreName].length > 0">Invalid
-                                                    {{keyStoreDetails.recordValue.type}} -
-                                                    <strong>{{invalidIOCs[keyStoreName]}}</strong>
+                                                    data-ng-if="invalidIOCs[indicatorType].length > 0">Invalid
+                                                    {{indicatorType}} -
+                                                    <strong>{{invalidIOCs[indicatorType]}}</strong>
                                                 </span>
                                             </div>
                                         </div>
@@ -270,7 +347,8 @@
                     <div class="full-height display-table-cell vertical-align-middle">
                         <div class="col-md-6 display-flex align-items-center margin-top-34 padding-0">
                             <div class="full-width">
-                                <img class="d-info-image img-responsive padding-left-20-per" src="{{pageImages.finishPageImage}}">
+                                <img class="d-info-image img-responsive padding-left-20-per"
+                                    src="{{pageImages.finishPageImage}}">
                             </div>
                         </div>
                         <div class="col-md-6 prerequisites-section padding-bottom-25 padding-left-0">

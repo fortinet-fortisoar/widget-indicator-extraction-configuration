@@ -64,16 +64,6 @@
             "key",
             "jSONValue"
           ]
-        },
-        globalVariablesToKeyStoreMapping: {
-          "sfsp-excludelist-ips": ["Excludelist_IPs", "IP Address", true],
-          "sfsp-excludelist-urls": ["Excludelist_URLs", "URL", true],
-          "sfsp-excludelist-domains": ["Excludelist_Domains", "Domain", true],
-          "sfsp-excludelist-ports": ["Excludelist_Ports", "Port", true],
-          "sfsp-excludelist-files": ["Excludelist_Files", "File", true],
-          "sfsp-excludelist-cidr-ranges": ["NA", "CIDR Range", true],
-          "sfsp-excludelist-file-hashes":["NA", "File Hash", true],
-          "sfsp-indicator-type-mapping": ["Indicator_Type_Map", "NA", true]
         }
       }
     }

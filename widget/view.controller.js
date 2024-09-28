@@ -14,7 +14,10 @@
   function configureIndicatorExtraction110Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, iocExtractionConfigService, toaster, Upload, API) {
     // Initialization variables
     $scope.defaultGlobalSettings = {};
-    $scope.updatedGlobalSettings = {};
+    $scope.defaultExclusionSettings = {};
+    $scope.updatedExclusionSettings = {};
+    $scope.defaultIOCTypeFieldMapping = {};
+    $scope.updatedIOCTypeFieldMapping = {};
     $scope.initList = [];
     $scope.searchString = '';
     $scope.searchStatus = 'off';
@@ -39,12 +42,11 @@
     $scope._buildPayload = _buildPayload;
     $scope.moveNext = moveNext;
     $scope.moveBack = moveBack;
-    $scope.commitGlobalSettings = commitGlobalSettings;
+    $scope.commitExclusionSettings = commitExclusionSettings;
     $scope.validateIOC = validateIOC;
     $scope.setSearchStatus = setSearchStatus;
     $scope.updateSearchQuery = updateSearchQuery;
     $scope._getRegexPattern = _getRegexPattern;
-    $scope._getKeyStoreValue = _getKeyStoreValue;
     $scope.uploadFiles = uploadFiles;
     $scope.setBulkImportFlags = setBulkImportFlags;
 
@@ -171,78 +173,47 @@
       let mapping = {
         'IP Address': ['IPv4', 'IPv6'],
         'File Hash': ['MD5', 'SHA1', 'SHA256'],
-        'CIDR Range': ['CIDR'],
         'Domain': ['Host']
       };
       return (mapping[indicatorType] || [indicatorType]).map(key => regexMapping[key]);
     }
 
 
-    function _getKeyStoreValue(keyStoreName, regexDict) {
-      let [globalVariable, type, defaultKeyStore] = iocExtractionConfigService.constants().globalVariablesToKeyStoreMapping[keyStoreName];
-      return {
-        globalVariable,
-        type,
-        defaultKeyStore,
-        iocValues: [],
-        pattern: _getRegexPattern(type, regexDict)
-      };
-    }
+    function _initExclusionSetting() {
+      // Fetch regex mappings for different indicator types using Regex Keystore
+      let keyName = 'sfsp-indicator-regex-mapping';
+      let payload = _buildPayload(keyName, null, 'findKeyStore');
+      iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
+        // Create a dictionary to map indicator types to regex patterns 
+        if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
+          let regexMapping = response["hydra:member"][0].jSONValue;
+          var regexDict = regexMapping.reduce(function (acc, item) {
+            acc[item.indicator_type] = item.pattern_regx.replace(/\\\\/g, '\\'); // Normalizing the JSON response from the utilities connector by replacing escape characters in the encoded regex
+            return acc;
+          }, {});
+        }
 
+        // Build payload to fetch exclusion data for all the indicator types available in keystore
+        let keyStoreName = 'sfsp-indicator-extraction-configuration';
+        let payload = _buildPayload(keyStoreName, null, 'findKeyStore');
 
-    function _handleGblVarsAndKeyStores() {
-      // Fetch regex mappings for different indicator types using Utilities connector
-      iocExtractionConfigService.getIndicatorRegex().then(function (regexMapping) {
-        // Create a dictionary to map indicator types to regex patterns
-        let regexDict = regexMapping.data.reduce(function (acc, item) {
-          acc[item.indicator_type] = item.regx.replace(/\\\\/g, '\\'); // Normalizing the JSON response from the utilities connector by replacing escape characters in the encoded regex
-          return acc;
-        }, {});
+        // Fetch key store record based on the payload
+        iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
+          if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
 
-        // Build payload to fetch all the key store records associated with excludelist
-        let keyName = '%sfsp-excludelist%';
-        let payload = _buildPayload(keyName, null, 'findKeyStore');
-
-        // Fetch key store records based on the payload
-        iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (keystoreDetails) {
-          if (keystoreDetails && keystoreDetails['hydra:member'] && keystoreDetails['hydra:member'].length > 0) {
-            // Process each key store record
-            keystoreDetails['hydra:member'].forEach(function (item) {
-              let keyStoreName = item.key;
-              let keyStoreValue = _getKeyStoreValue(keyStoreName, regexDict);
-
-              // Fetch global variable details for the corresponding key store value
-              iocExtractionConfigService.getGlobalVariable(keyStoreValue.globalVariable).then(function (gblVariableDetails) {
-
-                // Check if global variables exist for the key store
-                if (gblVariableDetails && gblVariableDetails['hydra:member'] && gblVariableDetails['hydra:member'].length > 0) {
-                  let globalVariableValue = gblVariableDetails['hydra:member'][0].value.length > 0 ? [...new Set(gblVariableDetails['hydra:member'][0].value.split(','))] : []; // Get the value of the global variable as an array
-                  keyStoreValue['iocValues'] = globalVariableValue; // Assign global variable values to key store
-
-                  // Build payload to update global variable values to key store
-                  let payload = _buildPayload(keyStoreName, keyStoreValue, 'createKeyStore');
-
-                  iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-
-                    // Verify if the global variable value was correctly migrated to the key store
-                    if (res.jSONValue.iocValues.sort().toString() === globalVariableValue.sort().toString()) {
-                      $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue };
-                    }
-                  });
-                }
-                else if (Array.isArray(item.jSONValue)) {
-                  // If key store record already exists and has JSON values, assign it to the key store
-                  keyStoreValue['iocValues'] = item.jSONValue;
-                  let payload = _buildPayload(keyStoreName, keyStoreValue, 'createKeyStore');
-                  iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-                    $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue };
-                  });
-                }
-                else {
-                  // If no global variable exists and JSON values are not an array then simply update the settings
-                  $scope.defaultGlobalSettings[keyStoreName] = { 'recordUUID': item.uuid, 'recordValue': item.jSONValue };
-                }
-              });
+            // Process each key in keystore record
+            let keystoreDetails = response['hydra:member'][0].jSONValue;
+            $scope.defaultGlobalSettings = keystoreDetails;
+            $scope.defaultExclusionSettings = { 'recordUUID': response['hydra:member'][0].uuid, 'recordValue': {} };
+            $scope.defaultIOCTypeFieldMapping = { 'recordUUID': response['hydra:member'][0].uuid, 'recordValue': {} };
+            Object.keys(keystoreDetails).forEach(function (indicatorType) {
+              if (indicatorType === 'Indicator Type Mapping') {
+                $scope.defaultIOCTypeFieldMapping.recordValue = keystoreDetails[indicatorType];
+              } else {
+                let iocExclusionDetails = keystoreDetails[indicatorType]
+                iocExclusionDetails.pattern = _getRegexPattern(indicatorType, regexDict);
+                $scope.defaultExclusionSettings.recordValue[indicatorType] = iocExclusionDetails;
+              }
             });
           }
         });
@@ -256,14 +227,14 @@
       $scope.globalSearchList = {}; // Contains search result
       $scope.searchResultCount = 0; // This variable counts the search results found
       if (searchStringValue.length > 0) {
-        Object.keys($scope.updatedGlobalSettings).forEach(function (item) {
-          if (item.includes('excludelist') && $scope.updatedGlobalSettings[item].recordValue.iocValues.length > 0) {
-            const filteredList = $scope.updatedGlobalSettings[item].recordValue.iocValues.filter(function (iocValue) {
+        Object.keys($scope.updatedExclusionSettings).forEach(function (item) {
+          if (item.includes('excludelist') && $scope.updatedExclusionSettings[item].recordValue.iocValues.length > 0) {
+            const filteredList = $scope.updatedExclusionSettings[item].recordValue.iocValues.filter(function (iocValue) {
               return iocValue.includes(searchStringValue);
             });
             if (filteredList.length > 0) {
               $scope.searchResultCount = $scope.searchResultCount + filteredList.length;
-              $scope.globalSearchList[item] = { 'type': $scope.updatedGlobalSettings[item].recordValue.type, 'filteredValues': filteredList };
+              $scope.globalSearchList[item] = { 'type': $scope.updatedExclusionSettings[item].recordValue.type, 'filteredValues': filteredList };
             }
           }
         });
@@ -281,9 +252,9 @@
     }
 
 
-    function validateIOC(updatedKeyStoreValue, keyStoreName) {
-      if ($scope.updatedGlobalSettings[keyStoreName].recordValue.pattern.length > 0) {
-        let regexPattern = $scope.updatedGlobalSettings[keyStoreName].recordValue.pattern;
+    function validateIOC(updatedKeyStoreValue, indicatorType) {
+      if ($scope.updatedExclusionSettings.recordValue[indicatorType].pattern.length > 0) {
+        let regexPattern = $scope.updatedExclusionSettings.recordValue[indicatorType].pattern;
         let regExObjects = regexPattern.map(pattern => new RegExp(pattern)); // Creates an array of RegExp objects
 
         let _tempInvalidIOCs = updatedKeyStoreValue.filter(item => {
@@ -292,9 +263,9 @@
         });
 
         if (_tempInvalidIOCs.length > 0) {
-          $scope.invalidIOCs[keyStoreName] = _tempInvalidIOCs.join(', ');
+          $scope.invalidIOCs[indicatorType] = _tempInvalidIOCs.join(', ');
         } else {
-          delete $scope.invalidIOCs[keyStoreName];
+          delete $scope.invalidIOCs[indicatorType];
         }
 
         $scope.isInvalidIOCsNotEmpty = function () {
@@ -307,13 +278,14 @@
     function moveNext(param) {
       let currentStepTitle = WizardHandler.wizard('configureIndicatorExtraction').currentStep().wzTitle
       if (currentStepTitle === 'Start') {
-        if (Object.keys($scope.updatedGlobalSettings).length === 0) {
-          $scope.updatedGlobalSettings = angular.copy($scope.defaultGlobalSettings);
+        if (Object.keys($scope.updatedExclusionSettings).length === 0) {
+          $scope.updatedExclusionSettings = angular.copy($scope.defaultExclusionSettings);
+          $scope.updatedIOCTypeFieldMapping = angular.copy($scope.defaultIOCTypeFieldMapping);
         }
       }
       if (currentStepTitle === 'Excludelist Configuration') {
         if (param === 'save') {
-          commitGlobalSettings();
+          commitExclusionSettings();
         }
       }
       WizardHandler.wizard('configureIndicatorExtraction').next();
@@ -325,18 +297,19 @@
     }
 
 
-    function commitGlobalSettings() {
-      Object.keys($scope.updatedGlobalSettings).forEach(function (item) {
-        let keyValue = $scope.updatedGlobalSettings[item].recordValue;
-        let uuid = $scope.updatedGlobalSettings[item].recordUUID;
-        iocExtractionConfigService.updateKeyStoreRecord(keyValue, uuid);
+    function commitExclusionSettings() {
+      Object.keys($scope.updatedExclusionSettings.recordValue).forEach(function (item) {
+        $scope.defaultGlobalSettings[item] = $scope.updatedExclusionSettings.recordValue[item];
       });
+      let keyValue = $scope.defaultGlobalSettings;
+      let uuid = $scope.updatedExclusionSettings.recordUUID;
+      iocExtractionConfigService.updateKeyStoreRecord(keyValue, uuid);
     }
 
 
     function init() {
       // To set value to be displayed on "Excludelist Settings" page
-      _handleGblVarsAndKeyStores();
+      _initExclusionSetting();
       // To handle backward compatibility for widget
       _handleTranslations();
     }
