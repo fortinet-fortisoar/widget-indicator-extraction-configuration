@@ -17,9 +17,7 @@
 
     var service = {
       constants: constants,
-      getGlobalVariable: getGlobalVariable,
       createOrUpdateKeyStore: createOrUpdateKeyStore,
-      deleteGlobalVariable: deleteGlobalVariable,
       getKeyStoreRecord: getKeyStoreRecord,
       updateKeyStoreRecord: updateKeyStoreRecord,
       executeConnectorOperation: executeConnectorOperation,
@@ -88,17 +86,6 @@
     }
 
 
-    function getGlobalVariable(gblVarName) {
-      var defer = $q.defer();
-      var url = API.WORKFLOW + API.API + '/dynamic-variable/?name=' + gblVarName;
-      $resource(url).get(null, function (response) {
-        defer.resolve(response);
-      }, function (err) {
-        defer.reject(err);
-      });
-      return defer.promise;
-    }
-
     function createOrUpdateKeyStore(queryObject, module) {
       var defer = $q.defer();
       var url = API.API_3_BASE + 'upsert/' + module;
@@ -110,18 +97,6 @@
       return defer.promise;
     }
 
-    function deleteGlobalVariable(gblVarName) {
-      var defer = $q.defer();
-      var url = API.WORKFLOW + API.API + '/dynamic-variable/' + gblVarName + '/?format=json';
-      $resource(url, null, {
-        'delete': { method: 'DELETE' }
-      }).delete(null, function (response) {
-        defer.resolve(response);
-      }, function (err) {
-        defer.reject(err);
-      });
-      return defer.promise;
-    }
 
     function getKeyStoreRecord(queryObject, module) {
       var defer = $q.defer();

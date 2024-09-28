@@ -26,6 +26,7 @@
     $scope.invalidIOCs = {}; // This dict holds invalid IOCs for various indicator types
     $scope.fileName = '';
     $scope.uploadedFileFlag = false;
+    $scope.loadingJob = false;
     const maxFileSize = 25072682;
 
 
@@ -49,19 +50,33 @@
     $scope._getRegexPattern = _getRegexPattern;
     $scope.uploadFiles = uploadFiles;
     $scope.setBulkImportFlags = setBulkImportFlags;
+    $scope.setAddNewIOCFlags = setAddNewIOCFlags;
+
+    function setAddNewIOCFlags(flag) {
+      if (flag === 'addNewIOCTypeON') {
+        $scope.addNewIndicatorType = true;
+      }
+      if (flag === 'addNewIOCTypeOFF') {
+        $scope.addNewIndicatorType = false;
+      }
+    }
 
 
     function setBulkImportFlags(flag) {
+      const resetFileUpload = () => {
+        $scope.uploadedFileFlag = false;
+        $scope.loadingJob = false;
+        $scope.fileName = '';
+      }
       if (flag === 'bulkImportOn') {
-        $scope.importStatus = true;
+        $scope.bulkImportOn = true;
       }
       if (flag === 'bulkImportOff') {
-        $scope.importStatus = false;
-        $scope.uploadedFileFlag = false;
+        $scope.bulkImportOn = false;
+        resetFileUpload();
       }
-      if (flag === 'resetUpload') {
-        $scope.uploadedFileFlag = false;
-
+      if (flag === 'resetFileUpload') {
+        resetFileUpload();
       }
     }
 
@@ -76,11 +91,11 @@
             }
           });
           $scope.enableSpinner = true;
-          // $scope.loadingJob = true;
+          $scope.loadingJob = true;
           file.upload.then(function (response) {
             $scope.fileMetadata = response.data;
             $scope.fileName = response.data.filename;
-            // $scope.loadingJob = false;
+            $scope.loadingJob = false;
             $scope.uploadedFileFlag = true;
             $scope.enableSpinner = false;
             // if ($scope.showCreatedSolutions === 'created') {
@@ -88,14 +103,14 @@
             // }
           },
             function (response) {
-              // $scope.loadingJob = false;
+              $scope.loadingJob = false;
               $scope.enableSpinner = false;
               if (response.status > 0) {
                 $log.debug(response.status + ': ' + response.data);
               }
-              var message = $scope.viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_UPLOAD_FAILED;
+              var message = $scope.viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOAD_FAILED;
               if (response.status === 413) {
-                message = $scope.viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_FILE_SIZE_EXCEEDED;
+                message = $scope.viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED;
               }
               $scope.enableSpinner = false;
               toaster.error({ body: message });
@@ -104,7 +119,7 @@
       }
       else {
         $scope.enableSpinner = false;
-        toaster.error({ body: $scope.viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_FILE_SIZE_EXCEEDED });
+        toaster.error({ body: $scope.viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED });
       }
     }
 
@@ -131,12 +146,12 @@
             EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL'),
             EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL'),
             EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON'),
-            EXCLUDELIST_CONFIG_PAGE_IMPORT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_IMPORT_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_IMPORT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_IMPORT_BUTTON'),
             EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_CANCEL_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_CANCEL_BUTTON'),
             EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON'),
-            EXCLUDELIST_CONFIG_PAGE_UPLOAD_FAILED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_UPLOAD_FAILED'),
-            EXCLUDELIST_CONFIG_PAGE_FILE_SIZE_EXCEEDED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_FILE_SIZE_EXCEEDED'),
-            EXCLUDELIST_CONFIG_PAGE_FILE_TYPE_NOT_SUPPORTED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_FILE_TYPE_NOT_SUPPORTED'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOAD_FAILED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOAD_FAILED'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_TYPE_NOT_SUPPORTED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_TYPE_NOT_SUPPORTED'),
             EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL'),
             EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE'),
             EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER'),

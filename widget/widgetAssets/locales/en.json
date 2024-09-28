@@ -11,18 +11,21 @@
         "EXCLUDELIST_CONFIG_PAGE_DESCRIPTION": "Specify artifacts that should be excluded from enrichment and further analysis.",
         "EXCLUDELIST_CONFIG_PAGE_SEARCH_PLACEHOLDER": "Search added artefact",
         "EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL": "Search Result :",
+
         "EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL": "Add indicators manually or use",
         "EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON": "bulk import",
-        "EXCLUDELIST_CONFIG_PAGE_IMPORT_BUTTON":"Import",
+        "EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_IMPORT_BUTTON":"Import",
         "EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL":"Import Indicators",
         "EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_CANCEL_BUTTON":"Cancel",
-        "EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON": "+ Add New Indicator Type",
-        "EXCLUDELIST_CONFIG_PAGE_UPLOAD_FAILED":"Upload failed. Please try again.",
-        "EXCLUDELIST_CONFIG_PAGE_FILE_SIZE_EXCEEDED":"File exceeds the maximum size.",
-        "EXCLUDELIST_CONFIG_PAGE_FILE_TYPE_NOT_SUPPORTED": "File type not supported",
+        "EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOAD_FAILED":"Upload failed. Please try again.",
+        "EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED":"File exceeds the maximum size.",
+        "EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_TYPE_NOT_SUPPORTED": "File type not supported",
         "EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE":"Drop a file",
         "EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER":"or click to use standard uploader",
         "EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_SHOULD_NOT_EXCEED_25MB":"File Size should not exceed 25MB",
+
+        "EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON": "+ Add New Indicator Type",
+        
         "EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON": "Back",
         "EXCLUDELIST_CONFIG_PAGE_SKIP_BUTTON": "Skip",
         "EXCLUDELIST_CONFIG_PAGE_SAVE_BUTTON": "Save"
