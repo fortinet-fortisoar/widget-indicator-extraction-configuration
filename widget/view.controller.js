@@ -227,14 +227,14 @@
       $scope.globalSearchList = {}; // Contains search result
       $scope.searchResultCount = 0; // This variable counts the search results found
       if (searchStringValue.length > 0) {
-        Object.keys($scope.updatedExclusionSettings).forEach(function (item) {
-          if (item.includes('excludelist') && $scope.updatedExclusionSettings[item].recordValue.iocValues.length > 0) {
-            const filteredList = $scope.updatedExclusionSettings[item].recordValue.iocValues.filter(function (iocValue) {
+        Object.keys($scope.updatedExclusionSettings.recordValue).forEach(function (indicatorType) {
+          if ($scope.updatedExclusionSettings.recordValue[indicatorType].excludedIOCs.length > 0) {
+            const filteredList = $scope.updatedExclusionSettings.recordValue[indicatorType].excludedIOCs.filter(function (iocValue) {
               return iocValue.includes(searchStringValue);
             });
             if (filteredList.length > 0) {
               $scope.searchResultCount = $scope.searchResultCount + filteredList.length;
-              $scope.globalSearchList[item] = { 'type': $scope.updatedExclusionSettings[item].recordValue.type, 'filteredValues': filteredList };
+              $scope.globalSearchList[indicatorType] = { 'type': indicatorType, 'filteredValues': filteredList };
             }
           }
         });
