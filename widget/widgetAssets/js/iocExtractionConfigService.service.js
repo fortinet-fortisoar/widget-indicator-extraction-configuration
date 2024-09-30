@@ -21,7 +21,8 @@
       getKeyStoreRecord: getKeyStoreRecord,
       updateKeyStoreRecord: updateKeyStoreRecord,
       executeConnectorOperation: executeConnectorOperation,
-      getIndicatorRegex: getIndicatorRegex
+      getIndicatorRegex: getIndicatorRegex,
+      getPicklist: getPicklist
     }
     return service;
 
@@ -62,6 +63,14 @@
             "key",
             "jSONValue"
           ]
+        },
+        keyStoreTemplate: {
+          "pattern": [],
+          "excludedIOCs": [],
+          "globalVariable": "",
+          "category": "system",
+          "migratedFromGlobalVariable": true,
+          "includeInConsolidation": true
         }
       }
     }
@@ -85,6 +94,17 @@
         });
     }
 
+
+    function getPicklist() {
+      var defer = $q.defer();
+      var url = '/api/3/picklist_names/50ee5bfa-e18f-49ba-8af9-dcca25b0f9c0';
+      $resource(url).get(null, function (response) {
+        defer.resolve(response);
+      }, function (err) {
+        defer.reject(err);
+      })
+      return defer.promise;
+    }
 
     function createOrUpdateKeyStore(queryObject, module) {
       var defer = $q.defer();
