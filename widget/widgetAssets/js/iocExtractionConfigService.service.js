@@ -97,7 +97,7 @@
 
     function getPicklist() {
       var defer = $q.defer();
-      var url = '/api/3/picklist_names/50ee5bfa-e18f-49ba-8af9-dcca25b0f9c0';
+      var url = '/api/3/picklist_names/50ee5bfa-e18f-49ba-8af9-dcca25b0f9c0'; // IRI of 'Indicator Type' picklist
       $resource(url).get(null, function (response) {
         defer.resolve(response);
       }, function (err) {

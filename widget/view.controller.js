@@ -34,6 +34,7 @@
     $scope.isSystemIOCType = true;
     $scope.iocTypeSelected = false;
     const maxFileSize = 25072682;
+
     var regexDict = {};
 
 
@@ -67,12 +68,11 @@
       let keyStoreTemplate = iocExtractionConfigService.constants().keyStoreTemplate;
       let iocTypeName = $scope.selectedIndicatorType.iocType;
       keyStoreTemplate['pattern'].push($scope.selectedIndicatorType.pattern);
-      if ($scope.addCustomIOCType){
+      if ($scope.addCustomIOCType) {
         keyStoreTemplate['category'] = 'custom';
       }
       $scope.updatedExclusionSettings.recordValue[iocTypeName] = keyStoreTemplate;
-      console.log($scope.updatedExclusionSettings);
-      setAddNewIOCFlags('addNewIOCTypeOFF');
+      setAddNewIOCFlags('addNewIOCTypeDisabled');
     }
 
 
@@ -89,15 +89,14 @@
         if ($scope.selectedIndicatorType['pattern'].length === 0) {
           $scope.isSystemIOCType = false;
         }
-        console.log('test');
       }
     }
 
     function setAddNewIOCFlags(flag) {
-      if (flag === 'addNewIOCTypeON') {
+      if (flag === 'addNewIOCTypeEnabled') {
         $scope.addNewIndicatorType = true;
       }
-      if (flag === 'addNewIOCTypeOFF') {
+      if (flag === 'addNewIOCTypeDisabled') {
         $scope.addNewIndicatorType = false;
         $scope.selectedIndicatorType = { iocType: '', pattern: [] };
         $scope.addCustomIOCType = false;
@@ -121,8 +120,6 @@
           }
         });
         $scope.notYetEnteredIOCTypes = Array.from(new Set(unCommonElements.concat($scope.notYetEnteredIOCTypes)));
-        console.log(defaultIOCTypeList);
-        console.log('alreadyEnteredIOCTypes');
       });
     }
 
@@ -133,11 +130,11 @@
         $scope.loadingJob = false;
         $scope.fileName = '';
       }
-      if (flag === 'bulkImportOn') {
-        $scope.bulkImportOn = true;
+      if (flag === 'bulkImportEnabled') {
+        $scope.bulkImportEnabled = true;
       }
-      if (flag === 'bulkImportOff') {
-        $scope.bulkImportOn = false;
+      if (flag === 'bulkImportDisabled') {
+        $scope.bulkImportEnabled = false;
         resetFileUpload();
       }
       if (flag === 'resetFileUpload') {
@@ -163,9 +160,6 @@
             $scope.loadingJob = false;
             $scope.uploadedFileFlag = true;
             $scope.enableSpinner = false;
-            // if ($scope.showCreatedSolutions === 'created') {
-            //   submitContentFormService.triggerPlaybook($scope);
-            // }
           },
             function (response) {
               $scope.loadingJob = false;
@@ -278,7 +272,6 @@
             acc[item.indicator_type] = item.pattern_regx.replace(/\\\\/g, '\\'); // Normalizing the JSON response from the utilities connector by replacing escape characters in the encoded regex
             return acc;
           }, {});
-          console.log(regexDict);
         }
 
         // Build payload to fetch exclusion data for all the indicator types available in keystore
@@ -301,7 +294,6 @@
                 let iocExclusionDetails = keystoreDetails[indicatorType]
                 iocExclusionDetails.pattern = _getRegexPattern(indicatorType, regexDict);
                 $scope.defaultExclusionSettings.recordValue[indicatorType] = iocExclusionDetails;
-                console.log(regexDict);
               }
             });
           }
@@ -372,7 +364,6 @@
           $scope.updatedIOCTypeFieldMapping = angular.copy($scope.defaultIOCTypeFieldMapping);
         }
         getNotEnteredIOCTypes();
-        console.log('test');
       }
       if (currentStepTitle === 'Excludelist Configuration') {
         if (param === 'save') {

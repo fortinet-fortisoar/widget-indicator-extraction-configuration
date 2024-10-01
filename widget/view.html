@@ -114,7 +114,7 @@
                                         <button type="button"
                                             class="btn-link text-decoration-none font-light italic font-size-14"
                                             style="margin-left: -6px !important;"
-                                            data-ng-click="setBulkImportFlags('bulkImportOn')"
+                                            data-ng-click="setBulkImportFlags('bulkImportEnabled')"
                                             id="indicator-bulk-import-button" aria-hidden="false"><span
                                                 class="icon icon-import"></span>&nbsp;{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LAUNCH_BUTTON}}
                                         </button>
@@ -122,14 +122,14 @@
                                         <!-- Add New Indicator BUTTON -->
                                         <button type="button"
                                             class="btn-link text-decoration-none font-light pull-right italic font-size-14"
-                                            data-ng-click="setAddNewIOCFlags('addNewIOCTypeON')"
+                                            data-ng-click="setAddNewIOCFlags('addNewIOCTypeEnabled')"
                                             id="add-new-indicator-type"
                                             aria-hidden="false">{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_LAUNCH_BUTTON}}
                                         </button>
                                     </div>
 
                                     <!-- Bulk Import Div START -->
-                                    <div id="bulk-import-container" data-ng-show="bulkImportOn"
+                                    <div id="bulk-import-container" data-ng-show="bulkImportEnabled"
                                         data-ng-style="{'background': isLightTheme ? '#fafaf9' : (isSteelTheme ? '#242b35' : '#262626')}">
                                         <label class="control-label display-block manual-input-list-container"
                                             style="padding: 10px 20px;">
@@ -195,7 +195,7 @@
                                                     class="icon icon-import margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_IMPORT_BUTTON}}
                                             </button>
                                             <button type="button" class="btn btn-second-default"
-                                                data-ng-click="setBulkImportFlags('bulkImportOff')"
+                                                data-ng-click="setBulkImportFlags('bulkImportDisabled')"
                                                 id="cancel-bulk-import"><i
                                                     class="icon icon-close margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CANCEL_BUTTON}}
                                             </button>
@@ -263,7 +263,7 @@
                                                     class="icon icon-import margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_SAVE_BUTTON}}
                                             </button>
                                             <button type="button" class="btn btn-second-default"
-                                                data-ng-click="setAddNewIOCFlags('addNewIOCTypeOFF')"
+                                                data-ng-click="setAddNewIOCFlags('addNewIOCTypeDisabled')"
                                                 id="cancel-bulk-import"><i
                                                     class="icon icon-close margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CANCEL_BUTTON}}
                                             </button>
@@ -273,7 +273,7 @@
 
                                     <!-- UI-SELECT Excluded List Div START -->
                                     <div data-ng-repeat="(indicatorType, exclusionDetails) in updatedExclusionSettings.recordValue"
-                                        class="excluded-ui-select" data-ng-show="!bulkImportOn">
+                                        class="excluded-ui-select" data-ng-show="!bulkImportEnabled">
                                         <div class="padding-bottom-md">
                                             <label class="control-label text-transform-none">{{indicatorType}}:
                                                 <span
