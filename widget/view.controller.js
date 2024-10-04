@@ -7,11 +7,11 @@
 (function () {
   angular
     .module('cybersponse')
-    .controller('configureIndicatorExtraction110Ctrl', configureIndicatorExtraction110Ctrl);
+    .controller('configureIndicatorExtraction200Ctrl', configureIndicatorExtraction200Ctrl);
 
-  configureIndicatorExtraction110Ctrl.$inject = ['$scope', 'widgetUtilityService', '$rootScope', 'widgetBasePath', 'WizardHandler', 'iocExtractionConfigService', 'toaster', 'Upload', 'API'];
+  configureIndicatorExtraction200Ctrl.$inject = ['$scope', 'widgetUtilityService', '$rootScope', 'widgetBasePath', 'WizardHandler', 'iocExtractionConfigService', 'toaster', 'Upload', 'API'];
 
-  function configureIndicatorExtraction110Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, iocExtractionConfigService, toaster, Upload, API) {
+  function configureIndicatorExtraction200Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, iocExtractionConfigService, toaster, Upload, API) {
     // Initialization variables
     $scope.defaultGlobalSettings = {};
     $scope.defaultExclusionSettings = {};
