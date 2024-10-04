@@ -7,11 +7,11 @@
 (function () {
   angular
     .module('cybersponse')
-    .controller('editConfigureIndicatorExtraction110Ctrl', editConfigureIndicatorExtraction110Ctrl);
+    .controller('editConfigureIndicatorExtraction200Ctrl', editConfigureIndicatorExtraction200Ctrl);
 
-  editConfigureIndicatorExtraction110Ctrl.$inject = ['$scope', '$uibModalInstance', 'config', 'widgetUtilityService', '$timeout'];
+  editConfigureIndicatorExtraction200Ctrl.$inject = ['$scope', '$uibModalInstance', 'config', 'widgetUtilityService', '$timeout'];
 
-  function editConfigureIndicatorExtraction110Ctrl($scope, $uibModalInstance, config, widgetUtilityService, $timeout) {
+  function editConfigureIndicatorExtraction200Ctrl($scope, $uibModalInstance, config, widgetUtilityService, $timeout) {
     $scope.cancel = cancel;
     $scope.save = save;
     $scope.config = config;
