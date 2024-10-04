@@ -9,36 +9,181 @@
     .module('cybersponse')
     .controller('configureIndicatorExtraction110Ctrl', configureIndicatorExtraction110Ctrl);
 
-  configureIndicatorExtraction110Ctrl.$inject = ['$scope', 'widgetUtilityService', '$rootScope', 'widgetBasePath', 'WizardHandler', 'iocExtractionConfigService', 'toaster'];
+  configureIndicatorExtraction110Ctrl.$inject = ['$scope', 'widgetUtilityService', '$rootScope', 'widgetBasePath', 'WizardHandler', 'iocExtractionConfigService', 'toaster', 'Upload', 'API'];
 
-  function configureIndicatorExtraction110Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, iocExtractionConfigService, toaster) {
+  function configureIndicatorExtraction110Ctrl($scope, widgetUtilityService, $rootScope, widgetBasePath, WizardHandler, iocExtractionConfigService, toaster, Upload, API) {
     // Initialization variables
     $scope.defaultGlobalSettings = {};
-    $scope.updatedGlobalSettings = {};
+    $scope.defaultExclusionSettings = {};
+    $scope.updatedExclusionSettings = {};
+    $scope.defaultIOCTypeFieldMapping = {};
+    $scope.updatedIOCTypeFieldMapping = {};
     $scope.initList = [];
     $scope.searchString = '';
     $scope.searchStatus = 'off';
     $scope.isLightTheme = $rootScope.theme.id === 'light';
+    $scope.isSteelTheme = $rootScope.theme.id === 'steel';
     $scope.invalidIOCs = {}; // This dict holds invalid IOCs for various indicator types
+    $scope.fileName = '';
+    $scope.uploadedFileFlag = false;
+    $scope.supportedFileTypes = '.csv,.txt,.pdf,.xls,.xlsx,.json,.doc,.docx';
+    $scope.loadingJob = false;
+    $scope.defaultIOCTypeList = [];
+    $scope.notYetEnteredIOCTypes = ['Add Custom Indicator Type'];
+    $scope.selectedIndicatorType = { iocType: '', pattern: [] };
+    $scope.addCustomIOCType = false;
+    $scope.isSystemIOCType = true;
+    $scope.iocTypeSelected = false;
+    const maxFileSize = 25072682;
+
+    var regexDict = {};
 
 
     // File Paths
     $scope.widgetCSS = widgetBasePath + 'widgetAssets/css/wizard-style.css';
-    $scope.startPageImage = $scope.isLightTheme ? widgetBasePath + 'images/sfsp-start-light.png' : widgetBasePath + 'images/sfsp-start-dark.png';
-    $scope.excludeIOCPageImage = widgetBasePath + 'images/sfsp-global-settings.png';
-    $scope.finishPageImage = widgetBasePath + 'images/finish.png';
+    $scope.pageImages = {
+      'startPageImage': $scope.isLightTheme ? widgetBasePath + 'images/ioc-extraction-start-light.png' : widgetBasePath + 'images/ioc-extraction-start-dark.png',
+      'excludeIOCPageImage': $scope.isLightTheme ? widgetBasePath + 'images/ioc-extraction-exclusion-light.png' : widgetBasePath + 'images/ioc-extraction-exclusion-dark.png',
+      'fieldMappingPageImage': $scope.isLightTheme ? widgetBasePath + 'images/ioc-extraction-field-map-light.png' : widgetBasePath + 'images/ioc-extraction-field-map-dark.png',
+      'finishPageImage': widgetBasePath + 'images/ioc-extraction-finish-both.png'
+    };
 
     // Functions
     $scope._buildPayload = _buildPayload;
     $scope.moveNext = moveNext;
     $scope.moveBack = moveBack;
-    $scope.commitGlobalSettings = commitGlobalSettings;
+    $scope.commitExclusionSettings = commitExclusionSettings;
     $scope.validateIOC = validateIOC;
     $scope.setSearchStatus = setSearchStatus;
     $scope.updateSearchQuery = updateSearchQuery;
     $scope._getRegexPattern = _getRegexPattern;
-    $scope._getKeyStoreValue = _getKeyStoreValue;
+    $scope.uploadFiles = uploadFiles;
+    $scope.setBulkImportFlags = setBulkImportFlags;
+    $scope.setAddNewIOCFlags = setAddNewIOCFlags;
+    $scope.getNotEnteredIOCTypes = getNotEnteredIOCTypes;
+    $scope.indicatorTypeChanged = indicatorTypeChanged;
+    $scope.saveNewIOCType = saveNewIOCType;
 
+
+    function saveNewIOCType() {
+      let keyStoreTemplate = iocExtractionConfigService.constants().keyStoreTemplate;
+      let iocTypeName = $scope.selectedIndicatorType.iocType;
+      keyStoreTemplate['pattern'].push($scope.selectedIndicatorType.pattern);
+      if ($scope.addCustomIOCType) {
+        keyStoreTemplate['category'] = 'custom';
+      }
+      $scope.updatedExclusionSettings.recordValue[iocTypeName] = keyStoreTemplate;
+      setAddNewIOCFlags('addNewIOCTypeDisabled');
+    }
+
+
+    function indicatorTypeChanged(iocType) {
+      $scope.iocTypeSelected = true;
+      if (iocType === 'Add Custom Indicator Type') {
+        $scope.isSystemIOCType = false;
+        $scope.addCustomIOCType = true;
+        $scope.selectedIndicatorType = { iocType: '', pattern: [] };
+      } else {
+        $scope.addCustomIOCType = false;
+        $scope.isSystemIOCType = true;
+        $scope.selectedIndicatorType['pattern'] = _getRegexPattern(iocType, regexDict).join(',');
+        if ($scope.selectedIndicatorType['pattern'].length === 0) {
+          $scope.isSystemIOCType = false;
+        }
+      }
+    }
+
+    function setAddNewIOCFlags(flag) {
+      if (flag === 'addNewIOCTypeEnabled') {
+        $scope.addNewIndicatorType = true;
+        $scope.bulkImportEnabled = false;
+      }
+      if (flag === 'addNewIOCTypeDisabled') {
+        $scope.addNewIndicatorType = false;
+        $scope.selectedIndicatorType = { iocType: '', pattern: [] };
+        $scope.addCustomIOCType = false;
+        $scope.isSystemIOCType = true;
+      }
+    }
+
+    function getNotEnteredIOCTypes() {
+      iocExtractionConfigService.getPicklist().then(function (response) {
+        let alreadyEnteredIOCTypes = Object.keys($scope.defaultExclusionSettings.recordValue);
+        let defaultIOCTypeList = response.picklists.map(function (item) {
+          if (item.itemValue.includes("FileHash")) {
+            return "File Hash";
+          }
+          return item.itemValue;
+        });
+
+        let unCommonElements = defaultIOCTypeList.filter(function (item) {
+          if (item !== "CIDR Range") {
+            return alreadyEnteredIOCTypes.indexOf(item) === -1;
+          }
+        });
+        $scope.notYetEnteredIOCTypes = Array.from(new Set(unCommonElements.concat($scope.notYetEnteredIOCTypes)));
+      });
+    }
+
+
+    function setBulkImportFlags(flag) {
+      const resetFileUpload = () => {
+        $scope.uploadedFileFlag = false;
+        $scope.loadingJob = false;
+        $scope.fileName = '';
+      }
+      if (flag === 'bulkImportEnabled') {
+        $scope.bulkImportEnabled = true;
+        $scope.addNewIndicatorType = false;
+      }
+      if (flag === 'bulkImportDisabled') {
+        $scope.bulkImportEnabled = false;
+        resetFileUpload();
+      }
+      if (flag === 'resetFileUpload') {
+        resetFileUpload();
+      }
+    }
+
+
+    function uploadFiles(file) {
+      if (file.size < maxFileSize) {
+        if (file.type) {
+          file.upload = Upload.upload({
+            url: API.BASE + 'files',
+            data: {
+              file: file
+            }
+          });
+          $scope.enableSpinner = true;
+          $scope.loadingJob = true;
+          file.upload.then(function (response) {
+            $scope.fileMetadata = response.data;
+            $scope.fileName = response.data.filename;
+            $scope.loadingJob = false;
+            $scope.uploadedFileFlag = true;
+            $scope.enableSpinner = false;
+          },
+            function (response) {
+              $scope.loadingJob = false;
+              $scope.enableSpinner = false;
+              if (response.status > 0) {
+                $log.debug(response.status + ': ' + response.data);
+              }
+              var message = $scope.viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOAD_FAILED;
+              if (response.status === 413) {
+                message = $scope.viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED;
+              }
+              $scope.enableSpinner = false;
+              toaster.error({ body: message });
+            });
+        }
+      }
+      else {
+        $scope.enableSpinner = false;
+        toaster.error({ body: $scope.viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED });
+      }
+    }
 
     function _handleTranslations() {
       let widgetData = {
@@ -62,10 +207,26 @@
             EXCLUDELIST_CONFIG_PAGE_SEARCH_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SEARCH_PLACEHOLDER'),
             EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL'),
             EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL'),
-            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_BUTTON'),
-            EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_INDICATOR_TYPE_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LAUNCH_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LAUNCH_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_IMPORT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_IMPORT_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_CANCEL_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_CANCEL_BUTTON'),
+
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOAD_FAILED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOAD_FAILED'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_TYPE_NOT_SUPPORTED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_TYPE_NOT_SUPPORTED'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_SHOULD_NOT_EXCEED_25MB: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_SHOULD_NOT_EXCEED_25MB'),
+
+            EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_LAUNCH_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_LAUNCH_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_FORM_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_FORM_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_SELECT_INDICATOR_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_SELECT_INDICATOR_LABEL'),
+
+            SELECT_AN_OPTION: widgetUtilityService.translate('configureIndicatorExtraction.SELECT_AN_OPTION'),
             EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON'),
-            EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_NEXT_BUTTON')
+            EXCLUDELIST_CONFIG_PAGE_SAVE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SAVE_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_SKIP_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SKIP_BUTTON'),
           };
         });
       }
@@ -95,78 +256,48 @@
       let mapping = {
         'IP Address': ['IPv4', 'IPv6'],
         'File Hash': ['MD5', 'SHA1', 'SHA256'],
-        'CIDR Range': ['CIDR'],
-        'Domain': ['Host']
+        'Domain': ['Host'],
+        'Email Address': ['Email']
       };
       return (mapping[indicatorType] || [indicatorType]).map(key => regexMapping[key]);
     }
 
 
-    function _getKeyStoreValue(keyStoreName, regexDict) {
-      let [globalVariable, type, defaultKeyStore] = iocExtractionConfigService.constants().globalVariablesToKeyStoreMapping[keyStoreName];
-      return {
-        globalVariable,
-        type,
-        defaultKeyStore,
-        iocValues: [],
-        pattern: _getRegexPattern(type, regexDict)
-      };
-    }
+    function _initExclusionSetting() {
+      // Fetch regex mappings for different indicator types using Regex Keystore
+      let keyName = 'sfsp-indicator-regex-mapping';
+      let payload = _buildPayload(keyName, null, 'findKeyStore');
+      iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
+        // Create a dictionary to map indicator types to regex patterns 
+        if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
+          let regexMapping = response["hydra:member"][0].jSONValue;
+          regexDict = regexMapping.reduce(function (acc, item) {
+            acc[item.indicator_type] = item.pattern_regx.replace(/\\\\/g, '\\'); // Normalizing the JSON response from the utilities connector by replacing escape characters in the encoded regex
+            return acc;
+          }, {});
+        }
 
+        // Build payload to fetch exclusion data for all the indicator types available in keystore
+        let keyStoreName = 'sfsp-indicator-extraction-configuration';
+        let payload = _buildPayload(keyStoreName, null, 'findKeyStore');
 
-    function _handleGblVarsAndKeyStores() {
-      // Fetch regex mappings for different indicator types using Utilities connector
-      iocExtractionConfigService.getIndicatorRegex().then(function (regexMapping) {
-        // Create a dictionary to map indicator types to regex patterns
-        let regexDict = regexMapping.data.reduce(function (acc, item) {
-          acc[item.indicator_type] = item.regx.replace(/\\\\/g, '\\'); // Normalizing the JSON response from the utilities connector by replacing escape characters in the encoded regex
-          return acc;
-        }, {});
+        // Fetch key store record based on the payload
+        iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
+          if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
 
-        // Build payload to fetch all the key store records associated with excludelist
-        let keyName = '%sfsp-excludelist%';
-        let payload = _buildPayload(keyName, null, 'findKeyStore');
-
-        // Fetch key store records based on the payload
-        iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (keystoreDetails) {
-          if (keystoreDetails && keystoreDetails['hydra:member'] && keystoreDetails['hydra:member'].length > 0) {
-            // Process each key store record
-            keystoreDetails['hydra:member'].forEach(function (item) {
-              let keyStoreName = item.key;
-              let keyStoreValue = _getKeyStoreValue(keyStoreName, regexDict);
-
-              // Fetch global variable details for the corresponding key store value
-              iocExtractionConfigService.getGlobalVariable(keyStoreValue.globalVariable).then(function (gblVariableDetails) {
-
-                // Check if global variables exist for the key store
-                if (gblVariableDetails && gblVariableDetails['hydra:member'] && gblVariableDetails['hydra:member'].length > 0) {
-                  let globalVariableValue = gblVariableDetails['hydra:member'][0].value.length > 0 ? [...new Set(gblVariableDetails['hydra:member'][0].value.split(','))] : []; // Get the value of the global variable as an array
-                  keyStoreValue['iocValues'] = globalVariableValue; // Assign global variable values to key store
-
-                  // Build payload to update global variable values to key store
-                  let payload = _buildPayload(keyStoreName, keyStoreValue, 'createKeyStore');
-
-                  iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-
-                    // Verify if the global variable value was correctly migrated to the key store
-                    if (res.jSONValue.iocValues.sort().toString() === globalVariableValue.sort().toString()) {
-                      $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue };
-                    }
-                  });
-                }
-                else if (Array.isArray(item.jSONValue)) {
-                  // If key store record already exists and has JSON values, assign it to the key store
-                  keyStoreValue['iocValues'] = item.jSONValue;
-                  let payload = _buildPayload(keyStoreName, keyStoreValue, 'createKeyStore');
-                  iocExtractionConfigService.createOrUpdateKeyStore(payload, 'keys').then(function (res) {
-                    $scope.defaultGlobalSettings[res.key] = { 'recordUUID': res.uuid, 'recordValue': res.jSONValue };
-                  });
-                }
-                else {
-                  // If no global variable exists and JSON values are not an array then simply update the settings
-                  $scope.defaultGlobalSettings[keyStoreName] = { 'recordUUID': item.uuid, 'recordValue': item.jSONValue };
-                }
-              });
+            // Process each key in keystore record
+            let keystoreDetails = response['hydra:member'][0].jSONValue;
+            $scope.defaultGlobalSettings = keystoreDetails;
+            $scope.defaultExclusionSettings = { 'recordUUID': response['hydra:member'][0].uuid, 'recordValue': {} };
+            $scope.defaultIOCTypeFieldMapping = { 'recordUUID': response['hydra:member'][0].uuid, 'recordValue': {} };
+            Object.keys(keystoreDetails).forEach(function (indicatorType) {
+              if (indicatorType === 'Indicator Type Mapping') {
+                $scope.defaultIOCTypeFieldMapping.recordValue = keystoreDetails[indicatorType];
+              } else {
+                let iocExclusionDetails = keystoreDetails[indicatorType]
+                iocExclusionDetails.pattern = _getRegexPattern(indicatorType, regexDict);
+                $scope.defaultExclusionSettings.recordValue[indicatorType] = iocExclusionDetails;
+              }
             });
           }
         });
@@ -180,14 +311,14 @@
       $scope.globalSearchList = {}; // Contains search result
       $scope.searchResultCount = 0; // This variable counts the search results found
       if (searchStringValue.length > 0) {
-        Object.keys($scope.updatedGlobalSettings).forEach(function (item) {
-          if (item.includes('excludelist') && $scope.updatedGlobalSettings[item].recordValue.iocValues.length > 0) {
-            const filteredList = $scope.updatedGlobalSettings[item].recordValue.iocValues.filter(function (iocValue) {
+        Object.keys($scope.updatedExclusionSettings.recordValue).forEach(function (indicatorType) {
+          if ($scope.updatedExclusionSettings.recordValue[indicatorType].excludedIOCs.length > 0) {
+            const filteredList = $scope.updatedExclusionSettings.recordValue[indicatorType].excludedIOCs.filter(function (iocValue) {
               return iocValue.includes(searchStringValue);
             });
             if (filteredList.length > 0) {
               $scope.searchResultCount = $scope.searchResultCount + filteredList.length;
-              $scope.globalSearchList[item] = { 'type': $scope.updatedGlobalSettings[item].recordValue.type, 'filteredValues': filteredList };
+              $scope.globalSearchList[indicatorType] = { 'type': indicatorType, 'filteredValues': filteredList };
             }
           }
         });
@@ -205,9 +336,9 @@
     }
 
 
-    function validateIOC(updatedKeyStoreValue, keyStoreName) {
-      if ($scope.updatedGlobalSettings[keyStoreName].recordValue.pattern.length > 0) {
-        let regexPattern = $scope.updatedGlobalSettings[keyStoreName].recordValue.pattern;
+    function validateIOC(updatedKeyStoreValue, indicatorType) {
+      if ($scope.updatedExclusionSettings.recordValue[indicatorType].pattern.length > 0) {
+        let regexPattern = $scope.updatedExclusionSettings.recordValue[indicatorType].pattern;
         let regExObjects = regexPattern.map(pattern => new RegExp(pattern)); // Creates an array of RegExp objects
 
         let _tempInvalidIOCs = updatedKeyStoreValue.filter(item => {
@@ -216,9 +347,9 @@
         });
 
         if (_tempInvalidIOCs.length > 0) {
-          $scope.invalidIOCs[keyStoreName] = _tempInvalidIOCs.join(', ');
+          $scope.invalidIOCs[indicatorType] = _tempInvalidIOCs.join(', ');
         } else {
-          delete $scope.invalidIOCs[keyStoreName];
+          delete $scope.invalidIOCs[indicatorType];
         }
 
         $scope.isInvalidIOCsNotEmpty = function () {
@@ -228,15 +359,19 @@
     }
 
 
-    function moveNext() {
+    function moveNext(param) {
       let currentStepTitle = WizardHandler.wizard('configureIndicatorExtraction').currentStep().wzTitle
       if (currentStepTitle === 'Start') {
-        if (Object.keys($scope.updatedGlobalSettings).length === 0) {
-          $scope.updatedGlobalSettings = angular.copy($scope.defaultGlobalSettings);
+        if (Object.keys($scope.updatedExclusionSettings).length === 0) {
+          $scope.updatedExclusionSettings = angular.copy($scope.defaultExclusionSettings);
+          $scope.updatedIOCTypeFieldMapping = angular.copy($scope.defaultIOCTypeFieldMapping);
         }
+        getNotEnteredIOCTypes();
       }
       if (currentStepTitle === 'Excludelist Configuration') {
-        commitGlobalSettings();
+        if (param === 'save') {
+          commitExclusionSettings();
+        }
       }
       WizardHandler.wizard('configureIndicatorExtraction').next();
     }
@@ -247,18 +382,19 @@
     }
 
 
-    function commitGlobalSettings() {
-      Object.keys($scope.updatedGlobalSettings).forEach(function (item) {
-        let keyValue = $scope.updatedGlobalSettings[item].recordValue;
-        let uuid = $scope.updatedGlobalSettings[item].recordUUID;
-        iocExtractionConfigService.updateKeyStoreRecord(keyValue, uuid);
+    function commitExclusionSettings() {
+      Object.keys($scope.updatedExclusionSettings.recordValue).forEach(function (item) {
+        $scope.defaultGlobalSettings[item] = $scope.updatedExclusionSettings.recordValue[item];
       });
+      let keyValue = $scope.defaultGlobalSettings;
+      let uuid = $scope.updatedExclusionSettings.recordUUID;
+      iocExtractionConfigService.updateKeyStoreRecord(keyValue, uuid);
     }
 
 
     function init() {
       // To set value to be displayed on "Excludelist Settings" page
-      _handleGblVarsAndKeyStores();
+      _initExclusionSetting();
       // To handle backward compatibility for widget
       _handleTranslations();
     }

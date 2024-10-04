@@ -44,3 +44,18 @@
 	margin-top: 20%;
 	margin-left: 20%;
 }
+
+.bulk-import-file-upload {
+	margin: 6px 15px 0px 15px;
+	height: 130px;
+	padding-top: 15px;
+}
+
+.bulk-import-footer{
+	padding-top: 15px !important;
+    text-align: right !important;
+    border: none;
+    background: transparent;
+    padding-right: 15px !important;
+    padding-bottom: 15px !important;
+}

@@ -17,13 +17,12 @@
 
     var service = {
       constants: constants,
-      getGlobalVariable: getGlobalVariable,
       createOrUpdateKeyStore: createOrUpdateKeyStore,
-      deleteGlobalVariable: deleteGlobalVariable,
       getKeyStoreRecord: getKeyStoreRecord,
       updateKeyStoreRecord: updateKeyStoreRecord,
       executeConnectorOperation: executeConnectorOperation,
-      getIndicatorRegex: getIndicatorRegex
+      getIndicatorRegex: getIndicatorRegex,
+      getPicklist: getPicklist
     }
     return service;
 
@@ -65,15 +64,13 @@
             "jSONValue"
           ]
         },
-        globalVariablesToKeyStoreMapping: {
-          "sfsp-excludelist-ips": ["Excludelist_IPs", "IP Address", true],
-          "sfsp-excludelist-urls": ["Excludelist_URLs", "URL", true],
-          "sfsp-excludelist-domains": ["Excludelist_Domains", "Domain", true],
-          "sfsp-excludelist-ports": ["Excludelist_Ports", "Port", true],
-          "sfsp-excludelist-files": ["Excludelist_Files", "File", true],
-          "sfsp-excludelist-cidr-ranges": ["NA", "CIDR Range", true],
-          "sfsp-excludelist-file-hashes":["NA", "File Hash", true],
-          "sfsp-indicator-type-mapping": ["Indicator_Type_Map", "NA", true]
+        keyStoreTemplate: {
+          "pattern": [],
+          "excludedIOCs": [],
+          "globalVariable": "",
+          "system" : true,
+          "migratedFromGlobalVariable": true,
+          "applyIOCExtractionFilter": true
         }
       }
     }
@@ -98,14 +95,14 @@
     }
 
 
-    function getGlobalVariable(gblVarName) {
+    function getPicklist() {
       var defer = $q.defer();
-      var url = API.WORKFLOW + API.API + '/dynamic-variable/?name=' + gblVarName;
+      var url = '/api/3/picklist_names/50ee5bfa-e18f-49ba-8af9-dcca25b0f9c0'; // IRI of 'Indicator Type' picklist
       $resource(url).get(null, function (response) {
         defer.resolve(response);
       }, function (err) {
         defer.reject(err);
-      });
+      })
       return defer.promise;
     }
 
@@ -120,18 +117,6 @@
       return defer.promise;
     }
 
-    function deleteGlobalVariable(gblVarName) {
-      var defer = $q.defer();
-      var url = API.WORKFLOW + API.API + '/dynamic-variable/' + gblVarName + '/?format=json';
-      $resource(url, null, {
-        'delete': { method: 'DELETE' }
-      }).delete(null, function (response) {
-        defer.resolve(response);
-      }, function (err) {
-        defer.reject(err);
-      });
-      return defer.promise;
-    }
 
     function getKeyStoreRecord(queryObject, module) {
       var defer = $q.defer();
