@@ -68,9 +68,9 @@
           "pattern": [],
           "excludedIOCs": [],
           "globalVariable": "",
-          "category": "system",
+          "system" : true,
           "migratedFromGlobalVariable": true,
-          "includeInConsolidation": true
+          "applyIOCExtractionFilter": true
         }
       }
     }
