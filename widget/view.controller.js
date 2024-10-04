@@ -26,6 +26,7 @@
     $scope.invalidIOCs = {}; // This dict holds invalid IOCs for various indicator types
     $scope.fileName = '';
     $scope.uploadedFileFlag = false;
+    $scope.supportedFileTypes = '.csv,.txt,.pdf,.xls,.xlsx,.json,.doc,.docx';
     $scope.loadingJob = false;
     $scope.defaultIOCTypeList = [];
     $scope.notYetEnteredIOCTypes = ['Add Custom Indicator Type'];
@@ -95,6 +96,7 @@
     function setAddNewIOCFlags(flag) {
       if (flag === 'addNewIOCTypeEnabled') {
         $scope.addNewIndicatorType = true;
+        $scope.bulkImportEnabled = false;
       }
       if (flag === 'addNewIOCTypeDisabled') {
         $scope.addNewIndicatorType = false;
@@ -132,6 +134,7 @@
       }
       if (flag === 'bulkImportEnabled') {
         $scope.bulkImportEnabled = true;
+        $scope.addNewIndicatorType = false;
       }
       if (flag === 'bulkImportDisabled') {
         $scope.bulkImportEnabled = false;

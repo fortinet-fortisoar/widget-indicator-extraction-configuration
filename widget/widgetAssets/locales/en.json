@@ -9,7 +9,7 @@
         "EXCLUDELIST_CONFIG_PAGE_WZ_TITLE": "Excludelist Configuration",
         "EXCLUDELIST_CONFIG_PAGE_TITLE": "Configure Exclude List",
         "EXCLUDELIST_CONFIG_PAGE_DESCRIPTION": "Specify artifacts that should be excluded from enrichment and further analysis.",
-        "EXCLUDELIST_CONFIG_PAGE_SEARCH_PLACEHOLDER": "Search added artefact",
+        "EXCLUDELIST_CONFIG_PAGE_SEARCH_PLACEHOLDER": "Search added artifacts",
         "EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL": "Search Result :",
 
         "EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL": "Add indicators manually or use",
