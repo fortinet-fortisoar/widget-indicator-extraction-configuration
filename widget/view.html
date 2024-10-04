@@ -141,8 +141,8 @@
                                                 data-ng-model="uploadedFile" name="uploadFileDiv"
                                                 ngf-select="uploadFiles(uploadedFile)"
                                                 data-ngf-drop="uploadFiles(uploadedFile)"
-                                                data-accept=".csv,.txt,.pdf,.xls,.xlsx,.json,.doc,.docx"
-                                                data-ngf-pattern="'.csv,.txt,.pdf,.xls,.xlsx,.xlsm,.json,.doc,.docx'"
+                                                data-accept="{{supportedFileTypes}}"
+                                                data-ngf-pattern="'{{supportedFileTypes}}'"
                                                 data-ng-show="!uploadedFileFlag && !loadingJob">
                                                 <h2 class="margin-0">
                                                     <span class="padding-right-sm fa fa-folder-open"></span>
