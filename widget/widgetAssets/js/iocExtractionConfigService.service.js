@@ -21,7 +21,7 @@
       getKeyStoreRecord: getKeyStoreRecord,
       updateKeyStoreRecord: updateKeyStoreRecord,
       executeConnectorOperation: executeConnectorOperation,
-      getArtifacts: getArtifacts,
+      getArtifactsFromFile: getArtifactsFromFile,
       getPicklistByIRI: getPicklistByIRI,
       getFileContent: getFileContent,
     }
@@ -82,7 +82,7 @@
       return executeConnectorOperation('file-content-extraction', 'extract_text', null, { file_iri: fileIRI });
     }
 
-    function getArtifacts(text) {
+    function getArtifactsFromFile(text) {
       const htmlTagRegex = /<[^>]*>/g;
       text.replace(htmlTagRegex, '');
       return executeConnectorOperation('cyops_utilities', 'extract_artifacts', null, { data: text });

@@ -35,9 +35,8 @@
     $scope.isSystemIOCType = true;
     $scope.iocTypeSelected = false;
     const maxFileSize = 25072682;
-
     var regexDict = {};
-
+    var bulkImportIOCs = {};
 
     // File Paths
     $scope.widgetCSS = widgetBasePath + 'widgetAssets/css/wizard-style.css';
@@ -63,6 +62,17 @@
     $scope.getNotEnteredIOCTypes = getNotEnteredIOCTypes;
     $scope.indicatorTypeChanged = indicatorTypeChanged;
     $scope.saveNewIOCType = saveNewIOCType;
+    $scope.extractIOCsFromFile = extractIOCsFromFile;
+    
+
+    function extractIOCsFromFile(fileIRI) {
+      iocExtractionConfigService.getFileContent(fileIRI).then(function (fileContent) {
+        iocExtractionConfigService.getArtifactsFromFile(fileContent.data.extracted_text).then(function (response) {
+          bulkImportIOCs = response.data.results;
+          console.log(bulkImportIOCs);
+        });
+      });
+    }
 
 
     function saveNewIOCType() {
@@ -164,12 +174,7 @@
             $scope.loadingJob = false;
             $scope.uploadedFileFlag = true;
             $scope.enableSpinner = false;
-            iocExtractionConfigService.getFileContent(fileIRI).then(function (fileContent) {
-              iocExtractionConfigService.getArtifacts(fileContent.data.extracted_text).then(function (response) {
-                let res = response.data.results;
-                console.log(res);
-              });
-            });
+            extractIOCsFromFile(fileIRI);
           },
             function (response) {
               $scope.loadingJob = false;
