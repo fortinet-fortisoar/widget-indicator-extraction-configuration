@@ -47,23 +47,34 @@
       'finishPageImage': widgetBasePath + 'images/ioc-extraction-finish-both.png'
     };
 
-    // Functions
-    $scope._buildPayload = _buildPayload;
+    // Wizard Functions
     $scope.moveNext = moveNext;
     $scope.moveBack = moveBack;
+
+    // Support Functions
+    $scope._getRegexPattern = _getRegexPattern;
+    $scope._buildPayload = _buildPayload;
+
+    // Exclusion List Functions
     $scope.commitExclusionSettings = commitExclusionSettings;
     $scope.validateIOC = validateIOC;
+
+    // Search Functions
     $scope.setSearchStatus = setSearchStatus;
     $scope.updateSearchQuery = updateSearchQuery;
-    $scope._getRegexPattern = _getRegexPattern;
+
+    // Bulk Import Functions
     $scope.uploadFiles = uploadFiles;
     $scope.setBulkImportFlags = setBulkImportFlags;
+    $scope.extractIOCsFromFile = extractIOCsFromFile;
+
+    // Add New Indicator Type Functions
     $scope.setAddNewIOCFlags = setAddNewIOCFlags;
     $scope.getNotEnteredIOCTypes = getNotEnteredIOCTypes;
     $scope.indicatorTypeChanged = indicatorTypeChanged;
     $scope.saveNewIOCType = saveNewIOCType;
-    $scope.extractIOCsFromFile = extractIOCsFromFile;
-    
+
+
 
     function extractIOCsFromFile(fileIRI) {
       iocExtractionConfigService.getFileContent(fileIRI).then(function (fileContent) {
@@ -73,7 +84,6 @@
         });
       });
     }
-
 
     function saveNewIOCType() {
       let keyStoreTemplate = iocExtractionConfigService.constants().keyStoreTemplate;
@@ -197,58 +207,6 @@
       }
     }
 
-    function _handleTranslations() {
-      let widgetData = {
-        name: $scope.config.name,
-        version: $scope.config.version
-      };
-      let widgetNameVersion = widgetUtilityService.getWidgetNameVersion(widgetData);
-      if (widgetNameVersion) {
-        widgetUtilityService.checkTranslationMode(widgetNameVersion).then(function () {
-          $scope.viewWidgetVars = {
-            // Create your translating static string variables here
-            START_PAGE_WZ_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_WZ_TITLE'),
-            LABEL_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.LABEL_TITLE'),
-            START_PAGE_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_TITLE'),
-            START_PAGE_DESCRIPTION: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DESCRIPTION'),
-            START_PAGE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_BUTTON'),
-
-            EXCLUDELIST_CONFIG_PAGE_WZ_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_WZ_TITLE'),
-            EXCLUDELIST_CONFIG_PAGE_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_TITLE'),
-            EXCLUDELIST_CONFIG_PAGE_DESCRIPTION: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_DESCRIPTION'),
-            EXCLUDELIST_CONFIG_PAGE_SEARCH_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SEARCH_PLACEHOLDER'),
-            EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL'),
-            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL'),
-            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LAUNCH_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LAUNCH_BUTTON'),
-            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_IMPORT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_IMPORT_BUTTON'),
-            EXCLUDELIST_CONFIG_PAGE_CANCEL_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_CANCEL_BUTTON'),
-
-            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOAD_FAILED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOAD_FAILED'),
-            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED'),
-            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_TYPE_NOT_SUPPORTED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_TYPE_NOT_SUPPORTED'),
-            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL'),
-            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE'),
-            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER'),
-            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_SHOULD_NOT_EXCEED_25MB: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_SHOULD_NOT_EXCEED_25MB'),
-
-            EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_LAUNCH_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_LAUNCH_BUTTON'),
-            EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_FORM_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_FORM_LABEL'),
-            EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_SELECT_INDICATOR_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_SELECT_INDICATOR_LABEL'),
-
-            SELECT_AN_OPTION: widgetUtilityService.translate('configureIndicatorExtraction.SELECT_AN_OPTION'),
-            EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON'),
-            EXCLUDELIST_CONFIG_PAGE_SAVE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SAVE_BUTTON'),
-            EXCLUDELIST_CONFIG_PAGE_SKIP_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SKIP_BUTTON'),
-          };
-        });
-      }
-      else {
-        $timeout(function () {
-          cancel();
-        }, 100)
-      }
-    }
-
 
     function _buildPayload(keyName, keyValue, action) {
       if (action === 'createKeyStore') {
@@ -272,48 +230,6 @@
         'Email Address': ['Email']
       };
       return (mapping[indicatorType] || [indicatorType]).map(key => regexMapping[key]);
-    }
-
-
-    function _initExclusionSetting() {
-      // Fetch regex mappings for different indicator types using Regex Keystore
-      let keyName = 'sfsp-indicator-regex-mapping';
-      let payload = _buildPayload(keyName, null, 'findKeyStore');
-      iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
-        // Create a dictionary to map indicator types to regex patterns 
-        if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
-          let regexMapping = response["hydra:member"][0].jSONValue;
-          regexDict = regexMapping.reduce(function (acc, item) {
-            acc[item.indicator_type] = item.pattern_regx.replace(/\\\\/g, '\\'); // Normalizing the JSON response from the utilities connector by replacing escape characters in the encoded regex
-            return acc;
-          }, {});
-        }
-
-        // Build payload to fetch exclusion data for all the indicator types available in keystore
-        let keyStoreName = 'sfsp-indicator-extraction-configuration';
-        let payload = _buildPayload(keyStoreName, null, 'findKeyStore');
-
-        // Fetch key store record based on the payload
-        iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
-          if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
-
-            // Process each key in keystore record
-            let keystoreDetails = response['hydra:member'][0].jSONValue;
-            $scope.defaultGlobalSettings = keystoreDetails;
-            $scope.defaultExclusionSettings = { 'recordUUID': response['hydra:member'][0].uuid, 'recordValue': {} };
-            $scope.defaultIOCTypeFieldMapping = { 'recordUUID': response['hydra:member'][0].uuid, 'recordValue': {} };
-            Object.keys(keystoreDetails).forEach(function (indicatorType) {
-              if (indicatorType === 'Indicator Type Mapping') {
-                $scope.defaultIOCTypeFieldMapping.recordValue = keystoreDetails[indicatorType];
-              } else {
-                let iocExclusionDetails = keystoreDetails[indicatorType]
-                iocExclusionDetails.pattern = _getRegexPattern(indicatorType, regexDict);
-                $scope.defaultExclusionSettings.recordValue[indicatorType] = iocExclusionDetails;
-              }
-            });
-          }
-        });
-      });
     }
 
 
@@ -371,6 +287,16 @@
     }
 
 
+    function commitExclusionSettings() {
+      Object.keys($scope.updatedExclusionSettings.recordValue).forEach(function (item) {
+        $scope.defaultGlobalSettings[item] = $scope.updatedExclusionSettings.recordValue[item];
+      });
+      let keyValue = $scope.defaultGlobalSettings;
+      let uuid = $scope.updatedExclusionSettings.recordUUID;
+      iocExtractionConfigService.updateKeyStoreRecord(keyValue, uuid);
+    }
+
+
     function moveNext(param) {
       let currentStepTitle = WizardHandler.wizard('configureIndicatorExtraction').currentStep().wzTitle
       if (currentStepTitle === 'Start') {
@@ -394,13 +320,98 @@
     }
 
 
-    function commitExclusionSettings() {
-      Object.keys($scope.updatedExclusionSettings.recordValue).forEach(function (item) {
-        $scope.defaultGlobalSettings[item] = $scope.updatedExclusionSettings.recordValue[item];
+    function _initExclusionSetting() {
+      // Fetch regex mappings for different indicator types using Regex Keystore
+      let keyName = 'sfsp-indicator-regex-mapping';
+      let payload = _buildPayload(keyName, null, 'findKeyStore');
+      iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
+        // Create a dictionary to map indicator types to regex patterns 
+        if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
+          let regexMapping = response["hydra:member"][0].jSONValue;
+          regexDict = regexMapping.reduce(function (acc, item) {
+            acc[item.indicator_type] = item.pattern_regx.replace(/\\\\/g, '\\'); // Normalizing the JSON response from the utilities connector by replacing escape characters in the encoded regex
+            return acc;
+          }, {});
+        }
+
+        // Build payload to fetch exclusion data for all the indicator types available in keystore
+        let keyStoreName = 'sfsp-indicator-extraction-configuration';
+        let payload = _buildPayload(keyStoreName, null, 'findKeyStore');
+
+        // Fetch key store record based on the payload
+        iocExtractionConfigService.getKeyStoreRecord(payload, 'keys').then(function (response) {
+          if (response && response['hydra:member'] && response['hydra:member'].length > 0) {
+
+            // Process each key in keystore record
+            let keystoreDetails = response['hydra:member'][0].jSONValue;
+            $scope.defaultGlobalSettings = keystoreDetails;
+            $scope.defaultExclusionSettings = { 'recordUUID': response['hydra:member'][0].uuid, 'recordValue': {} };
+            $scope.defaultIOCTypeFieldMapping = { 'recordUUID': response['hydra:member'][0].uuid, 'recordValue': {} };
+            Object.keys(keystoreDetails).forEach(function (indicatorType) {
+              if (indicatorType === 'Indicator Type Mapping') {
+                $scope.defaultIOCTypeFieldMapping.recordValue = keystoreDetails[indicatorType];
+              } else {
+                let iocExclusionDetails = keystoreDetails[indicatorType]
+                iocExclusionDetails.pattern = _getRegexPattern(indicatorType, regexDict);
+                $scope.defaultExclusionSettings.recordValue[indicatorType] = iocExclusionDetails;
+              }
+            });
+          }
+        });
       });
-      let keyValue = $scope.defaultGlobalSettings;
-      let uuid = $scope.updatedExclusionSettings.recordUUID;
-      iocExtractionConfigService.updateKeyStoreRecord(keyValue, uuid);
+    }
+
+
+    function _handleTranslations() {
+      let widgetData = {
+        name: $scope.config.name,
+        version: $scope.config.version
+      };
+      let widgetNameVersion = widgetUtilityService.getWidgetNameVersion(widgetData);
+      if (widgetNameVersion) {
+        widgetUtilityService.checkTranslationMode(widgetNameVersion).then(function () {
+          $scope.viewWidgetVars = {
+            // Create your translating static string variables here
+            START_PAGE_WZ_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_WZ_TITLE'),
+            LABEL_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.LABEL_TITLE'),
+            START_PAGE_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_TITLE'),
+            START_PAGE_DESCRIPTION: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_DESCRIPTION'),
+            START_PAGE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.START_PAGE_BUTTON'),
+
+            EXCLUDELIST_CONFIG_PAGE_WZ_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_WZ_TITLE'),
+            EXCLUDELIST_CONFIG_PAGE_TITLE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_TITLE'),
+            EXCLUDELIST_CONFIG_PAGE_DESCRIPTION: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_DESCRIPTION'),
+            EXCLUDELIST_CONFIG_PAGE_SEARCH_PLACEHOLDER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SEARCH_PLACEHOLDER'),
+            EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SEARCH_RESULT_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LAUNCH_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LAUNCH_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_IMPORT_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_IMPORT_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_CANCEL_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_CANCEL_BUTTON'),
+
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOAD_FAILED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOAD_FAILED'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_EXCEEDED'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_TYPE_NOT_SUPPORTED: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_TYPE_NOT_SUPPORTED'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_UPLOADER_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_DROP_A_FILE'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_USE_STANDARD_UPLOADER'),
+            EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_SHOULD_NOT_EXCEED_25MB: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_SIZE_SHOULD_NOT_EXCEED_25MB'),
+
+            EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_LAUNCH_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_LAUNCH_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_FORM_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_FORM_LABEL'),
+            EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_SELECT_INDICATOR_LABEL: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_ADD_IOC_TYPE_SELECT_INDICATOR_LABEL'),
+
+            SELECT_AN_OPTION: widgetUtilityService.translate('configureIndicatorExtraction.SELECT_AN_OPTION'),
+            EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_BACK_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_SAVE_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SAVE_BUTTON'),
+            EXCLUDELIST_CONFIG_PAGE_SKIP_BUTTON: widgetUtilityService.translate('configureIndicatorExtraction.EXCLUDELIST_CONFIG_PAGE_SKIP_BUTTON'),
+          };
+        });
+      }
+      else {
+        $timeout(function () {
+          cancel();
+        }, 100)
+      }
     }
 
 
