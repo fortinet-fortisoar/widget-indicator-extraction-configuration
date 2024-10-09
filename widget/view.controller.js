@@ -107,7 +107,7 @@
     }
 
     function getNotEnteredIOCTypes() {
-      iocExtractionConfigService.getPicklist().then(function (response) {
+      iocExtractionConfigService.getPicklistByIRI().then(function (response) {
         let alreadyEnteredIOCTypes = Object.keys($scope.defaultExclusionSettings.recordValue);
         let defaultIOCTypeList = response.picklists.map(function (item) {
           if (item.itemValue.includes("FileHash")) {
@@ -158,11 +158,18 @@
           $scope.enableSpinner = true;
           $scope.loadingJob = true;
           file.upload.then(function (response) {
-            $scope.fileMetadata = response.data;
-            $scope.fileName = response.data.filename;
+            let fileMetadata = response.data;
+            let fileIRI = fileMetadata['@id'];
+            $scope.fileName = fileMetadata.filename;
             $scope.loadingJob = false;
             $scope.uploadedFileFlag = true;
             $scope.enableSpinner = false;
+            iocExtractionConfigService.getFileContent(fileIRI).then(function (fileContent) {
+              iocExtractionConfigService.getArtifacts(fileContent.data.extracted_text).then(function (response) {
+                let res = response.data.results;
+                console.log(res);
+              });
+            });
           },
             function (response) {
               $scope.loadingJob = false;
