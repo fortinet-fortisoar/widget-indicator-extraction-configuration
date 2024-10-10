@@ -72,6 +72,13 @@
           "system": true,
           "migratedFromGlobalVariable": true,
           "applyIOCExtractionFilter": true
+        },
+        iocTypeNameMapping: {
+          'IP Address': ['IPv4', 'IPv6', 'IP'],
+          'File Hash': ['MD5', 'SHA1', 'SHA256'],
+          'Domain': ['Host'],
+          'Email Address': ['Email'],
+          'File': ['Filename']
         }
       }
     }

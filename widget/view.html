@@ -114,7 +114,7 @@
                                         <button type="button"
                                             class="btn-link text-decoration-none font-light italic font-size-14"
                                             style="margin-left: -6px !important;"
-                                            data-ng-click="setBulkImportFlags('bulkImportEnabled')"
+                                            data-ng-click="setBulkImportFlags('bulkImportEnable')"
                                             id="indicator-bulk-import-button" aria-hidden="false"><span
                                                 class="icon icon-import"></span>&nbsp;{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_LAUNCH_BUTTON}}
                                         </button>
@@ -129,7 +129,7 @@
                                     </div>
 
                                     <!-- Bulk Import Div START -->
-                                    <div id="bulk-import-container" data-ng-show="bulkImportEnabled"
+                                    <div id="bulk-import-container" data-ng-show="bulkImportEnable"
                                         data-ng-style="{'background': isLightTheme ? '#fafaf9' : (isSteelTheme ? '#242b35' : '#262626')}">
                                         <label class="control-label display-block manual-input-list-container"
                                             style="padding: 10px 20px;">
@@ -182,21 +182,13 @@
                                         </div>
                                         <div class="modal-footer bulk-import-footer">
                                             <button type="submit" class="btn btn-primary btn-sm"
-                                                data-ng-disabled="processing" id="upload-bulk-import-file"
-                                                data-ng-click="submit()">
-                                                <cs-spinner data-ng-show="processing"
-                                                    class="pull-left margin-top-xsm state-wait button-spinner margin-right-sm"
-                                                    data-show-background="true" data-no-margin="margin-0"
-                                                    aria-hidden="true">
-                                                    <div class="loader background margin-0"
-                                                        data-ng-class="{'background' : showBackground, 'margin-0': noMargin}">
-                                                        <div class="cs-spinner"></div>
-                                                    </div>
-                                                </cs-spinner><i
+                                                data-ng-disabled="!bulkImportIOCExtractionDone"
+                                                id="upload-bulk-import-file" data-ng-click="importIOCsFromFile()">
+                                                <i
                                                     class="icon icon-import margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_BULK_IMPORT_FILE_IMPORT_BUTTON}}
                                             </button>
                                             <button type="button" class="btn btn-second-primary btn-sm"
-                                                data-ng-click="setBulkImportFlags('bulkImportDisabled')"
+                                                data-ng-click="setBulkImportFlags('bulkImportDisable')"
                                                 id="cancel-bulk-import"><i
                                                     class="icon icon-close margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_CANCEL_BUTTON}}
                                             </button>
@@ -235,7 +227,8 @@
                                                     <div class="margin-bottom-md">
                                                         <!-- <label class="font-size-12" style="color:#D2D5DA" data-ng-class="{'label-color-white': isLightTheme}"
                                                       for="report-user-name"> Regex Pattern </label> -->
-                                                        <input id="enterIndicatorName" data-ng-class="{'input-background-white': isLightTheme}"
+                                                        <input id="enterIndicatorName"
+                                                            data-ng-class="{'input-background-white': isLightTheme}"
                                                             data-ng-disabled="!addCustomIOCType"
                                                             class="form-control border-radius-5" type="text"
                                                             ng-model="selectedIndicatorType.iocType"
@@ -265,7 +258,8 @@
                                                         data-ng-class="{'background' : showBackground, 'margin-0': noMargin}">
                                                         <div class="cs-spinner"></div>
                                                     </div>
-                                                </cs-spinner><i
+                                                </cs-spinner>
+                                                <i
                                                     class="icon icon-check margin-right-sm"></i>{{viewWidgetVars.EXCLUDELIST_CONFIG_PAGE_SAVE_BUTTON}}
                                             </button>
                                             <button type="button" class="btn btn-second-primary btn-sm"
@@ -279,7 +273,7 @@
 
                                     <!-- UI-SELECT Excluded List Div START -->
                                     <div data-ng-repeat="(indicatorType, exclusionDetails) in updatedExclusionSettings.recordValue"
-                                        class="excluded-ui-select" data-ng-show="!bulkImportEnabled">
+                                        class="excluded-ui-select" data-ng-show="!bulkImportEnable">
                                         <div class="padding-bottom-md">
                                             <label class="control-label text-transform-none">{{indicatorType}}:
                                                 <span
