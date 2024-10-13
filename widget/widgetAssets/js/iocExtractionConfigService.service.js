@@ -21,8 +21,9 @@
       getKeyStoreRecord: getKeyStoreRecord,
       updateKeyStoreRecord: updateKeyStoreRecord,
       executeConnectorOperation: executeConnectorOperation,
-      getIndicatorRegex: getIndicatorRegex,
-      getPicklist: getPicklist
+      getArtifactsFromFile: getArtifactsFromFile,
+      getPicklistByIRI: getPicklistByIRI,
+      getFileContent: getFileContent,
     }
     return service;
 
@@ -68,16 +69,30 @@
           "pattern": [],
           "excludedIOCs": [],
           "globalVariable": "",
-          "system" : true,
+          "system": true,
           "migratedFromGlobalVariable": true,
           "applyIOCExtractionFilter": true
+        },
+        iocTypeNameMapping: {
+          'IP Address': ['IPv4', 'IPv6', 'IP'],
+          'File Hash': ['MD5', 'SHA1', 'SHA256'],
+          'Domain': ['Host'],
+          'Email Address': ['Email'],
+          'File': ['Filename']
         }
       }
     }
 
 
-    function getIndicatorRegex() {
-      return executeConnectorOperation('cyops_utilities', 'get_regx_of_indicators', null, []);
+
+    function getFileContent(fileIRI) {
+      return executeConnectorOperation('file-content-extraction', 'extract_text', null, { file_iri: fileIRI });
+    }
+
+    function getArtifactsFromFile(text) {
+      const htmlTagRegex = /<[^>]*>/g;
+      text.replace(htmlTagRegex, '');
+      return executeConnectorOperation('cyops_utilities', 'extract_artifacts', null, { data: text });
     }
 
 
@@ -95,7 +110,7 @@
     }
 
 
-    function getPicklist() {
+    function getPicklistByIRI() {
       var defer = $q.defer();
       var url = '/api/3/picklist_names/50ee5bfa-e18f-49ba-8af9-dcca25b0f9c0'; // IRI of 'Indicator Type' picklist
       $resource(url).get(null, function (response) {
